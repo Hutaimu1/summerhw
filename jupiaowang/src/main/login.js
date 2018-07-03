@@ -1,15 +1,95 @@
 import React from 'react';
-import {Form, Icon, Input, Button} from 'antd';
-import Captcha from "../component/captcha_login";
+import {Form, Icon, Input, Button, message} from 'antd';
+import $ from 'jquery';
 
 class Login extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            ...this.initState()
+        }
+    }
+
+    initState = () => {
+        return {
+            expression: '获取验证码',
+            validate: '',
+            validateInput: ''
+        };
+    };
+
+    renderCode = () => {
+        //定义expression和result，expression是字符串，result可能是字符串也可能是数字
+        let expression = '', result;
+
+        result = 0;//计算类型则result为数字，初始化为0
+        //获取随机的两个两位数
+        let Calpre = Math.round(Math.random() * 100);
+        let Calafter = Math.round(Math.random() * 100);
+
+        let codeCal = ['-', '+', 'x'];//运算符
+        let i = Math.round(Math.random() * 2);//获得随机运算符
+
+        switch (codeCal[i]) {//判断运算符并计算
+            case '-':
+                expression = Calpre + '-' + Calafter;
+                result = Calpre - Calafter;
+                break;
+            case '+':
+                expression = Calpre + '+' + Calafter;
+                result = Calpre + Calafter;
+                break;
+            case 'x':
+                expression = Calpre + 'x' + Calafter;
+                result = Calpre * Calafter;
+                break;
+            default:
+                break;
+        }
+
+        this.setState({//设置更新状态
+            expression: expression,
+            validate: result
+        });
+    };
+
+    validate = (rule, value, callback) => {
+        let thisInput = value;
+        let validateCode = this.state.validate;
+        if (thisInput === undefined || thisInput === '') {
+            callback('验证码错误!');
+        }
+        if (thisInput !== '' && thisInput !== undefined && thisInput.toLowerCase() !== validateCode.toString().toLowerCase()) {
+            callback('验证码错误!');
+        }
+    };
+
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
+        let name = this.props.form.getFieldValue('userName');
+        let password = this.props.form.getFieldValue('password');
+        let captcha = this.props.form.getFieldValue('captcha');
+        if (name !== undefined && password !== undefined && captcha!== undefined){
+            $.post("/bookstoreApp/checkuser", {name: name, password: password}, function (data) {
+                if (JSON.parse(data)[0]) {
+                    if (JSON.parse(data)[1]) {
+                        message.info('您的账号已被冻结,请联系管理员!');
+                    }
+                    else {
+                        if (JSON.parse(data)[2]) {
+                            message.info('以管理员身份登陆成功!');
+                        }
+                        else {
+                            message.info('以用户身份登陆成功!');
+                        }
+                    }
+                }
+                else {
+                    message.info('用户名密码错误!');
+                }
+            });
+        }
+        this.props.form.validateFields((err, values) => {});
     };
 
     checkUserName = (rule, value, callback) => {
@@ -41,13 +121,26 @@ class Login extends React.Component {
                                placeholder="密码"/>
                     )}
                 </Form.Item>
-                <Captcha size="4"/>
+                <Form.Item>
+                    {getFieldDecorator('captcha', {
+                        rules: [{required: true, message: '验证码不能为空!'}, {
+                            validator: this.validate
+                        }],
+                    })(
+                        <Input  prefix={<Icon type="qrcode" style={{color: 'rgba(0,0,0,.25)'}}/>} className="login-form-input-captcha" placeholder="请输入验证码" />
+                    )}
+                    <Button type="primary"
+                            onClick={this.renderCode}
+                            className="login-form-button-captcha">
+                        {this.state.expression}</Button>
+                </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         登录
                     </Button>
                     <a href="">忘记密码?</a>
-                    <a className="login-form-register" onClick={() => this.props.history.push('/registration')}>新用户注册!</a>
+                    <a className="login-form-register"
+                       onClick={() => this.props.history.push('/registration')}>新用户注册!</a>
                 </Form.Item>
             </Form>
         );
