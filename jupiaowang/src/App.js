@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Switch, Route, HashRouter } from 'react-router-dom'
-import WrappedNormalLoginForm from './main/login'
+import Login from './main/login'
+import Registration from './main/registration'
 import './App.css';
 
 
@@ -9,7 +10,8 @@ class App extends Component {
         return (
             <HashRouter>
                 <Switch>
-                    <Route exact path='/' component={WrappedNormalLoginForm}/>
+                    <Route exact path='/' component={Login}/>
+                    <Route path='/registration' component={Registration}/>
                 </Switch>
             </HashRouter>
         );

@@ -11,3 +11,37 @@
 .login-form-button {
   width: 100%;
 }
+
+.login-form-input-captcha {
+  width: 60%;
+}
+
+.login-form-button-captcha {
+  width: 40%;
+}
+
+
+.registration-form{
+  max-width: 70%;
+  padding-left: 20%;
+  padding-top: 5%;
+}
+
+.registration-form-input-captcha {
+  width: 70%;
+}
+
+.registration-form-button-captcha {
+   width: 30%;
+ }
+
+.registration-form-button {
+  width: 30%;
+  margin-right: 10%;
+}
+
+.ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked{
+  color: #fff;
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
