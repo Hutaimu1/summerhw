@@ -1,5 +1,8 @@
 import React from 'react';
 import {Form, Input, Tooltip, Icon, Select, Checkbox, Button, Radio} from 'antd';
+import $ from "jquery";
+import {message} from "antd/lib/index";
+
 
 class Registration extends React.Component {
     constructor(props) {
@@ -11,67 +14,65 @@ class Registration extends React.Component {
 
     initState = () => {
         return {
-            expression: '获取验证码',
+            expression: '获取邮箱验证码',
             validate: '',
             validateInput: '',
             confirmDirty: false,
         };
     };
 
+    haveValue = (value) => {
+        return (value !== "" && value !== undefined);
+    };
+
     renderCode = () => {
-        //定义expression和result，expression是字符串，result可能是字符串也可能是数字
-        let expression = '', result;
-
-        result = 0;//计算类型则result为数字，初始化为0
-        //获取随机的两个两位数
-        let Calpre = Math.round(Math.random() * 100);
-        let Calafter = Math.round(Math.random() * 100);
-
-        let codeCal = ['-', '+', 'x'];//运算符
-        let i = Math.round(Math.random() * 2);//获得随机运算符
-
-        switch (codeCal[i]) {//判断运算符并计算
-            case '-':
-                expression = Calpre + '-' + Calafter;
-                result = Calpre - Calafter;
-                break;
-            case '+':
-                expression = Calpre + '+' + Calafter;
-                result = Calpre + Calafter;
-                break;
-            case 'x':
-                expression = Calpre + 'x' + Calafter;
-                result = Calpre * Calafter;
-                break;
-            default:
-                break;
-        }
-
+        let email = this.props.form.getFieldValue('email');
+        let result;
+        $.ajaxSetup(
+            {
+                async: false
+            });
+        $.post("/bookstoreApp/mailValidate", {email:email}, function (data) {
+            result = JSON.parse(data);
+        });
         this.setState({//设置更新状态
-            expression: expression,
+            expression: "点击重新获取验证码",
             validate: result
         });
     };
 
-    validate = (rule, value, callback) => {
-        let thisInput = value;
-        let validateCode = this.state.validate;
-        if (thisInput === undefined || thisInput === '') {
-            callback('验证码错误!');
-            return
-        }
-        if (thisInput !== '' && thisInput.toLowerCase() !== validateCode.toString().toLowerCase()) {
-            callback('验证码错误!');
-        }
-    };
-
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
+        let userName = this.props.form.getFieldValue('userName');
+        let password = this.props.form.getFieldValue('password');
+        let email = this.props.form.getFieldValue('email');
+        let qq = this.props.form.getFieldValue('qq');
+        let phone = this.props.form.getFieldValue('phone');
+        let captcha = this.props.form.getFieldValue('captcha');
+        if (this.haveValue(userName) && this.haveValue(password) && this.haveValue(email) && this.haveValue(qq) && this.haveValue(phone) && this.haveValue(captcha)) {
+            $.post("/bookstoreApp/registerUser", {
+                userName: userName,
+                password: password,
+                email: email,
+                qq: qq,
+                phone: phone
+            }, function (data) {
+                if (JSON.parse(data)) {
+                    message.info('注册成功!');
+                }
+            });
+        }
+        this.props.form.validateFields((err, values) => {
         });
+    };
+
+    checkCaptacha = (rule, value, callback) => {
+        let thisInput = value;
+        let validateCode = this.state.validate;
+        if (this.haveValue(thisInput) && thisInput.toLowerCase() !== validateCode.toString().toLowerCase()) {
+            callback('验证码错误!');
+        }
+        callback()
     };
 
     handleConfirmBlur = (e) => {
@@ -84,13 +85,65 @@ class Registration extends React.Component {
         if (value && !reg.test(value[0])) {
             callback('用户名必须以字母开头!');
         }
-        callback()
+        if (this.haveValue(value)) {
+            $.ajaxSetup(
+                {
+                    async: false
+                });
+            $.post("/bookstoreApp/checkUserName", {userName: value}, function (data) {
+                if (JSON.parse(data)) {
+                    callback("该用户名已被占用!");
+                }
+            });
+        }
+        callback();
     };
 
     checkQQ = (rule, value, callback) => {
         let reg = /^[0-9]+$/;
         if (value && !reg.test(value)) {
             callback('输入的QQ号不符合规范!')
+        }
+        if (this.haveValue(value)) {
+            $.ajaxSetup(
+                {
+                    async: false
+                });
+            $.post("/bookstoreApp/checkQQ", {qq: value}, function (data) {
+                if (JSON.parse(data)) {
+                    callback("该QQ已被注册!");
+                }
+            });
+        }
+        callback()
+    };
+
+    checkPhoneNumber = (rule, value, callback) => {
+        if (this.haveValue(value)) {
+            $.ajaxSetup(
+                {
+                    async: false
+                });
+            $.post("/bookstoreApp/checkPhoneNumber", {phone: value}, function (data) {
+                if (JSON.parse(data)) {
+                    callback("该手机号已被注册!");
+                }
+            });
+        }
+        callback()
+    };
+
+    checkEmail = (rule, value, callback) => {
+        if (this.haveValue(value)) {
+            $.ajaxSetup(
+                {
+                    async: false
+                });
+            $.post("/bookstoreApp/checkEmail", {email: value}, function (data) {
+                if (JSON.parse(data)) {
+                    callback("该邮箱号已被注册!");
+                }
+            });
         }
         callback()
     };
@@ -191,7 +244,7 @@ class Registration extends React.Component {
                         )}
                         hasFeedback
                     >
-                        {getFieldDecorator('username', {
+                        {getFieldDecorator('userName', {
                             rules: [{required: true, message: '请输入用户名!', whitespace: true}, {
                                 validator: this.checkUserName
                             }],
@@ -219,7 +272,7 @@ class Registration extends React.Component {
                         {...formItemLayout}
                         label="密码安全性"
                     >
-                        <Radio.Group disabled value = {this.state.securityLevelFlag}>
+                        <Radio.Group disabled value={this.state.securityLevelFlag}>
                             <Radio.Button value="1">低</Radio.Button>
                             <Radio.Button value="2">中</Radio.Button>
                             <Radio.Button value="3">高</Radio.Button>
@@ -251,6 +304,8 @@ class Registration extends React.Component {
                                 type: 'email', message: '输入的电子邮箱地址不符合规范!',
                             }, {
                                 required: true, message: '请输入电子邮箱地址!',
+                            }, {
+                                validator: this.checkEmail
                             }],
                         })(
                             <Input/>
@@ -279,6 +334,8 @@ class Registration extends React.Component {
                         {getFieldDecorator('phone', {
                             rules: [{required: true, message: '请输入手机号码!'}, {
                                 len: 11, message: '请输入正确的11位手机号码!'
+                            }, {
+                                validator: this.checkPhoneNumber
                             }],
                         })(
                             <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
@@ -289,7 +346,7 @@ class Registration extends React.Component {
                         label="验证码">
                         {getFieldDecorator('captcha', {
                             rules: [{required: true, message: '验证码不能为空!'}, {
-                                validator: this.validate
+                                validator: this.checkCaptacha
                             }],
                         })(
                             <Input className="registration-form-input-captcha" placeholder="请输入验证码"/>
