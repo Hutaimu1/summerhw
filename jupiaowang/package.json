@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ajv": "^6.0.0",
     "antd": "^3.6.5",
     "jquery": "^3.3.1",
+    "nodemailer": "^4.6.7",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-router-dom": "^4.3.1",

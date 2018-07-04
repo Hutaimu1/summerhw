@@ -18,6 +18,10 @@ class Login extends React.Component {
         };
     };
 
+    haveValue = (value) =>{
+        return (value !== "" && value !== undefined);
+    };
+
     renderCode = () => {
         //定义expression和result，expression是字符串，result可能是字符串也可能是数字
         let expression = '', result;
@@ -53,24 +57,13 @@ class Login extends React.Component {
         });
     };
 
-    validate = (rule, value, callback) => {
-        let thisInput = value;
-        let validateCode = this.state.validate;
-        if (thisInput === undefined || thisInput === '') {
-            callback('验证码错误!');
-        }
-        if (thisInput !== '' && thisInput !== undefined && thisInput.toLowerCase() !== validateCode.toString().toLowerCase()) {
-            callback('验证码错误!');
-        }
-    };
-
     handleSubmit = (e) => {
         e.preventDefault();
-        let name = this.props.form.getFieldValue('userName');
+        let userName = this.props.form.getFieldValue('userName');
         let password = this.props.form.getFieldValue('password');
         let captcha = this.props.form.getFieldValue('captcha');
-        if (name !== undefined && password !== undefined && captcha!== undefined){
-            $.post("/bookstoreApp/checkuser", {name: name, password: password}, function (data) {
+        if (this.haveValue(userName) && this.haveValue(password) && this.haveValue(captcha)){
+            $.post("/bookstoreApp/login", {userName: userName, password: password}, function (data) {
                 if (JSON.parse(data)[0]) {
                     if (JSON.parse(data)[1]) {
                         message.info('您的账号已被冻结,请联系管理员!');
@@ -90,6 +83,15 @@ class Login extends React.Component {
             });
         }
         this.props.form.validateFields((err, values) => {});
+    };
+
+    checkCaptacha = (rule, value, callback) => {
+        let thisInput = value;
+        let validateCode = this.state.validate;
+        if (this.haveValue(thisInput) && thisInput.toLowerCase() !== validateCode.toString().toLowerCase()) {
+            callback('验证码错误!');
+        }
+        callback()
     };
 
     checkUserName = (rule, value, callback) => {
@@ -124,7 +126,7 @@ class Login extends React.Component {
                 <Form.Item>
                     {getFieldDecorator('captcha', {
                         rules: [{required: true, message: '验证码不能为空!'}, {
-                            validator: this.validate
+                            validator: this.checkCaptacha
                         }],
                     })(
                         <Input  prefix={<Icon type="qrcode" style={{color: 'rgba(0,0,0,.25)'}}/>} className="login-form-input-captcha" placeholder="请输入验证码" />
