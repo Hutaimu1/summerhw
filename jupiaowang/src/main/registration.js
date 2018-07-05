@@ -22,23 +22,33 @@ class Registration extends React.Component {
     };
 
     haveValue = (value) => {
-        return (value !== "" && value !== undefined);
+        return (value !== "" && value !== undefined && value !== false);
     };
 
     renderCode = () => {
         let email = this.props.form.getFieldValue('email');
-        let result;
-        $.ajaxSetup(
-            {
-                async: false
+        if(this.haveValue(email)){
+            $.ajax({
+                type : "post",
+                url : "bookstoreApp/mailValidate",
+                data : {email:email,type:"注册"},
+                async : true,
+                success : function(data){
+                    this.setState({//设置更新状态
+                        expression: "发送成功,点击重新发送",
+                        validate: JSON.parse(data)
+                    });
+                }.bind(this)
             });
-        $.post("/bookstoreApp/mailValidate", {email:email}, function (data) {
-            result = JSON.parse(data);
-        });
-        this.setState({//设置更新状态
-            expression: "点击重新获取验证码",
-            validate: result
-        });
+            this.setState({//设置更新状态
+                expression: "邮件发送中...",
+            });
+        }
+        else{
+            this.setState({//设置更新状态
+                expression: "请先输入邮箱后重新获取",
+            });
+        }
     };
 
     handleSubmit = (e) => {
@@ -49,7 +59,8 @@ class Registration extends React.Component {
         let qq = this.props.form.getFieldValue('qq');
         let phone = this.props.form.getFieldValue('phone');
         let captcha = this.props.form.getFieldValue('captcha');
-        if (this.haveValue(userName) && this.haveValue(password) && this.haveValue(email) && this.haveValue(qq) && this.haveValue(phone) && this.haveValue(captcha)) {
+        let agreement = this.props.form.getFieldValue('agreement');
+        if (this.haveValue(userName) && this.haveValue(password) && this.haveValue(email) && this.haveValue(qq) && this.haveValue(phone) && this.haveValue(captcha) && this.haveValue(agreement)) {
             $.post("/bookstoreApp/registerUser", {
                 userName: userName,
                 password: password,
@@ -87,13 +98,15 @@ class Registration extends React.Component {
             callback('用户名必须以字母开头!');
         }
         if (this.haveValue(value)) {
-            $.ajaxSetup(
-                {
-                    async: false
-                });
-            $.post("/bookstoreApp/checkUserName", {userName: value}, function (data) {
-                if (JSON.parse(data)) {
-                    callback("该用户名已被占用!");
+            $.ajax({
+                type : "post",
+                url : "bookstoreApp/checkUserName",
+                data : {userName:value},
+                async : false,
+                success : function(data){
+                    if (JSON.parse(data)) {
+                        callback("该用户名已被占用!");
+                    }
                 }
             });
         }
@@ -106,43 +119,53 @@ class Registration extends React.Component {
             callback('输入的QQ号不符合规范!')
         }
         if (this.haveValue(value)) {
-            $.ajaxSetup(
-                {
-                    async: false
+            if (this.haveValue(value)) {
+                $.ajax({
+                    type : "post",
+                    url : "bookstoreApp/checkQQ",
+                    data : {qq:value},
+                    async : false,
+                    success : function(data){
+                        if (JSON.parse(data)) {
+                            callback("该QQ号已被注册!");
+                        }
+                    }
                 });
-            $.post("/bookstoreApp/checkQQ", {qq: value}, function (data) {
-                if (JSON.parse(data)) {
-                    callback("该QQ已被注册!");
-                }
-            });
+            }
         }
         callback()
     };
 
     checkPhoneNumber = (rule, value, callback) => {
         if (this.haveValue(value)) {
-            $.ajaxSetup(
-                {
-                    async: false
+            if (this.haveValue(value)) {
+                $.ajax({
+                    type : "post",
+                    url : "bookstoreApp/checkPhoneNumber",
+                    data : {phone:value},
+                    async : false,
+                    success : function(data){
+                        if (JSON.parse(data)) {
+                            callback("该手机号已被注册!");
+                        }
+                    }
                 });
-            $.post("/bookstoreApp/checkPhoneNumber", {phone: value}, function (data) {
-                if (JSON.parse(data)) {
-                    callback("该手机号已被注册!");
-                }
-            });
+            }
         }
         callback()
     };
 
     checkEmail = (rule, value, callback) => {
         if (this.haveValue(value)) {
-            $.ajaxSetup(
-                {
-                    async: false
-                });
-            $.post("/bookstoreApp/checkEmail", {email: value}, function (data) {
-                if (JSON.parse(data)) {
-                    callback("该邮箱号已被注册!");
+            $.ajax({
+                type : "post",
+                url : "bookstoreApp/checkEmail",
+                data : {email:value},
+                async : false,
+                success : function(data){
+                    if (JSON.parse(data)) {
+                        callback("该邮箱地址已被注册!");
+                    }
                 }
             });
         }
@@ -359,14 +382,15 @@ class Registration extends React.Component {
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         {getFieldDecorator('agreement', {
+                            rules: [{required: true, message: '请确保您已经阅读并同意服务条款!'}],
                             valuePropName: 'checked',
                         })(
                             <Checkbox>注册即代表阅读并同意<a href="">服务条款</a></Checkbox>
                         )}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit" className="registration-form-button">注册并登陆</Button>
-                        <Button type="primary" htmlType="submit" className="registration-form-button"
+                        <Button type="primary" htmlType="submit" className="registration-form-button-left">注册并登陆</Button>
+                        <Button type="primary" htmlType="submit" className="registration-form-button-right"
                                 onClick={() => this.props.history.push('/')}>返回主页</Button>
                     </Form.Item>
                 </Form>
