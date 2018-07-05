@@ -1,3 +1,4 @@
+/* 登录 */
 .login-form {
   margin-left: 40%;
   margin-top: 15%;
@@ -20,28 +21,97 @@
   width: 40%;
 }
 
-
+/* 注册 */
 .registration-form{
-  max-width: 70%;
-  padding-left: 20%;
-  padding-top: 5%;
+  margin-left: 20%;
+  margin-top: 5%;
+  max-width: 800px;
 }
 
 .registration-form-input-captcha {
-  width: 70%;
+  width: 60%;
 }
 
 .registration-form-button-captcha {
-   width: 30%;
+   width: 40%;
  }
 
-.registration-form-button {
-  width: 30%;
-  margin-right: 10%;
+.registration-form-button-left {
+  width: 40%;
+  margin-right: 20%;
+}
+
+.registration-form-button-right {
+  width: 40%;
+}
+
+/* 忘记密码 */
+.forget-form{
+  margin-left: 25%;
+  margin-top: 10%;
+  max-width: 700px;
+}
+
+.forget-form-input-captcha {
+  width: 60%;
+}
+
+.forget-form-button-captcha {
+  width: 40%;
+}
+
+.forget-form-button-left {
+  width: 40%;
+  margin-right: 20%;
+}
+
+.forget-form-button-right {
+  width: 40%;
+}
+
+/* 用户界面*/
+.icon {
+  color: #fff;
+  font-size: 20px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color .3s;
+}
+
+.head-font {
+  color: #fff;
+  font-size: 20px;
+  font-family: 'Hiragino Sans GB', Georgia, serif;
 }
 
 .ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked{
   color: #fff;
   background-color: #1890ff;
   border-color: #1890ff;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 10s linear;
+  height: 60px;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.logo {
+  height: 32px;
+  background: #333;
+  border-radius: 6px;
+  margin: 16px;
+}
+
+.ant-layout-sider-collapsed .anticon {
+  font-size: 16px;
+}
+
+.ant-layout-sider-collapsed .nav-text {
+  display: none;
 }

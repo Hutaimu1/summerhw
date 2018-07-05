@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     int getRowNumber();
 
     @Query("select u from UserEntity u where u.userName=:userName")
-    List<UserEntity> findByUsername(@Param("userName") String userName);
+    List<UserEntity> findByUserName(@Param("userName") String username);
 
     @Query("select u from UserEntity u where u.phoneNumber=:phone")
     List<UserEntity> findByPhoneNumber(@Param("phone") String phone);
@@ -24,5 +24,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     List<UserEntity> findByEMail(@Param("email") String email);
 
     @Query("select u from UserEntity u where u.userName=:userName and u.password=:password")
-    List<UserEntity> findByUsernameAndPassword(@Param("userName") String userName, @Param("password") String password);
+    List<UserEntity> findByUserNameAndPassword(@Param("userName") String username, @Param("password") String password);
+
+    @Query("select u from UserEntity u where u.userName=:userName and u.eMail=:email")
+    List<UserEntity> findByUserNameAndEMail(@Param("userName") String username, @Param("email") String email);
 }

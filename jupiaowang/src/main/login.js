@@ -74,13 +74,14 @@ class Login extends React.Component {
                         }
                         else {
                             message.info('以用户身份登陆成功!');
+                            this.props.history.push('/home/' + userName);
                         }
                     }
                 }
                 else {
                     message.info('用户名密码错误!');
                 }
-            });
+            }.bind(this));
         }
         this.props.form.validateFields((err, values) => {});
     };
@@ -140,7 +141,7 @@ class Login extends React.Component {
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         登录
                     </Button>
-                    <a href="">忘记密码?</a>
+                    <a onClick={() => this.props.history.push('/forget')}>忘记密码?</a>
                     <a className="login-form-register"
                        onClick={() => this.props.history.push('/registration')}>新用户注册!</a>
                 </Form.Item>

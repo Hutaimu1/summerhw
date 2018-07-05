@@ -53,7 +53,22 @@ public class UserController {
 
     @PostMapping(value = "mailValidate")
     @ResponseBody
-    public String mailValidate(@RequestParam("email") String email) throws Exception {
-        return userService.mailValidate(email);
+    public String mailValidate(@RequestParam("email") String email,
+                               @RequestParam("type") String type) throws Exception {
+        return userService.mailValidate(email, type);
+    }
+
+    @PostMapping(value = "checkBindEmail")
+    @ResponseBody
+    public String checkBindEmail(@RequestParam("userName") String username,
+                                   @RequestParam("email") String email){
+        return userService.checkBindEmail(username, email);
+    }
+
+    @PostMapping(value = "forgetPassword")
+    @ResponseBody
+    public String forgetPassword(@RequestParam("userName") String username,
+                                 @RequestParam("password") String password){
+        return userService.forgetPassword(username, password);
     }
 }

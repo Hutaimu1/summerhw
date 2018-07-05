@@ -58,9 +58,10 @@ class Registration extends React.Component {
                 phone: phone
             }, function (data) {
                 if (JSON.parse(data)) {
-                    message.info('注册成功!');
+                    message.info('注册成功,自动以用户身份登录!');
+                    this.props.history.push('/home/' + userName);
                 }
-            });
+            }.bind(this));
         }
         this.props.form.validateFields((err, values) => {
         });
