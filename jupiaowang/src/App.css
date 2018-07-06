@@ -115,3 +115,28 @@
 .ant-layout-sider-collapsed .nav-text {
   display: none;
 }
+
+.switch-ico {
+  float: left;
+  background: url(//img.alicdn.com/tps/i1/T1wX7cFgleXXcQCr6q-85-21.png) no-repeat 0 0;
+  width: 40px;
+  height: 30px;
+  margin: 9px 0 0 0;
+}
+
+.calendar-text {
+    position: absolute;
+    cursor: text;
+    top: 50%;
+    right: 40px;
+    height: 15px;
+    color: #A1A1A1;
+    overflow: hidden;
+    margin-top: -6px;
+    font: 400 12px/15px Arial
+}
+
+.arrow-ico {
+  padding: 0 6px;
+  background: url(//img.alicdn.com/tps/i1/T1TwTxFbXgXXa.hdbX-19-6.png) no-repeat center;
+}

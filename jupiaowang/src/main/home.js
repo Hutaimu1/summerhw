@@ -1,6 +1,7 @@
 import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
-import {Link} from 'react-router-dom';
+import ShopCart from '../BigComponrnts/shopcart'
+import TrainTicket from '../BigComponrnts/trainTicket'
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -9,7 +10,7 @@ const SubMenu = Menu.SubMenu;
 class homepage extends React.Component {
     state = {
         collapsed: false,
-        mode: 'inline',
+        selectValue:'3'
     };
 
     toggle = () => {
@@ -19,9 +20,27 @@ class homepage extends React.Component {
     };
 
     logoutConfirm = () =>{
-        message.info('登出成功!');
+        message.success('登出成功!');
         this.props.history.push('/');
     };
+
+    handleClick = (e) => {
+        this.setState({
+            selectValue:e.key
+        })
+    };
+
+    getComponents() {
+        switch (this.state.selectValue) {
+            case '3':
+                return <TrainTicket/>;
+            case '6':
+                return <ShopCart/>;
+            default:
+                return <div>{this.state.selectValue}</div>;
+        }
+    }
+
 
     render() {
         let name = this.props.match.params.name;
@@ -32,18 +51,20 @@ class homepage extends React.Component {
                     collapsible
                     collapsed={this.state.collapsed}
                 >
-                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']}>
-                        <Menu.Item key="1">
-                            <Icon type="user"/>
-                            <span className="nav-text">用户中心</span>
-                        </Menu.Item>
-                        <Menu.Item key="2">
-                            <Icon type="video-camera"/>
-                            <span className="nav-text">票品</span>
-                        </Menu.Item>
-                        <SubMenu key="sub1" title={<span><Icon type="shopping-cart"/><span>购物车</span></span>}>
-                            <Menu.Item key="3"><Link to="/shopcart">我的购物车</Link></Menu.Item>
-                            <Menu.Item key="4">确认下单</Menu.Item>
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['3']} defaultOpenKeys={['sub2']} onClick={this.handleClick}>
+                        <SubMenu key="sub1" title={<span><Icon type="user"/><span>用户中心</span></span>}>
+                            <Menu.Item key="1">用户信息</Menu.Item>
+                            <Menu.Item key="2">我的收藏</Menu.Item>
+                        </SubMenu>
+                        <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品</span></span>}>
+                            <Menu.Item key="3">火车票</Menu.Item>
+                            <Menu.Item key="4">高铁票</Menu.Item>
+                            <Menu.Item key="5">飞机票</Menu.Item>
+                        </SubMenu>
+                        <SubMenu key="sub3" title={<span><Icon type="shopping-cart"/><span>购买</span></span>}>
+                            <Menu.Item key="6">我的购物车</Menu.Item>
+                            <Menu.Item key="7">待处理订单</Menu.Item>
+                            <Menu.Item key="8">历史订单</Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>
@@ -68,6 +89,7 @@ class homepage extends React.Component {
                     </Header>
                     <Content style={{margin: '0 16px'}}>
                         <div style={{padding: 24, background: '#fff', minHeight: 780}}>
+                            {this.getComponents()}
                         </div>
                     </Content>
                     <Footer style={{textAlign: 'center'}}>

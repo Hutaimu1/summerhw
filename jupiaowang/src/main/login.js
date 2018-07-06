@@ -10,6 +10,15 @@ class Login extends React.Component {
         }
     }
 
+    componentDidMount() {
+        // To disabled submit button at the beginning.
+        this.props.form.validateFields();
+    }
+
+    hasErrors = (fieldsError) =>{
+        return Object.keys(fieldsError).some(field => fieldsError[field])
+    };
+
     initState = () => {
         return {
             expression: '获取验证码',
@@ -61,30 +70,27 @@ class Login extends React.Component {
         e.preventDefault();
         let userName = this.props.form.getFieldValue('userName');
         let password = this.props.form.getFieldValue('password');
-        let captcha = this.props.form.getFieldValue('captcha');
-        if (this.haveValue(userName) && this.haveValue(password) && this.haveValue(captcha)){
             $.post("/bookstoreApp/login", {userName: userName, password: password}, function (data) {
                 if (JSON.parse(data)[0]) {
                     if (JSON.parse(data)[1]) {
-                        message.info('您的账号已被冻结,请联系管理员!');
+                        message.warning('您的账号已被冻结,请联系管理员!');
                     }
                     else {
                         if (JSON.parse(data)[2]) {
-                            message.info('以管理员身份登陆成功!');
+                            message.success('以管理员身份登陆成功!');
                         }
                         else {
-                            message.info('以用户身份登陆成功!');
+                            message.success('以用户身份登陆成功!');
                             this.props.history.push('/home/' + userName);
                         }
                     }
                 }
                 else {
-                    message.info('用户名密码错误!');
+                    message.error('用户名密码错误!');
+                    this.renderCode();
                 }
             }.bind(this));
-        }
-        this.props.form.validateFields((err, values) => {});
-    };
+        };
 
     checkCaptacha = (rule, value, callback) => {
         let thisInput = value;
@@ -103,11 +109,33 @@ class Login extends React.Component {
         callback()
     };
 
+    setValidateStatus = (index) => {
+        const {isFieldTouched, getFieldError} = this.props.form;
+        if (isFieldTouched(index) && getFieldError(index)){
+            return 'error'
+        }
+        else if(!isFieldTouched(index)){
+            return ''
+        }
+        else{
+            return 'success'
+        }
+    };
+
+    setHelp = (index) => {
+        const {isFieldTouched, getFieldError} = this.props.form;
+        return (isFieldTouched(index) && getFieldError(index)) || ''
+    };
+
+
     render() {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator,getFieldsError} = this.props.form;
         return (
             <Form onSubmit={this.handleSubmit} className="login-form">
-                <Form.Item>
+                <Form.Item
+                    validateStatus={this.setValidateStatus("userName")}
+                    help={this.setHelp("userName")}
+                >
                     {getFieldDecorator('userName', {
                         rules: [{required: true, message: '用户名不能为空!'}, {
                             validator: this.checkUserName
@@ -116,7 +144,10 @@ class Login extends React.Component {
                         <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="用户名"/>
                     )}
                 </Form.Item>
-                <Form.Item>
+                <Form.Item
+                    validateStatus={this.setValidateStatus("password")}
+                    help={this.setHelp("password")}
+                >
                     {getFieldDecorator('password', {
                         rules: [{required: true, message: '密码不能为空!'}],
                     })(
@@ -124,7 +155,10 @@ class Login extends React.Component {
                                placeholder="密码"/>
                     )}
                 </Form.Item>
-                <Form.Item>
+                <Form.Item
+                    validateStatus={this.setValidateStatus("captcha")}
+                    help={this.setHelp("captcha")}
+                >
                     {getFieldDecorator('captcha', {
                         rules: [{required: true, message: '验证码不能为空!'}, {
                             validator: this.checkCaptacha
@@ -138,7 +172,7 @@ class Login extends React.Component {
                         {this.state.expression}</Button>
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Button type="primary" htmlType="submit" className="login-form-button" disabled={this.hasErrors(getFieldsError())}>
                         登录
                     </Button>
                     <a onClick={() => this.props.history.push('/forget')}>忘记密码?</a>

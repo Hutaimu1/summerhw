@@ -1,7 +1,6 @@
 import React from 'react';
-import {Form, Input, Tooltip, Icon, Select, Checkbox, Button, Radio} from 'antd';
+import {Form, Input, Tooltip, Icon, Select, Checkbox, Button, Radio, message} from 'antd';
 import $ from "jquery";
-import {message} from "antd/lib/index";
 
 
 class Registration extends React.Component {
@@ -18,7 +17,18 @@ class Registration extends React.Component {
             validate: '',
             validateInput: '',
             confirmDirty: false,
+            emailAble:false,
+            options: [],
         };
+    };
+
+    componentDidMount() {
+        // To disabled submit button at the beginning.
+        this.props.form.validateFields();
+    }
+
+    hasErrors = (fieldsError) => {
+        return Object.keys(fieldsError).some(field => fieldsError[field])
     };
 
     haveValue = (value) => {
@@ -27,24 +37,26 @@ class Registration extends React.Component {
 
     renderCode = () => {
         let email = this.props.form.getFieldValue('email');
-        if(this.haveValue(email)){
+        if (this.haveValue(email)) {
             $.ajax({
-                type : "post",
-                url : "bookstoreApp/mailValidate",
-                data : {email:email,type:"注册"},
-                async : true,
-                success : function(data){
+                type: "post",
+                url: "bookstoreApp/mailValidate",
+                data: {email: email, type: "注册"},
+                async: true,
+                success: function (data) {
                     this.setState({//设置更新状态
                         expression: "发送成功,点击重新发送",
-                        validate: JSON.parse(data)
+                        validate: JSON.parse(data),
+                        emailAble:false
                     });
                 }.bind(this)
             });
             this.setState({//设置更新状态
                 expression: "邮件发送中...",
+                emailAble:true
             });
         }
-        else{
+        else {
             this.setState({//设置更新状态
                 expression: "请先输入邮箱后重新获取",
             });
@@ -58,24 +70,18 @@ class Registration extends React.Component {
         let email = this.props.form.getFieldValue('email');
         let qq = this.props.form.getFieldValue('qq');
         let phone = this.props.form.getFieldValue('phone');
-        let captcha = this.props.form.getFieldValue('captcha');
-        let agreement = this.props.form.getFieldValue('agreement');
-        if (this.haveValue(userName) && this.haveValue(password) && this.haveValue(email) && this.haveValue(qq) && this.haveValue(phone) && this.haveValue(captcha) && this.haveValue(agreement)) {
-            $.post("/bookstoreApp/registerUser", {
-                userName: userName,
-                password: password,
-                email: email,
-                qq: qq,
-                phone: phone
-            }, function (data) {
-                if (JSON.parse(data)) {
-                    message.info('注册成功,自动以用户身份登录!');
-                    this.props.history.push('/home/' + userName);
-                }
-            }.bind(this));
-        }
-        this.props.form.validateFields((err, values) => {
-        });
+        $.post("/bookstoreApp/registerUser", {
+            userName: userName,
+            password: password,
+            email: email,
+            qq: qq,
+            phone: phone
+        }, function (data) {
+            if (JSON.parse(data)) {
+                message.success('注册成功,自动以用户身份登录!');
+                this.props.history.push('/home/' + userName);
+            }
+        }.bind(this));
     };
 
     checkCaptacha = (rule, value, callback) => {
@@ -99,11 +105,11 @@ class Registration extends React.Component {
         }
         if (this.haveValue(value)) {
             $.ajax({
-                type : "post",
-                url : "bookstoreApp/checkUserName",
-                data : {userName:value},
-                async : false,
-                success : function(data){
+                type: "post",
+                url: "bookstoreApp/checkUserName",
+                data: {userName: value},
+                async: false,
+                success: function (data) {
                     if (JSON.parse(data)) {
                         callback("该用户名已被占用!");
                     }
@@ -121,11 +127,11 @@ class Registration extends React.Component {
         if (this.haveValue(value)) {
             if (this.haveValue(value)) {
                 $.ajax({
-                    type : "post",
-                    url : "bookstoreApp/checkQQ",
-                    data : {qq:value},
-                    async : false,
-                    success : function(data){
+                    type: "post",
+                    url: "bookstoreApp/checkQQ",
+                    data: {qq: value},
+                    async: false,
+                    success: function (data) {
                         if (JSON.parse(data)) {
                             callback("该QQ号已被注册!");
                         }
@@ -140,11 +146,11 @@ class Registration extends React.Component {
         if (this.haveValue(value)) {
             if (this.haveValue(value)) {
                 $.ajax({
-                    type : "post",
-                    url : "bookstoreApp/checkPhoneNumber",
-                    data : {phone:value},
-                    async : false,
-                    success : function(data){
+                    type: "post",
+                    url: "bookstoreApp/checkPhoneNumber",
+                    data: {phone: value},
+                    async: false,
+                    success: function (data) {
                         if (JSON.parse(data)) {
                             callback("该手机号已被注册!");
                         }
@@ -158,16 +164,23 @@ class Registration extends React.Component {
     checkEmail = (rule, value, callback) => {
         if (this.haveValue(value)) {
             $.ajax({
-                type : "post",
-                url : "bookstoreApp/checkEmail",
-                data : {email:value},
-                async : false,
-                success : function(data){
+                type: "post",
+                url: "bookstoreApp/checkEmail",
+                data: {email: value},
+                async: false,
+                success: function (data) {
                     if (JSON.parse(data)) {
                         callback("该邮箱地址已被注册!");
                     }
                 }
             });
+        }
+        callback()
+    };
+
+    checkAgree = (rule, value, callback) => {
+        if (!this.haveValue(value)) {
+            callback("请确保您已经阅读并同意了服务条款!")
         }
         callback()
     };
@@ -218,8 +231,39 @@ class Registration extends React.Component {
         callback();
     };
 
+    handleMailChange = (value) => {
+        let options;
+        if (!value || value.indexOf('@') >= 0) {
+            options = [];
+        } else {
+            options = ['126.com', '163.com', 'qq.com', 'sina.com'].map((domain) => {
+                const email = `${value}@${domain}`;
+                return <Select.Option key={email}>{email}</Select.Option>;
+            });
+        }
+        this.setState({options});
+    };
+
+    setValidateStatus = (index) => {
+        const {isFieldTouched, getFieldError} = this.props.form;
+        if (isFieldTouched(index) && getFieldError(index)){
+            return 'error'
+        }
+        else if(!isFieldTouched(index)){
+            return ''
+        }
+        else{
+            return 'success'
+        }
+    };
+
+    setHelp = (index) => {
+        const {isFieldTouched, getFieldError} = this.props.form;
+        return (isFieldTouched(index) && getFieldError(index)) || ''
+    };
+
     render() {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldsError} = this.props.form;
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
@@ -242,6 +286,7 @@ class Registration extends React.Component {
                 },
             },
         };
+
         const prefixSelector = getFieldDecorator('prefix', {
             initialValue: '86',
         })(
@@ -257,6 +302,8 @@ class Registration extends React.Component {
             <div className="registration-form">
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("userName")}
+                        help={this.setHelp("userName")}
                         {...formItemLayout}
                         label={(
                             <span>
@@ -273,14 +320,15 @@ class Registration extends React.Component {
                                 validator: this.checkUserName
                             }],
                         })(
-                            <Input/>
+                            <Input placeholder="请输入用户名"/>
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("password")}
+                        help={this.setHelp("password")}
                         {...formItemLayout}
                         label="密码"
                         hasFeedback
-                        validateStatus={this.state.validateStatus}
                     >
                         {getFieldDecorator('password', {
                             rules: [{
@@ -289,7 +337,7 @@ class Registration extends React.Component {
                                 validator: this.validateToNextPassword,
                             }],
                         })(
-                            <Input type="password" onChange={this.AnalyzePasswordSecurityLevel}/>
+                            <Input type="password" onChange={this.AnalyzePasswordSecurityLevel} placeholder="请输入密码"/>
                         )}
                     </Form.Item>
                     <Form.Item
@@ -304,6 +352,8 @@ class Registration extends React.Component {
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("confirm")}
+                        help={this.setHelp("confirm")}
                         {...formItemLayout}
                         label="确认密码"
                         hasFeedback
@@ -315,10 +365,12 @@ class Registration extends React.Component {
                                 validator: this.compareToFirstPassword,
                             }],
                         })(
-                            <Input type="password" onBlur={this.handleConfirmBlur}/>
+                            <Input type="password" onBlur={this.handleConfirmBlur} placeholder="请确认密码"/>
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("email")}
+                        help={this.setHelp("email")}
                         {...formItemLayout}
                         label="电子邮箱"
                         hasFeedback
@@ -327,15 +379,24 @@ class Registration extends React.Component {
                             rules: [{
                                 type: 'email', message: '输入的电子邮箱地址不符合规范!',
                             }, {
-                                required: true, message: '请输入电子邮箱地址!',
+                                required: true, message: '请输入您的电子邮箱地址!',
                             }, {
                                 validator: this.checkEmail
                             }],
                         })(
-                            <Input/>
+                            <Select
+                                mode="combobox"
+                                onChange={this.handleMailChange}
+                                filterOption={false}
+                                placeholder="请输入电子邮箱地址"
+                            >
+                                {this.state.options}
+                            </Select>
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("qq")}
+                        help={this.setHelp("qq")}
                         {...formItemLayout}
                         label="QQ"
                         hasFeedback
@@ -347,10 +408,12 @@ class Registration extends React.Component {
                                 validator: this.checkQQ
                             }],
                         })(
-                            <Input/>
+                            <Input placeholder="请输入您的QQ号"/>
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("phone")}
+                        help={this.setHelp("phone")}
                         {...formItemLayout}
                         label="手机号码"
                         hasFeedback
@@ -362,10 +425,12 @@ class Registration extends React.Component {
                                 validator: this.checkPhoneNumber
                             }],
                         })(
-                            <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                            <Input addonBefore={prefixSelector} style={{width: '100%'}} placeholder="请输入您的手机号码"/>
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("captcha")}
+                        help={this.setHelp("captcha")}
                         {...formItemLayout}
                         label="验证码">
                         {getFieldDecorator('captcha', {
@@ -377,19 +442,24 @@ class Registration extends React.Component {
                         )}
                         <Button type="primary"
                                 onClick={this.renderCode}
-                                className="registration-form-button-captcha">
+                                className="registration-form-button-captcha"
+                                disabled={this.state.emailAble}>
                             {this.state.expression}</Button>
                     </Form.Item>
-                    <Form.Item {...tailFormItemLayout}>
+                    <Form.Item
+                        validateStatus={this.setValidateStatus("agreement")}
+                        help={this.setHelp("agreement")}
+                        {...tailFormItemLayout}>
                         {getFieldDecorator('agreement', {
-                            rules: [{required: true, message: '请确保您已经阅读并同意服务条款!'}],
+                            rules: [{validator: this.checkAgree}],
                             valuePropName: 'checked',
                         })(
                             <Checkbox>注册即代表阅读并同意<a href="">服务条款</a></Checkbox>
                         )}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit" className="registration-form-button-left">注册并登陆</Button>
+                        <Button type="primary" htmlType="submit" className="registration-form-button-left"
+                                disabled={this.hasErrors(getFieldsError())}>注册并登陆</Button>
                         <Button type="primary" htmlType="submit" className="registration-form-button-right"
                                 onClick={() => this.props.history.push('/')}>返回主页</Button>
                     </Form.Item>

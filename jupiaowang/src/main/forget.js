@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, Input, Button, Radio} from 'antd';
+import {Form, Input, Button, Radio, Select} from 'antd';
 import $ from "jquery";
 import {message} from "antd/lib/index";
 
@@ -18,7 +18,17 @@ class Registration extends React.Component {
             validate: '',
             validateInput: '',
             confirmDirty: false,
+            emailAble:false
         };
+    };
+
+    componentDidMount() {
+        // To disabled submit button at the beginning.
+        this.props.form.validateFields();
+    }
+
+    hasErrors = (fieldsError) =>{
+        return Object.keys(fieldsError).some(field => fieldsError[field])
     };
 
     haveValue = (value) => {
@@ -36,12 +46,14 @@ class Registration extends React.Component {
                 success : function(data){
                     this.setState({//设置更新状态
                         expression: "发送成功,点击重新发送",
-                        validate: JSON.parse(data)
+                        validate: JSON.parse(data),
+                        emailAble:false
                     });
                 }.bind(this)
             });
             this.setState({//设置更新状态
                 expression: "邮件发送中...",
+                emailAble:true
             });
         }
         else{
@@ -64,7 +76,7 @@ class Registration extends React.Component {
                 password: password,
             }, function (data) {
                 if (JSON.parse(data)) {
-                    message.info('密码重置成功,返回登录界面!');
+                    message.success('密码重置成功,返回登录界面!');
                     this.props.history.push('/');
                 }
             }.bind(this));
@@ -175,8 +187,40 @@ class Registration extends React.Component {
         callback();
     };
 
+    handleMailChange = (value) => {
+        let options;
+        if (!value || value.indexOf('@') >= 0) {
+            options = [];
+        } else {
+            options = ['126.com', '163.com', 'qq.com', 'sina.com'].map((domain) => {
+                const email = `${value}@${domain}`;
+                return <Select.Option key={email}>{email}</Select.Option>;
+            });
+        }
+        this.setState({ options });
+    };
+
+    setValidateStatus = (index) => {
+        const {isFieldTouched, getFieldError} = this.props.form;
+        if (isFieldTouched(index) && getFieldError(index)){
+            return 'error'
+        }
+        else if(!isFieldTouched(index)){
+            return ''
+        }
+        else{
+            return 'success'
+        }
+    };
+
+    setHelp = (index) => {
+        const {isFieldTouched, getFieldError} = this.props.form;
+        return (isFieldTouched(index) && getFieldError(index)) || ''
+    };
+
+
     render() {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator,getFieldsError} = this.props.form;
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
@@ -204,6 +248,8 @@ class Registration extends React.Component {
             <div className="forget-form">
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("userName")}
+                        help={this.setHelp("userName")}
                         {...formItemLayout}
                         label="用户名"
                         hasFeedback
@@ -217,6 +263,8 @@ class Registration extends React.Component {
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("email")}
+                        help={this.setHelp("email")}
                         {...formItemLayout}
                         label="电子邮箱"
                         hasFeedback
@@ -230,10 +278,19 @@ class Registration extends React.Component {
                                 validator: this.checkBindEmail
                             }],
                         })(
-                            <Input placeholder="请输入您注册时绑定的电子邮箱地址"/>
+                            <Select
+                                mode="combobox"
+                                onChange={this.handleMailChange}
+                                filterOption={false}
+                                placeholder="请输入您注册时绑定的电子邮箱地址"
+                            >
+                                {this.state.options}
+                            </Select>
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("captcha")}
+                        help={this.setHelp("captcha")}
                         {...formItemLayout}
                         label="验证码">
                         {getFieldDecorator('captcha', {
@@ -245,14 +302,16 @@ class Registration extends React.Component {
                         )}
                         <Button type="primary"
                                 onClick={this.renderCode}
-                                className="forget-form-button-captcha">
+                                className="forget-form-button-captcha"
+                                disabled={this.state.emailAble}>
                             {this.state.expression}</Button>
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("password")}
+                        help={this.setHelp("password")}
                         {...formItemLayout}
                         label="密码"
                         hasFeedback
-                        validateStatus={this.state.validateStatus}
                     >
                         {getFieldDecorator('password', {
                             rules: [{
@@ -276,6 +335,8 @@ class Registration extends React.Component {
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item
+                        validateStatus={this.setValidateStatus("confirm")}
+                        help={this.setHelp("confirm")}
                         {...formItemLayout}
                         label="确认密码"
                         hasFeedback
@@ -291,7 +352,7 @@ class Registration extends React.Component {
                         )}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit" className="forget-form-button-left">重置密码</Button>
+                        <Button type="primary" htmlType="submit" className="forget-form-button-left" disabled={this.hasErrors(getFieldsError())}>重置密码</Button>
                         <Button type="primary" className="forget-form-button-right"
                                 onClick={() => this.props.history.push('/')}>返回主页</Button>
                     </Form.Item>
