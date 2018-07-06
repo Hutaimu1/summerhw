@@ -7,7 +7,6 @@ import java.util.Objects;
 @Table(name = "shopcart", schema = "jupiao", catalog = "")
 public class ShopCartEntity {
     private int shopcartId;
-    private String src;
     private String userName;
     private String ticketName;
     private int price;
@@ -22,16 +21,6 @@ public class ShopCartEntity {
 
     public void setShopcartId(int shopcartId) {
         this.shopcartId = shopcartId;
-    }
-
-    @Basic
-    @Column(name = "src")
-    public String getSrc() {
-        return src;
-    }
-
-    public void setSrc(String src) {
-        this.src = src;
     }
 
     @Basic
@@ -93,7 +82,6 @@ public class ShopCartEntity {
                 price == that.price &&
                 count == that.count &&
                 isCheck == that.isCheck &&
-                Objects.equals(src, that.src) &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(ticketName, that.ticketName);
     }
@@ -101,6 +89,6 @@ public class ShopCartEntity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(shopcartId, src, userName, ticketName, price, count, isCheck);
+        return Objects.hash(shopcartId, userName, ticketName, price, count, isCheck);
     }
 }

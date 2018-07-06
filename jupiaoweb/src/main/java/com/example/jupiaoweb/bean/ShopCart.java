@@ -2,7 +2,6 @@ package com.example.jupiaoweb.bean;
 
 public class ShopCart {
     private int id;
-    private String src;
     private String name;
     private int price;
     private int count;
@@ -13,12 +12,6 @@ public class ShopCart {
     }
     public void setId(int id) {
         this.id = id;
-    }
-    public String getSrc() {
-        return src;
-    }
-    public void setSrc(String src) {
-        this.src = src;
     }
     public String getName() {
         return name;

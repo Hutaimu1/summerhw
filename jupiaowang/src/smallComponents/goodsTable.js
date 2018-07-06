@@ -1,5 +1,5 @@
 import React , { Component } from "react"
-import {Button,InputNumber} from 'antd'
+import {Button} from 'antd'
 
 export default class GoodsTable extends Component {
     constructor(props) {
@@ -57,13 +57,18 @@ export default class GoodsTable extends Component {
                     <td>
                         <input type = "checkbox" data-goodsid = {goods.id} checked = {goods.checked} onChange = {this.goodsCheckFlagChange} />
                     </td>
-                    <td className = "col-xs-1">
-                        <img src = {require("../static/images/yourName.jpg")} className = "img-responsive" alt = "啊哦..." />
-                    </td>
                     <td>{goods.name}</td>
                     <td>{goods.price}</td>
                     <td style = {{position : "relative" , width : "10%"}}>
-                        <InputNumber min={0} max={1000} defaultValue={goods.count}></InputNumber>
+                        <div style = {{position : "relative" , width : "30%" , left : "35%"}}>
+                            <button style = {{position : "absolute" , width : "80%" , left : "-80%"}} onClick = {this.minusClick}>
+                                <i className = "fa fa-minus"></i>
+                            </button>
+                            <input data-goodsid = {goods.id} style = {{position : "relative" , width : "100%" , textAlign : "center"}} defaultValue = {goods.count} onInput = {this.countInput} />
+                            <button style = {{position : "absolute" , width : "80%" , right : "-80%" , top : "0px"}} onClick = {this.plusClick}>
+                                <i className = "fa fa-plus"></i>
+                            </button>
+                        </div>
                     </td>
                     <td>{parseInt(goods.count , 10) * goods.price}</td>
                     <td>

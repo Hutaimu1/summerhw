@@ -1,20 +1,22 @@
 import React from 'react';
 import GoodsTable from '../smallComponents/goodsTable'
 import {Row, Col, Button} from 'antd'
+import $ from 'jquery'
+
 
 let goodsArray = [
-    {id: 1, src: "../static/images/yourName.jpg", name: "商品1", price: 45, count: 9, checked: false},
-    {id: 2, src: "../static/images/yourName.jpg", name: "商品2", price: 46, count: 1, checked: false},
-    {id: 3, src: "../static/images/yourName.jpg", name: "商品3", price: 35, count: 8, checked: true},
-    {id: 4, src: "../static/images/yourName.jpg", name: "商品4", price: 86, count: 1, checked: false},
-    {id: 5, src: "../static/images/yourName.jpg", name: "商品5", price: 4, count: 3, checked: false},
-    {id: 6, src: "../static/images/yourName.jpg", name: "商品6", price: 53, count: 6, checked: false},
-    {id: 7, src: "../static/images/yourName.jpg", name: "商品7", price: 66, count: 1, checked: false},
-    {id: 8, src: "../static/images/yourName.jpg", name: "商品8", price: 15, count: 5, checked: false},
-    {id: 9, src: "../static/images/yourName.jpg", name: "商品9", price: 6, count: 8, checked: false},
+    {id: 1, name: "商品1", price: 45, count: 9, checked: false},
+    {id: 2, name: "商品2", price: 46, count: 1, checked: false},
+    {id: 3, name: "商品3", price: 35, count: 8, checked: true},
+    {id: 4, name: "商品4", price: 86, count: 1, checked: false},
+    {id: 5, name: "商品5", price: 4, count: 3, checked: false},
+    {id: 6, name: "商品6", price: 53, count: 6, checked: false},
+    {id: 7, name: "商品7", price: 66, count: 1, checked: false},
+    {id: 8, name: "商品8", price: 15, count: 5, checked: false},
+    {id: 9, name: "商品9", price: 6, count: 8, checked: false},
 ];
 
-export default class shopCart extends React.Component {
+export default class ShopCart extends React.Component {
     constructor() {
         super();
         let count = 0;
@@ -69,11 +71,25 @@ export default class shopCart extends React.Component {
     }
 
     removeAll() {
-        this.setState({
-            goodsArray: [],
-            selectedCount: 0,
-            totalPrice: 0,
-            isSelectAll: false
+        let arr = [];
+        this.setState((preState) =>{
+            let len = preState.goodsArray.length;
+            for(let i = 0;i<len;++i){
+                arr.fill(preState.goodsArray[i].id);
+            }
+            $.post("/bookstoreApp/deleteShopCartItem", {cartItemArr:arr}, function (data) {
+                if(JSON.parse(data)){
+                    for(let j = 0; j < len;++j){
+                        preState.goodsArray.splice(j,1);
+                    }
+                }
+            }.bind(this));
+            return{
+                goodsArray: preState.goodsArray,
+                selectedCount:this.updateCount(preState.goodsArray),
+                totalPrice: this.updatePrice(preState.goodsArray),
+                isSelectAll: false
+            }
         })
     }
 
@@ -92,7 +108,13 @@ export default class shopCart extends React.Component {
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()) {
-                    preState.goodsArray.splice(i, 1);
+                    /*preState.goodsArray.splice(i, 1);
+                    break;*/
+                    $.post("/bookstoreApp/deleteShopCartItem", {cartItemId:id}, function (data) {
+                        if(JSON.parse(data)){
+                            preState.goodsArray.splice(i,1);
+                        }
+                    });
                     break;
                 }
             }
@@ -100,7 +122,7 @@ export default class shopCart extends React.Component {
                 goodsArray: preState.goodsArray,
                 selectedCount: this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: shopCart.updateSelectAllFlag(preState.goodsArray)
+                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
             }
         })
     }
@@ -109,25 +131,26 @@ export default class shopCart extends React.Component {
         this.setState((preState) => {
             let i;
             for (i = 0; i < preState.goodsArray.length; ++i) {
-                if (id.toString() === preState.goodsArray[i].id.toString()) {
-                    preState.goodsArray[i].count = count;
-                    console.log("set success");
+                if (id.toString() === preState.goodsArray[i].id.toString()){
+                    $.post("/bookstoreApp/updateCount", {cartItemId:id,count:count}, function (data) {
+                        if(JSON.parse(data)){
+                            preState.goodsArray[i].count = count;
+                        }
+                    });
+                    break;
                 }
-            }
-            if (count === 0) {
-                preState.goodsArray.splice(i - 1, 1);
-                console.log("delete success");
             }
             return {
                 goodsArray: preState.goodsArray,
                 selectedCount: this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: shopCart.updateSelectAllFlag(preState.goodsArray)
+                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
             }
         })
     }
 
     changeGoodsCheckFlag(id) {
+
         this.setState((preState) => {
             preState.goodsArray.forEach(goods => {
                 if (id.toString() === goods.id.toString()) {
@@ -138,7 +161,7 @@ export default class shopCart extends React.Component {
                 goodsArray: preState.goodsArray,
                 selectedCount: this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: shopCart.updateSelectAllFlag(preState.goodsArray)
+                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
             }
         });
     }
@@ -182,24 +205,21 @@ export default class shopCart extends React.Component {
     }
 
     render() {
+        let userName = this.props.name;
+        console.log("111",userName);
+        let result = [];
+        $.post("/bookstoreApp/getShopCartList", {userName: userName}, function (data) {
+            result = JSON.parse(data);
+            this.setState({
+                goodsArray:result,
+                selectedCount:this.updateCount(result),
+                totalPrice:this.updatePrice(result),
+                isSelectAll:ShopCart.updateSelectAllFlag(result)
+            })
+        }.bind(this));
+
         return (
             <div className="form-horizontal">
-                {/*<div className = "form-group">
-                        <div style = {{display : "table" , width : "100%"}}>
-                            <div style = {{display : "table-row" , width : "100%"}}>
-
-                                <Button type="primary" icon="shopping-cart">我的购物车</Button>
-                                <div style = {{display : "table-cell" , textAlign : "right" , width : "70%"}}>
-                                    选中：{this.state.selectedCount} 个 总价：{this.state.totalPrice} 元
-                                </div>
-                                <div style = {{display : "table-cell" , textAlign : "right" , width : "20%"}}>
-                                    <button className = "btn btn-danger btn-sm" style = {{margin : "auto 10px"}} onClick = {this.removeAll}><i className = "fa fa-trash"> 清空购物车</i></button>
-                                    <button className = "btn btn-warning btn-sm" onClick = {this.removeChecked}><i className = "fa fa-times"> 删除选中</i></button>
-                                    <button className= "btn btn-warning btn-sm"><i className="fa fa-times">去结算</i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>*/}
                 <div className="form-group">
                     <Row gutter={16}>
                         <Col className="gutter-row" span={4}>
@@ -233,7 +253,6 @@ export default class shopCart extends React.Component {
                                             <input type="checkbox" checked={this.state.isSelectAll}
                                                    onChange={this.changeSelectAllFlag}/>
                                         </td>
-                                        <td>商品图片</td>
                                         <td>商品名称</td>
                                         <td>单价</td>
                                         <td>数量</td>

@@ -10,4 +10,7 @@ import java.util.List;
 public interface ShopCartRepository extends JpaRepository<ShopCartEntity, String> {
     @Query("select s from ShopCartEntity s where s.userName=:userName")
     List<ShopCartEntity> findByUserName(@Param("userName") String username);
+
+    @Query("select s from ShopCartEntity s where s.shopcartId=:cartItemId")
+    List<ShopCartEntity> findByShopcartId(@Param("cartItemId") int cartItemId);
 }

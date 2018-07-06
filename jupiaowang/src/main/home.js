@@ -35,7 +35,7 @@ class homepage extends React.Component {
             case '3':
                 return <TrainTicket/>;
             case '6':
-                return <ShopCart/>;
+                return <ShopCart name={this.props.match.params.name}/>;
             default:
                 return <div>{this.state.selectValue}</div>;
         }

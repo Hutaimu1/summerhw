@@ -14,4 +14,21 @@ public class ShopCartController {
     public String getShopCartList(@RequestParam("userName") String username) {
         return shopCartService.getShopCartList(username);
     }
+
+    @PostMapping(value = "deleteShopCartItem")
+    @ResponseBody
+    public String deleteCartItem(@RequestParam("cartItemId") int cartItemId) {
+        return shopCartService.deleteCartItem(cartItemId);
+    }
+
+    @ResponseBody
+    public String removeAllFlag(@RequestParam("cartItemArr") int[] cartItemId) {
+        return shopCartService.removeAllFlag(cartItemId);
+    }
+
+    @PostMapping(value = "updateCount")
+    @ResponseBody
+    public String updateCount(@RequestParam("cartItemId") int cartItemId,@RequestParam("count") int count) {
+        return shopCartService.updateCount(cartItemId,count);
+    }
 }

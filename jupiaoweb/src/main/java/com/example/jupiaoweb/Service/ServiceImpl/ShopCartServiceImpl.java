@@ -30,7 +30,6 @@ public class ShopCartServiceImpl implements ShopCartService {
             shop.setName(aResult.getTicketName());
             shop.setCount(aResult.getCount());
             shop.setPrice(aResult.getPrice());
-            shop.setSrc(aResult.getSrc());
             if ((aResult.getIsCheck() & 0xFF) == 1) {
                 shop.setChecked(true);
             } else {
@@ -39,5 +38,56 @@ public class ShopCartServiceImpl implements ShopCartService {
             res.add(shop);
         }
         return gson.toJson(res);
+    }
+
+    @Override
+    public String deleteCartItem(int cartItemId){
+        List<ShopCartEntity> result = shopCartRepository.findByShopcartId(cartItemId);
+        Gson gson = new Gson();
+        if(result.size() == 0){
+            return gson.toJson(false);
+        }
+        else {
+            ShopCartEntity shopCart = result.get(0);
+            shopCartRepository.delete(shopCart);
+            return gson.toJson(true);
+        }
+    }
+
+    @Override
+    public String updateCount(int cartItemId,int count){
+        List<ShopCartEntity> result = shopCartRepository.findByShopcartId(cartItemId);
+        Gson gson = new Gson();
+        if(result.size() == 0){
+            return gson.toJson(false);
+        }
+        else {
+            if(count == 0){
+                shopCartRepository.delete(result.get(0));
+            }
+            else{
+                result.get(0).setCount(count);
+                shopCartRepository.save(result.get(0));
+            }
+            return gson.toJson(true);
+        }
+    }
+
+    @Override
+    public String removeAllFlag(int[] cartItemArr){
+        List<ShopCartEntity> result = new ArrayList<>();
+        for(int temp:cartItemArr){
+            result.add(shopCartRepository.findByShopcartId(cartItemArr[temp]).get(0));
+        }
+        Gson gson = new Gson();
+        if(result.size() == 0){
+            return gson.toJson(false);
+        }
+        else{
+            for(ShopCartEntity s:result){
+                shopCartRepository.delete(s);
+            }
+            return gson.toJson(true);
+        }
     }
 }
