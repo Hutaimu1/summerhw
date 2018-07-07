@@ -75,15 +75,20 @@ export default class ShopCart extends React.Component {
         this.setState((preState) =>{
             let len = preState.goodsArray.length;
             for(let i = 0;i<len;++i){
-                arr.fill(preState.goodsArray[i].id);
+                arr.push(preState.goodsArray[i].id);
             }
-            $.post("/bookstoreApp/deleteShopCartItem", {cartItemArr:arr}, function (data) {
-                if(JSON.parse(data)){
-                    for(let j = 0; j < len;++j){
-                        preState.goodsArray.splice(j,1);
-                    }
+            $.ajax({url:"bookstoreApp/deleteShopCartItem",
+                data:{cartItemId:arr},
+                type:"POST",
+                traditional:true,
+                success:function(){
+                    console.log("success");
                 }
-            }.bind(this));
+            });
+            for(let j = 0; j < preState.goodsArray.length;++j){
+                preState.goodsArray.splice(j,1);
+                j--;
+            }
             return{
                 goodsArray: preState.goodsArray,
                 selectedCount:this.updateCount(preState.goodsArray),
@@ -94,30 +99,52 @@ export default class ShopCart extends React.Component {
     }
 
     removeChecked() {
-        this.setState((preState) => ({
-            goodsArray: preState.goodsArray.filter(goods => {
-                return !goods.checked;
-            }),
-            selectedCount: 0,
-            totalPrice: 0,
-            isSelectAll: false
-        }));
+        let arr = [];
+        this.setState((preState) => {
+            for (let i = 0; i < preState.goodsArray.length; ++i) {
+                if(preState.goodsArray[i].checked){
+                    arr.push(preState.goodsArray[i].id);
+                    preState.goodsArray.splice(i,1);
+                    i--;
+                }
+            }
+            $.ajax({url:"bookstoreApp/deleteShopCartItem",
+                data:{cartItemId:arr},
+                type:"POST",
+                traditional:true,
+                success:function(){
+                    console.log("success");
+                }
+            });
+            return {
+                goodsArray:preState.goodsArray,
+                selectedCount:this.updateCount(preState.goodsArray),
+                totalPrice: this.updatePrice(preState.goodsArray),
+                isSelectAll: false
+            }
+            });
     }
 
     deleteGoods(id) {
+        let arr = [];
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()) {
                     /*preState.goodsArray.splice(i, 1);
                     break;*/
-                    $.post("/bookstoreApp/deleteShopCartItem", {cartItemId:id}, function (data) {
-                        if(JSON.parse(data)){
-                            preState.goodsArray.splice(i,1);
-                        }
-                    });
+                    arr.push(preState.goodsArray[i].id);
+                    preState.goodsArray.splice(i, 1);
                     break;
                 }
             }
+            $.ajax({url:"bookstoreApp/deleteShopCartItem",
+                data:{cartItemId:arr},
+                type:"POST",
+                traditional:true,
+                success:function(){
+                       console.log("success");
+                }
+            });
             return {
                 goodsArray: preState.goodsArray,
                 selectedCount: this.updateCount(preState.goodsArray),
@@ -132,14 +159,17 @@ export default class ShopCart extends React.Component {
             let i;
             for (i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()){
-                    $.post("/bookstoreApp/updateCount", {cartItemId:id,count:count}, function (data) {
-                        if(JSON.parse(data)){
-                            preState.goodsArray[i].count = count;
-                        }
-                    });
+                    if(count === 0){
+                        preState.goodsArray.splice(i,1)
+                    }
+                    else {
+                        preState.goodsArray[i].count = count;
+                    }
                     break;
                 }
             }
+            $.post("/bookstoreApp/updateCount", {cartItemId:id,count:count}, function (data) {
+            });
             return {
                 goodsArray: preState.goodsArray,
                 selectedCount: this.updateCount(preState.goodsArray),
@@ -150,11 +180,20 @@ export default class ShopCart extends React.Component {
     }
 
     changeGoodsCheckFlag(id) {
-
         this.setState((preState) => {
             preState.goodsArray.forEach(goods => {
                 if (id.toString() === goods.id.toString()) {
                     goods.checked = !goods.checked;
+                }
+            });
+            let arr = [];
+            arr.push(id);
+            $.ajax({url:"bookstoreApp/changeChecked",
+                data:{cartItemId:arr},
+                type:"POST",
+                traditional:true,
+                success:function(){
+                    console.log("success");
                 }
             });
             return {
@@ -167,18 +206,29 @@ export default class ShopCart extends React.Component {
     }
 
     changeSelectAllFlag(event) {
+        let arr = [];
         if (event.currentTarget.checked) {
             this.setState((preState) => {
                 let price = 0;
                 let count = 0;
                 preState.goodsArray.forEach(goods => {
+                    if(!goods.checked){
+                        arr.push(goods.id);
+                    }
                     goods.checked = true;
-
                 });
                 preState.goodsArray.forEach(goods => {
                     if (goods.checked) {
                         ++count;
                         price += goods.price * goods.count;
+                    }
+                });
+                $.ajax({url:"bookstoreApp/changeChecked",
+                    data:{cartItemId:arr},
+                    type:"POST",
+                    traditional:true,
+                    success:function(){
+                        console.log("success");
                     }
                 });
                 return {
@@ -193,6 +243,15 @@ export default class ShopCart extends React.Component {
             this.setState((preState) => {
                 preState.goodsArray.forEach(goods => {
                     goods.checked = false;
+                    arr.push(goods.id);
+                });
+                $.ajax({url:"bookstoreApp/changeChecked",
+                    data:{cartItemId:arr},
+                    type:"POST",
+                    traditional:true,
+                    success:function(){
+                        console.log("success");
+                    }
                 });
                 return {
                     goodsArray: preState.goodsArray,
