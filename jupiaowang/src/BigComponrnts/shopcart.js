@@ -1,6 +1,6 @@
 import React from 'react';
 import GoodsTable from '../smallComponents/goodsTable'
-import {Row, Col, Button, message} from 'antd'
+import {Row, Col, Button} from 'antd'
 import $ from 'jquery'
 
 
@@ -29,6 +29,20 @@ export default class ShopCart extends React.Component {
         this.removeAll = this.removeAll.bind(this);
         this.removeChecked = this.removeChecked.bind(this);
         this.setGoodsCount = this.setGoodsCount.bind(this);
+    }
+
+    componentDidMount(){
+        let userName = this.props.name;
+        let result = [];
+        $.post("/bookstoreApp/getShopCartList", {userName: userName}, function (data) {
+            result = JSON.parse(data);
+            this.setState({
+                goodsArray:result,
+                selectedCount:this.updateCount(result),
+                totalPrice:this.updatePrice(result),
+                isSelectAll:ShopCart.updateSelectAllFlag(result)
+            })
+        }.bind(this));
     }
 
     updateCount(goodsArray) {
@@ -62,21 +76,8 @@ export default class ShopCart extends React.Component {
 
     removeAll() {
         let arr = [];
-        this.setState((preState) => {
+        this.setState((preState) =>{
             let len = preState.goodsArray.length;
-<<<<<<< HEAD
-            for (let i = 0; i < len; ++i) {
-                arr.fill(preState.goodsArray[i].id);
-            }
-            $.post("/bookstoreApp/deleteShopCartItem", {cartItemArr: arr}, function (data) {
-                if (JSON.parse(data)) {
-                    for (let j = 0; j < len; ++j) {
-                        preState.goodsArray.splice(j, 1);
-                    }
-                }
-            });
-            return {
-=======
             for(let i = 0;i<len;++i){
                 arr.push(preState.goodsArray[i].id);
             }
@@ -93,9 +94,8 @@ export default class ShopCart extends React.Component {
                 j--;
             }
             return{
->>>>>>> origin/htm-day6
                 goodsArray: preState.goodsArray,
-                selectedCount: this.updateCount(preState.goodsArray),
+                selectedCount:this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
                 isSelectAll: false
             }
@@ -126,23 +126,10 @@ export default class ShopCart extends React.Component {
                 totalPrice: this.updatePrice(preState.goodsArray),
                 isSelectAll: false
             }
-            });
+        });
     }
 
     deleteGoods(id) {
-<<<<<<< HEAD
-            $.post("/bookstoreApp/deleteShopCartItem", {cartItemId: id}, function (data) {
-                if (!JSON.parse(data)) {
-                    message.error("删除票品失败!")
-                }
-            });
-    }
-
-    setGoodsCount(id, count) {
-        $.post("/bookstoreApp/updateCount", {cartItemId: id, count: count}, function (data) {
-            if (!JSON.parse(data)) {
-                message.error("设置票品数量失败!")
-=======
         let arr = [];
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
@@ -159,7 +146,7 @@ export default class ShopCart extends React.Component {
                 type:"POST",
                 traditional:true,
                 success:function(){
-                       console.log("success");
+                    console.log("success");
                 }
             });
             return {
@@ -192,7 +179,6 @@ export default class ShopCart extends React.Component {
                 selectedCount: this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
                 isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
->>>>>>> origin/htm-day6
             }
         })
     }
@@ -227,20 +213,19 @@ export default class ShopCart extends React.Component {
         let arr = [];
         if (event.currentTarget.checked) {
             this.setState((preState) => {
+                let price = 0;
+                let count = 0;
                 preState.goodsArray.forEach(goods => {
                     if(!goods.checked){
                         arr.push(goods.id);
                     }
                     goods.checked = true;
-<<<<<<< HEAD
-=======
                 });
                 preState.goodsArray.forEach(goods => {
                     if (goods.checked) {
                         ++count;
                         price += goods.price * goods.count;
                     }
->>>>>>> origin/htm-day6
                 });
                 $.ajax({url:"bookstoreApp/changeChecked",
                     data:{cartItemId:arr},
@@ -252,8 +237,8 @@ export default class ShopCart extends React.Component {
                 });
                 return {
                     goodsArray: preState.goodsArray,
-                    selectedCount: this.updateCount(preState.goodsArray),
-                    totalPrice: this.updatePrice(preState.goodsArray),
+                    selectedCount: count,
+                    totalPrice: price,
                     isSelectAll: true
                 }
             });
@@ -283,17 +268,6 @@ export default class ShopCart extends React.Component {
     }
 
     render() {
-        let userName = this.props.name;
-        let result = [];
-        $.post("/bookstoreApp/getShopCartList", {userName: userName}, function (data) {
-            result = JSON.parse(data);
-            this.setState({
-                goodsArray: result,
-                selectedCount: this.updateCount(result),
-                totalPrice: this.updatePrice(result),
-                isSelectAll: ShopCart.updateSelectAllFlag(result)
-            })
-        }.bind(this));
         return (
             <div className="form-horizontal">
                 <div className="form-group">
