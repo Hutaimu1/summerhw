@@ -17,18 +17,19 @@ public class ShopCartController {
 
     @PostMapping(value = "deleteShopCartItem")
     @ResponseBody
-    public String deleteCartItem(@RequestParam("cartItemId") int cartItemId) {
+    public String deleteCartItem(@RequestParam("cartItemId") int[] cartItemId) {
         return shopCartService.deleteCartItem(cartItemId);
-    }
-
-    @ResponseBody
-    public String removeAllFlag(@RequestParam("cartItemArr") int[] cartItemId) {
-        return shopCartService.removeAllFlag(cartItemId);
     }
 
     @PostMapping(value = "updateCount")
     @ResponseBody
     public String updateCount(@RequestParam("cartItemId") int cartItemId,@RequestParam("count") int count) {
         return shopCartService.updateCount(cartItemId,count);
+    }
+
+    @PostMapping(value = "changeChecked")
+    @ResponseBody
+    public String changeChecked(@RequestParam("cartItemId") int []cartItemId) {
+        return shopCartService.changeChecked(cartItemId);
     }
 }

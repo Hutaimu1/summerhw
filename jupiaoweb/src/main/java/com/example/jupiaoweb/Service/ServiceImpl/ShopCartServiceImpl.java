@@ -41,15 +41,19 @@ public class ShopCartServiceImpl implements ShopCartService {
     }
 
     @Override
-    public String deleteCartItem(int cartItemId){
-        List<ShopCartEntity> result = shopCartRepository.findByShopcartId(cartItemId);
+    public String deleteCartItem(int[] cartItemId){
+        List<ShopCartEntity> result = new ArrayList<>();
+        for(int i = 0;i<cartItemId.length;++i){
+            result.add(shopCartRepository.findByShopcartId(cartItemId[i]).get(0));
+        }
         Gson gson = new Gson();
         if(result.size() == 0){
             return gson.toJson(false);
         }
         else {
-            ShopCartEntity shopCart = result.get(0);
-            shopCartRepository.delete(shopCart);
+            for(ShopCartEntity s:result){
+                shopCartRepository.delete(s);
+            }
             return gson.toJson(true);
         }
     }
@@ -72,22 +76,31 @@ public class ShopCartServiceImpl implements ShopCartService {
             return gson.toJson(true);
         }
     }
-
     @Override
-    public String removeAllFlag(int[] cartItemArr){
+    public String changeChecked(int[] cartItemId){
         List<ShopCartEntity> result = new ArrayList<>();
-        for(int temp:cartItemArr){
-            result.add(shopCartRepository.findByShopcartId(cartItemArr[temp]).get(0));
+        int temp = cartItemId.length;
+        for(int i = 0;i<temp;++i){
+            result.add(shopCartRepository.findByShopcartId(cartItemId[i]).get(0));
         }
         Gson gson = new Gson();
-        if(result.size() == 0){
+        if(result.size()==0){
             return gson.toJson(false);
+
         }
         else{
-            for(ShopCartEntity s:result){
-                shopCartRepository.delete(s);
+            for(ShopCartEntity aResult:result){
+                if(aResult.getIsCheck() == (byte)1){
+                    aResult.setIsCheck((byte)0);
+                    shopCartRepository.save(aResult);
+                }
+                else{
+                    aResult.setIsCheck((byte)1);
+                    shopCartRepository.save(aResult);
+                }
             }
-            return gson.toJson(true);
+                return gson.toJson(true);
         }
     }
+
 }
