@@ -1,12 +1,19 @@
 package com.example.jupiaoweb.bean;
 
 public class ShopCart {
+    private int key;
     private int id;
     private String name;
     private int price;
     private int count;
     private boolean checked;
 
+    public int getKey() {
+        return key;
+    }
+    public void setKey(int key) {
+        this.key = key;
+    }
     public int getId() {
         return id;
     }

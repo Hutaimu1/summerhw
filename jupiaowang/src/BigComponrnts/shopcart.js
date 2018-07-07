@@ -1,27 +1,20 @@
 import React from 'react';
-import GoodsTable from '../smallComponents/goodsTable'
-import {Row, Col, Button} from 'antd'
+/*import GoodsTable from '../smallComponents/goodsTable'*/
+import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm} from 'antd'
 import $ from 'jquery'
 
 
 let goodsArray = [];
 
+
 export default class ShopCart extends React.Component {
     constructor() {
         super();
-        let count = 0;
-        let price = 0;
-        goodsArray.forEach(goods => {
-            if (goods.checked) {
-                ++count;
-                price += goods.price * goods.count;
-            }
-        });
         this.state = {
             goodsArray: goodsArray,
-            selectedCount: count,
-            totalPrice: price,
-            isSelectAll: false
+            totalPrice: 0,
+            isSelectAll: false,
+            selectCheckedArray:[]
         };
         this.changeGoodsCheckFlag = this.changeGoodsCheckFlag.bind(this);
         this.changeSelectAllFlag = this.changeSelectAllFlag.bind(this);
@@ -34,31 +27,29 @@ export default class ShopCart extends React.Component {
     componentDidMount(){
         let userName = this.props.name;
         let result = [];
-        $.post("/bookstoreApp/getShopCartList", {userName: userName}, function (data) {
-            result = JSON.parse(data);
-            this.setState({
-                goodsArray:result,
-                selectedCount:this.updateCount(result),
-                totalPrice:this.updatePrice(result),
-                isSelectAll:ShopCart.updateSelectAllFlag(result)
-            })
-        }.bind(this));
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/getShopCartList",
+            data: {userName: userName},
+            async: true,
+            success: function (data) {
+                result = JSON.parse(data);
+                this.setState({
+                    goodsArray:result,
+                    totalPrice:this.updatePrice(result),
+                    isSelectAll:ShopCart.updateSelectAllFlag(result),
+                    selectCheckedArray:this.updateSelectedCheckedArray(result)
+                });
+            }.bind(this)
+        });
+        console.log("success",this.state.selectCheckedArray);
     }
 
-    updateCount(goodsArray) {
-        let count = 0;
-        goodsArray.forEach(goods => {
-            if (goods.checked) {
-                ++count;
-            }
-        });
-        return count;
-    }
 
     updatePrice(goodsArray) {
         let price = 0;
-        goodsArray.forEach(goods => {
-            if (goods.checked) {
+        goodsArray.forEach((goods) =>{
+            if(goods.checked){
                 price += goods.price * goods.count;
             }
         });
@@ -72,6 +63,16 @@ export default class ShopCart extends React.Component {
             }
         }
         return true;
+    }
+
+    updateSelectedCheckedArray(goodsArray){
+        let array = [];
+        goodsArray.forEach((goods) => {
+            if(goods.checked){
+                array.push(goods.key);
+            }
+        });
+        return array;
     }
 
     removeAll() {
@@ -95,9 +96,9 @@ export default class ShopCart extends React.Component {
             }
             return{
                 goodsArray: preState.goodsArray,
-                selectedCount:this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: false
+                isSelectAll: false,
+                selectCheckedArray:[]
             }
         })
     }
@@ -106,9 +107,9 @@ export default class ShopCart extends React.Component {
         let arr = [];
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
-                if(preState.goodsArray[i].checked){
+                if(preState.selectCheckedArray.indexOf(preState.goodsArray[i].key) > -1 ) {
                     arr.push(preState.goodsArray[i].id);
-                    preState.goodsArray.splice(i,1);
+                    preState.goodsArray.splice(i, 1);
                     i--;
                 }
             }
@@ -122,9 +123,9 @@ export default class ShopCart extends React.Component {
             });
             return {
                 goodsArray:preState.goodsArray,
-                selectedCount:this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: false
+                isSelectAll: false,
+                selectCheckedArray:[]
             }
         });
     }
@@ -134,8 +135,6 @@ export default class ShopCart extends React.Component {
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()) {
-                    /*preState.goodsArray.splice(i, 1);
-                    break;*/
                     arr.push(preState.goodsArray[i].id);
                     preState.goodsArray.splice(i, 1);
                     break;
@@ -151,12 +150,13 @@ export default class ShopCart extends React.Component {
             });
             return {
                 goodsArray: preState.goodsArray,
-                selectedCount: this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
+                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
+                selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray)
             }
         })
     }
+
 
     setGoodsCount(id, count) {
         this.setState((preState) => {
@@ -164,6 +164,7 @@ export default class ShopCart extends React.Component {
             for (i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()){
                     if(count === 0){
+
                         preState.goodsArray.splice(i,1)
                     }
                     else {
@@ -176,22 +177,25 @@ export default class ShopCart extends React.Component {
             });
             return {
                 goodsArray: preState.goodsArray,
-                selectedCount: this.updateCount(preState.goodsArray),
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
+                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
+                selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray)
             }
         })
     }
 
-    changeGoodsCheckFlag(id) {
+    changeGoodsCheckFlag(record) {
+        console.log("one");
+        console.log("success",this.state.selectCheckedArray);
         this.setState((preState) => {
             preState.goodsArray.forEach(goods => {
-                if (id.toString() === goods.id.toString()) {
+                if (record.id.toString() === goods.id.toString()) {
                     goods.checked = !goods.checked;
                 }
             });
             let arr = [];
-            arr.push(id);
+            arr.push(record.id);
+            console.log("success",preState.goodsArray);
             $.ajax({url:"bookstoreApp/changeChecked",
                 data:{cartItemId:arr},
                 type:"POST",
@@ -202,72 +206,80 @@ export default class ShopCart extends React.Component {
             });
             return {
                 goodsArray: preState.goodsArray,
-                selectedCount: this.updateCount(preState.goodsArray),
-                totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray)
+                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
+                selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray),
+                totalPrice:this.updatePrice(preState.goodsArray),
             }
         });
+        console.log("success",this.state.selectCheckedArray);
     }
 
-    changeSelectAllFlag(event) {
+    changeSelectAllFlag(selected, selectedRows, changeRows) {
+        console.log("all");
+        console.log("success",this.state.selectCheckedArray);
         let arr = [];
-        if (event.currentTarget.checked) {
-            this.setState((preState) => {
-                let price = 0;
-                let count = 0;
-                preState.goodsArray.forEach(goods => {
-                    if(!goods.checked){
-                        arr.push(goods.id);
-                    }
-                    goods.checked = true;
-                });
-                preState.goodsArray.forEach(goods => {
-                    if (goods.checked) {
-                        ++count;
-                        price += goods.price * goods.count;
-                    }
-                });
-                $.ajax({url:"bookstoreApp/changeChecked",
-                    data:{cartItemId:arr},
-                    type:"POST",
-                    traditional:true,
-                    success:function(){
-                        console.log("success");
-                    }
-                });
-                return {
-                    goodsArray: preState.goodsArray,
-                    selectedCount: count,
-                    totalPrice: price,
-                    isSelectAll: true
+        let price = 0;
+        this.setState((preState) => {
+            preState.goodsArray.forEach(goods => {
+                goods.checked = selected;
+                if(selected){price += goods.price * goods.count;}
+            });
+            changeRows.forEach(goods => {
+               arr.push(goods.id)
+            });
+            $.ajax({
+                url: "bookstoreApp/changeChecked",
+                data: {cartItemId: arr},
+                type: "POST",
+                traditional: true,
+                success: function () {
+                    console.log("success");
                 }
             });
-        }
-        else {
-            this.setState((preState) => {
-                preState.goodsArray.forEach(goods => {
-                    goods.checked = false;
-                    arr.push(goods.id);
-                });
-                $.ajax({url:"bookstoreApp/changeChecked",
-                    data:{cartItemId:arr},
-                    type:"POST",
-                    traditional:true,
-                    success:function(){
-                        console.log("success");
-                    }
-                });
-                return {
-                    goodsArray: preState.goodsArray,
-                    selectedCount: 0,
-                    totalPrice: 0,
-                    isSelectAll: false
-                }
-            });
-        }
+            return {
+                goodsArray: preState.goodsArray,
+                totalPrice: price,
+                isSelectAll: selected,
+                selectCheckedArray: this.updateSelectedCheckedArray(preState.goodsArray)
+            }
+        });
+        console.log("success",this.state.selectCheckedArray);
     }
 
     render() {
+        const columns = [
+            { title: '票品名称',
+                dataIndex: 'name',
+                key:'name'
+            }, {
+                title: '价格',
+                dataIndex: 'price',
+                key:'price'
+            }, {
+                title: '数量',
+                dataIndex: 'count',
+                render: (text,record) =>{
+                    return <InputNumber min={0} max={10000} defaultValue={record.count} onChange={(value) => this.setGoodsCount(record.id,value)}>&nbsp;</InputNumber>
+                }
+            }, {
+                title: '总价',
+                dataIndex: '',
+                render: (text,record) =>{ return<a style={{color:"black"}}>{record.price * record.count} </a>}
+            }, {
+                title: '操作',
+                dataIndex: 'operation',
+                render: (text,record) => {
+                    return (<Popconfirm title="确定要删除吗？" onConfirm={() => this.deleteGoods(record.id)}>
+                        <Icon type="delete"/>
+                    </Popconfirm>)}}
+        ];
+
+        const rowSelection = {
+            selectedRowKeys:this.state.selectCheckedArray,
+            onSelect:this.changeGoodsCheckFlag,
+            onSelectAll:this.changeSelectAllFlag,
+        };
+
         return (
             <div className="form-horizontal">
                 <div className="form-group">
@@ -276,7 +288,7 @@ export default class ShopCart extends React.Component {
                             <Button type="primary" icon="shopping-cart">我的购物车</Button>
                         </Col>
                         <Col className="gutter-row" span={4}>
-                            <Button type="default">已选中：{this.state.selectedCount} 种票品</Button>
+                            <Button type="default">已选中：{this.state.selectCheckedArray.length} 种票品</Button>
                         </Col>
                         <Col className="gutter-row" span={4}>
                             <Button type="default">总价钱：{this.state.totalPrice}</Button>
@@ -293,25 +305,8 @@ export default class ShopCart extends React.Component {
                     </Row>
                 </div>
                 <br/>
-                <div className="form-group">
-                    <GoodsTable setGoodsCount={this.setGoodsCount} changeGoodsCheckFlag={this.changeGoodsCheckFlag}
-                                deleteGoods={this.deleteGoods} goodsList={this.state.goodsArray}
-                                thead={
-                                    <tr>
-                                        <td>
-                                            <span>全选</span>
-                                            <input type="checkbox" checked={this.state.isSelectAll}
-                                                   onChange={this.changeSelectAllFlag}/>
-                                        </td>
-                                        <td>商品名称</td>
-                                        <td>单价</td>
-                                        <td>数量</td>
-                                        <td>总价</td>
-                                        <td>操作</td>
-                                    </tr>
-                                }
-                    />
-                </div>
+                <Table dataSource={this.state.goodsArray} columns={columns} rowSelection={rowSelection}>
+                </Table>
             </div>
         );
     }
