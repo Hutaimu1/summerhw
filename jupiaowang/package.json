@@ -1,6 +1,7 @@
 {
   "name": "jupiaowang",
   "version": "0.1.0",
+  "homepage":".",
   "private": true,
   "dependencies": {
     "ajv": "^6.0.0",
