@@ -3,9 +3,7 @@ import React from 'react';
 import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm} from 'antd'
 import $ from 'jquery'
 
-
 let goodsArray = [];
-
 
 export default class ShopCart extends React.Component {
     constructor() {
@@ -69,7 +67,7 @@ export default class ShopCart extends React.Component {
         let array = [];
         goodsArray.forEach((goods) => {
             if(goods.checked){
-                array.push(goods.key);
+                array.push(goods.id);
             }
         });
         return array;
@@ -107,7 +105,7 @@ export default class ShopCart extends React.Component {
         let arr = [];
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
-                if(preState.selectCheckedArray.indexOf(preState.goodsArray[i].key) > -1 ) {
+                if(preState.selectCheckedArray.indexOf(preState.goodsArray[i].id) > -1 ) {
                     arr.push(preState.goodsArray[i].id);
                     preState.goodsArray.splice(i, 1);
                     i--;
@@ -164,7 +162,6 @@ export default class ShopCart extends React.Component {
             for (i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()){
                     if(count === 0){
-
                         preState.goodsArray.splice(i,1)
                     }
                     else {
@@ -185,7 +182,6 @@ export default class ShopCart extends React.Component {
     }
 
     changeGoodsCheckFlag(record) {
-        console.log("one");
         console.log("success",this.state.selectCheckedArray);
         this.setState((preState) => {
             preState.goodsArray.forEach(goods => {
@@ -211,7 +207,6 @@ export default class ShopCart extends React.Component {
                 totalPrice:this.updatePrice(preState.goodsArray),
             }
         });
-        console.log("success",this.state.selectCheckedArray);
     }
 
     changeSelectAllFlag(selected, selectedRows, changeRows) {
@@ -225,7 +220,7 @@ export default class ShopCart extends React.Component {
                 if(selected){price += goods.price * goods.count;}
             });
             changeRows.forEach(goods => {
-               arr.push(goods.id)
+                arr.push(goods.id)
             });
             $.ajax({
                 url: "bookstoreApp/changeChecked",
@@ -253,17 +248,27 @@ export default class ShopCart extends React.Component {
                 key:'name'
             }, {
                 title: '价格',
-                dataIndex: 'price',
-                key:'price'
+                dataIndex:'price',
+                key:'price',
+                sorter: (a, b) => a.price - b.price,
+                render: (text,record) =>{ return<a style={{color:"black"}}>¥{record.price} </a>
+                }
             }, {
                 title: '数量',
-                dataIndex: 'count',
+                key:'count',
+                sorter: (a, b) => a.count - b.count,
                 render: (text,record) =>{
-                    return <InputNumber min={0} max={10000} defaultValue={record.count} onChange={(value) => this.setGoodsCount(record.id,value)}>&nbsp;</InputNumber>
+                    return <InputNumber
+                        min={0}
+                        max={10000}
+                        defaultValue={record.count}
+                        onChange={(value) => this.setGoodsCount(record.id,value)}>&nbsp;</InputNumber>
                 }
             }, {
                 title: '总价',
                 dataIndex: '',
+                key:'totalPrice',
+                sorter: (a, b) => a.price*a.count - b.price*b.count,
                 render: (text,record) =>{ return<a style={{color:"black"}}>{record.price * record.count} </a>}
             }, {
                 title: '操作',
@@ -280,34 +285,40 @@ export default class ShopCart extends React.Component {
             onSelectAll:this.changeSelectAllFlag,
         };
 
+        const header =
+            <Row>
+                <Col span={6}>{this.props.name}的购物车</Col>
+                <Col span={6}>
+                    <Popconfirm title="确定要删除选中的票品吗？" onConfirm={() => this.removeChecked()}>
+                        <Button>删除选中</Button>
+                    </Popconfirm>
+                </Col>
+                <Col span={6}>
+                    <Popconfirm title="你确定清空购物车吗？" onConfirm={() => this.removeAll()}>
+                        <Button>清空购物车</Button>
+                    </Popconfirm>
+                </Col>
+                <Col>
+                    <Button>查看历史记录</Button>
+                </Col>
+            </Row>;
+
+        const footer = <Row>
+            <Col span={16}>合计：¥{this.state.totalPrice}</Col>
+            <Col span={8}><Button>去结算({this.state.selectCheckedArray.length})</Button></Col>
+        </Row>
+
         return (
-            <div className="form-horizontal">
-                <div className="form-group">
-                    <Row gutter={16}>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="primary" icon="shopping-cart">我的购物车</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="default">已选中：{this.state.selectCheckedArray.length} 种票品</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="default">总价钱：{this.state.totalPrice}</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="danger" onClick={this.removeAll}>清空购物车</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="primary" onClick={this.removeChecked}>删除选中</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="danger">去结算</Button>
-                        </Col>
-                    </Row>
-                </div>
-                <br/>
-                <Table dataSource={this.state.goodsArray} columns={columns} rowSelection={rowSelection}>
-                </Table>
-            </div>
+            <Table
+                rowKey={"id"}
+                dataSource={this.state.goodsArray}
+                columns={columns}
+                rowSelection={rowSelection}
+                bordered
+                title={() => header}
+                footer={() => footer}
+            >
+            </Table>
         );
     }
 }

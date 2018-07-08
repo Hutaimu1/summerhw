@@ -1,6 +1,6 @@
 import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
-import ShopCart from '../BigComponrnts/shopcart'
+import ShopCart from '../BigComponrnts/shopCart'
 import TrainTicket from '../BigComponrnts/trainTicket'
 
 const {Header, Content, Footer, Sider} = Layout;
