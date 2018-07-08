@@ -269,7 +269,7 @@ export default class ShopCart extends React.Component {
                 dataIndex: '',
                 key:'totalPrice',
                 sorter: (a, b) => a.price*a.count - b.price*b.count,
-                render: (text,record) =>{ return<a style={{color:"black"}}>{record.price * record.count} </a>}
+                render: (text,record) =>{ return<a style={{color:"black"}}>¥{record.price * record.count} </a>}
             }, {
                 title: '操作',
                 dataIndex: 'operation',
@@ -287,26 +287,26 @@ export default class ShopCart extends React.Component {
 
         const header =
             <Row>
-                <Col span={6}>{this.props.name}的购物车</Col>
+                <Col span={6}><span className={"table-font"}>{this.props.name}的购物车</span></Col>
                 <Col span={6}>
-                    <Popconfirm title="确定要删除选中的票品吗？" onConfirm={() => this.removeChecked()}>
-                        <Button>删除选中</Button>
+                    <Popconfirm title="您确定要删除选中的票品吗?" onConfirm={() => this.removeChecked()}>
+                        <Button type="primary" style={{fontWeight: "bold"}}>删除选中</Button>
                     </Popconfirm>
                 </Col>
                 <Col span={6}>
-                    <Popconfirm title="你确定清空购物车吗？" onConfirm={() => this.removeAll()}>
-                        <Button>清空购物车</Button>
+                    <Popconfirm title="您确定要清空购物车吗?" onConfirm={() => this.removeAll()}>
+                        <Button type="primary" style={{fontWeight: "bold"}}>清空购物车</Button>
                     </Popconfirm>
                 </Col>
                 <Col>
-                    <Button>查看历史记录</Button>
+                    <Button type="primary" style={{fontWeight: "bold"}}>查看历史记录</Button>
                 </Col>
             </Row>;
 
         const footer = <Row>
-            <Col span={16}>合计：¥{this.state.totalPrice}</Col>
-            <Col span={8}><Button>去结算({this.state.selectCheckedArray.length})</Button></Col>
-        </Row>
+            <Col span={16}><span className={"table-font"}>合计：¥{this.state.totalPrice}</span></Col>
+            <Col span={8}><Button type="primary" style={{fontWeight: "bold"}}>去结算({this.state.selectCheckedArray.length})</Button></Col>
+        </Row>;
 
         return (
             <Table

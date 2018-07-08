@@ -159,7 +159,7 @@ class trainTicket extends React.Component {
         return (
             // eslint-disable-next-line
             <div style={{fontWeight: "bold"}}>
-                <Form layout="inline" onSubmit={this.handleSubmit}>
+                <Form layout="inline">
                     <Form.Item
                         label="出发站"
                     >
@@ -194,7 +194,8 @@ class trainTicket extends React.Component {
                     <Form.Item>
                         <Button
                             type="primary"
-                            htmlType="submit"
+                            onClick={this.handleSubmit}
+                            style={{fontWeight: "bold"}}
                         >
                             查询列车
                         </Button>
@@ -212,7 +213,7 @@ class trainTicket extends React.Component {
                           onVisibleChange={this.handleStartTimeVisibleChange}
                           visible={this.state.startTimeVisible}
                 >
-                    <Button style={{fontWeight: "bold"}}>
+                    <Button type="primary" style={{fontWeight: "bold"}}>
                         出发时段 <Icon type="down"/>
                     </Button>
                 </Dropdown>
@@ -220,7 +221,7 @@ class trainTicket extends React.Component {
                           onVisibleChange={this.handleArriveTimeVisibleChange}
                           visible={this.state.arriveTimeVisible}
                 >
-                    <Button style={{fontWeight: "bold",marginLeft:"10px"}}>
+                    <Button type="primary" style={{fontWeight: "bold",marginLeft:"10px"}}>
                         出发时段 <Icon type="down"/>
                     </Button>
                 </Dropdown>
