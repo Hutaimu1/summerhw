@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserEntity, String> {
-    @Query("select count(u) from UserEntity u")
+    @Query("select max(u.userId) from UserEntity u")
     int getRowNumber();
 
     @Query("select u from UserEntity u where u.userName=:userName")

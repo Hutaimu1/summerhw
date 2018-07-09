@@ -43,8 +43,8 @@ public class ShopCartServiceImpl implements ShopCartService {
     @Override
     public String deleteCartItem(int[] cartItemId){
         List<ShopCartEntity> result = new ArrayList<>();
-        for(int i = 0;i<cartItemId.length;++i){
-            result.add(shopCartRepository.findByShopcartId(cartItemId[i]).get(0));
+        for (int aCartItemId : cartItemId) {
+            result.add(shopCartRepository.findByShopcartId(aCartItemId).get(0));
         }
         Gson gson = new Gson();
         if(result.size() == 0){
