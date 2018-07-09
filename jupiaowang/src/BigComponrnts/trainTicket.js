@@ -357,7 +357,7 @@ class trainTicket extends React.Component {
                         {getFieldDecorator('date', {
                             initialValue: moment()
                         })(
-                            <DatePicker disabledDate={this.disabledDate}/>
+                            <DatePicker disabledDate={this.disabledDate} allowClear={false}/>
                         )}
                         <span className="calendar-text">{this.getWeek(this.props.form.getFieldValue('date'))}</span>
                     </Form.Item>
