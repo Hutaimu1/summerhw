@@ -1,6 +1,5 @@
 import React from 'react'
-import {Table,Button,Icon,Row,Col} from 'antd'
-import ShopCart from "./shopCart";
+import {Table,Button} from 'antd'
 import $ from "jquery";
 
 let orderNotPaid =[];

@@ -2,6 +2,7 @@ import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
 import ShopCart from '../BigComponrnts/shopCart'
 import TrainTicket from '../BigComponrnts/trainTicket'
+import OrderToBeResolved from '../BigComponrnts/orderToBeResolved'
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -36,6 +37,8 @@ class homepage extends React.Component {
                 return <TrainTicket/>;
             case '6':
                 return <ShopCart name={this.props.match.params.name}/>;
+            case '7':
+                return <OrderToBeResolved name={this.props.match.params.name}/>;
             default:
                 return <div>{this.state.selectValue}</div>;
         }
