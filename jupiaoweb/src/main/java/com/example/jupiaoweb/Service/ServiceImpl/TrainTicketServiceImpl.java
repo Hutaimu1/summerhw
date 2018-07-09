@@ -2,14 +2,12 @@ package com.example.jupiaoweb.Service.ServiceImpl;
 
 import com.example.jupiaoweb.Model.TrainticketEntity;
 import com.example.jupiaoweb.Service.TrainTicketService;
-import com.example.jupiaoweb.bean.ShopCart;
 import com.example.jupiaoweb.bean.TrainTicket;
 import com.example.jupiaoweb.dao.TrainTicketRepository;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

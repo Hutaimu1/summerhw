@@ -1,9 +1,10 @@
 import React from 'react';
-/*import GoodsTable from '../smallComponents/goodsTable'*/
-import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm} from 'antd'
+import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message} from 'antd'
 import $ from 'jquery'
+import moment from 'moment'
 
 let goodsArray = [];
+;
 
 export default class ShopCart extends React.Component {
     constructor() {
@@ -20,6 +21,7 @@ export default class ShopCart extends React.Component {
         this.removeAll = this.removeAll.bind(this);
         this.removeChecked = this.removeChecked.bind(this);
         this.setGoodsCount = this.setGoodsCount.bind(this);
+        this.orderToBeSolved = this.orderToBeSolved.bind(this);
     }
 
     componentDidMount(){
@@ -40,6 +42,7 @@ export default class ShopCart extends React.Component {
                 });
             }.bind(this)
         });
+        console.log("success",this.state.selectCheckedArray);
     }
 
 
@@ -154,7 +157,6 @@ export default class ShopCart extends React.Component {
         })
     }
 
-
     setGoodsCount(id, count) {
         this.setState((preState) => {
             let i;
@@ -189,6 +191,7 @@ export default class ShopCart extends React.Component {
             });
             let arr = [];
             arr.push(record.id);
+            console.log("success",preState.goodsArray);
             $.ajax({url:"bookstoreApp/changeChecked",
                 data:{cartItemId:arr},
                 type:"POST",
@@ -197,6 +200,7 @@ export default class ShopCart extends React.Component {
                     console.log("success");
                 }
             });
+            console.log("success",this.updateSelectedCheckedArray(preState.goodsArray));
             return {
                 goodsArray: preState.goodsArray,
                 isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
@@ -207,6 +211,8 @@ export default class ShopCart extends React.Component {
     }
 
     changeSelectAllFlag(selected, selectedRows, changeRows) {
+        console.log("all");
+        console.log("success",this.state.selectCheckedArray);
         let arr = [];
         let price = 0;
         this.setState((preState) => {
@@ -233,6 +239,22 @@ export default class ShopCart extends React.Component {
                 selectCheckedArray: this.updateSelectedCheckedArray(preState.goodsArray)
             }
         });
+        console.log("success",this.state.selectCheckedArray);
+    }
+
+    orderToBeSolved(){
+        this.setState((preState) => {
+            $.ajax({
+                url: "bookstoreApp/addOrderList",
+                data: {userName:this.props.name,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+                type: "POST",
+                traditional: true,
+                success: function (data) {
+                    message.success("生成订单成功，订单号为："+JSON.parse(data)+",请前往待处理订单中查看。")
+                }
+            });
+            return this.removeChecked();
+        })
     }
 
     render() {
@@ -299,7 +321,13 @@ export default class ShopCart extends React.Component {
 
         const footer = <Row>
             <Col span={16}><span className={"table-font"}>合计：¥{this.state.totalPrice}</span></Col>
-            <Col span={8}><Button type="primary" style={{fontWeight: "bold"}}>去结算({this.state.selectCheckedArray.length})</Button></Col>
+            <Col span={8}>
+                <Popconfirm title="您确定要生成选中票品的订单吗？" onConfirm={() => this.orderToBeSolved()}>
+                <Button type="primary" style={{fontWeight: "bold"}} disabled={this.state.selectCheckedArray.length===0}>
+                    去结算({this.state.selectCheckedArray.length})
+                </Button>
+                </Popconfirm>
+            </Col>
         </Row>;
 
         return (
