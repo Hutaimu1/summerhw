@@ -85,6 +85,12 @@
   font-family: 'Hiragino Sans GB', Georgia, serif;
 }
 
+.table-font {
+  font-weight: bold;
+  font-size: 20px;
+  font-family: 'Hiragino Sans GB', Georgia, serif;
+}
+
 .ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked{
   color: #fff;
   background-color: #1890ff;

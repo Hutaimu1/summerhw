@@ -15,6 +15,12 @@ public class ShopCartController {
         return shopCartService.getShopCartList(username);
     }
 
+    @PostMapping(value = "addToShopCart")
+    @ResponseBody
+    public String addToShopCart(@RequestParam("shopCartId") int id,@RequestParam("userName") String username,@RequestParam("ticketName") String ticketname,@RequestParam("price") int price) {
+        return shopCartService.addToShopCart(id,username,ticketname,price);
+    }
+
     @PostMapping(value = "deleteShopCartItem")
     @ResponseBody
     public String deleteCartItem(@RequestParam("cartItemId") int[] cartItemId) {

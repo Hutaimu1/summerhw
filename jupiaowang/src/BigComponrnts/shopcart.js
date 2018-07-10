@@ -1,11 +1,10 @@
 import React from 'react';
-/*import GoodsTable from '../smallComponents/goodsTable'*/
-import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm} from 'antd'
+import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message} from 'antd'
 import $ from 'jquery'
-
+import moment from 'moment'
 
 let goodsArray = [
-    {key:0,id: 1, name: "商品1", price: 45, count: 9, checked: false},
+    {/* {key:0,id: 1, name: "商品1", price: 45, count: 9, checked: false},
     {key:1,id: 2, name: "商品2", price: 46, count: 1, checked: false},
     {key:2,id: 3, name: "商品3", price: 35, count: 8, checked: true},
     {key:3,id: 4, name: "商品4", price: 86, count: 1, checked: false},
@@ -13,26 +12,18 @@ let goodsArray = [
     {key:5,id: 6, name: "商品6", price: 53, count: 6, checked: false},
     {key:6,id: 7, name: "商品7", price: 66, count: 1, checked: false},
     {key:7,id: 8, name: "商品8", price: 15, count: 5, checked: false},
-    {key:8,id: 9, name: "商品9", price: 6, count: 8, checked: false},
+    {key:8,id: 9, name: "商品9", price: 6, count: 8, checked: false},*/}
 ];
-
+;
 
 export default class ShopCart extends React.Component {
     constructor() {
         super();
-        let price = 0;
-        let selectCheckedArray = [];
-        goodsArray.forEach(goods => {
-            if (goods.checked) {
-                price += goods.price * goods.count;
-                selectCheckedArray.push(goods.key);
-            }
-        });
         this.state = {
             goodsArray: goodsArray,
-            totalPrice: price,
+            totalPrice: 0,
             isSelectAll: false,
-            selectCheckedArray:selectCheckedArray
+            selectCheckedArray:[]
         };
         this.changeGoodsCheckFlag = this.changeGoodsCheckFlag.bind(this);
         this.changeSelectAllFlag = this.changeSelectAllFlag.bind(this);
@@ -40,21 +31,28 @@ export default class ShopCart extends React.Component {
         this.removeAll = this.removeAll.bind(this);
         this.removeChecked = this.removeChecked.bind(this);
         this.setGoodsCount = this.setGoodsCount.bind(this);
+        this.orderToBeSolved = this.orderToBeSolved.bind(this);
     }
 
     componentDidMount(){
         let userName = this.props.name;
         let result = [];
-        $.post("/bookstoreApp/getShopCartList", {userName: userName}, function (data) {
-            result = JSON.parse(data);
-            this.setState({
-                goodsArray:result,
-                totalPrice:this.updatePrice(result),
-                isSelectAll:ShopCart.updateSelectAllFlag(result),
-                selectCheckedArray:this.updateSelectedCheckedArray(result)
-            })
-        }.bind(this));
-        console.log(this.state.selectCheckedArray);
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/getShopCartList",
+            data: {userName: userName},
+            async: true,
+            success: function (data) {
+                result = JSON.parse(data);
+                this.setState({
+                    goodsArray:result,
+                    totalPrice:this.updatePrice(result),
+                    isSelectAll:ShopCart.updateSelectAllFlag(result),
+                    selectCheckedArray:this.updateSelectedCheckedArray(result)
+                });
+            }.bind(this)
+        });
+        console.log("success",this.state.selectCheckedArray);
     }
 
 
@@ -64,7 +62,7 @@ export default class ShopCart extends React.Component {
             if(goods.checked){
                 price += goods.price * goods.count;
             }
-            });
+        });
         return price;
     }
 
@@ -81,10 +79,9 @@ export default class ShopCart extends React.Component {
         let array = [];
         goodsArray.forEach((goods) => {
             if(goods.checked){
-                array.push(goods.key);
+                array.push(goods.id);
             }
         });
-        console.log(array);
         return array;
     }
 
@@ -120,7 +117,7 @@ export default class ShopCart extends React.Component {
         let arr = [];
         this.setState((preState) => {
             for (let i = 0; i < preState.goodsArray.length; ++i) {
-                if(preState.selectCheckedArray.indexOf(preState.goodsArray[i].key) > -1 ) {
+                if(preState.selectCheckedArray.indexOf(preState.goodsArray[i].id) > -1 ) {
                     arr.push(preState.goodsArray[i].id);
                     preState.goodsArray.splice(i, 1);
                     i--;
@@ -140,7 +137,7 @@ export default class ShopCart extends React.Component {
                 isSelectAll: false,
                 selectCheckedArray:[]
             }
-            });
+        });
     }
 
     deleteGoods(id) {
@@ -153,13 +150,12 @@ export default class ShopCart extends React.Component {
                     break;
                 }
             }
-            console.log("qqq",preState.goodsArray);
             $.ajax({url:"bookstoreApp/deleteShopCartItem",
                 data:{cartItemId:arr},
                 type:"POST",
                 traditional:true,
                 success:function(){
-                       console.log("success");
+                    console.log("success");
                 }
             });
             return {
@@ -171,14 +167,12 @@ export default class ShopCart extends React.Component {
         })
     }
 
-
     setGoodsCount(id, count) {
         this.setState((preState) => {
             let i;
             for (i = 0; i < preState.goodsArray.length; ++i) {
                 if (id.toString() === preState.goodsArray[i].id.toString()){
                     if(count === 0){
-
                         preState.goodsArray.splice(i,1)
                     }
                     else {
@@ -198,16 +192,16 @@ export default class ShopCart extends React.Component {
         })
     }
 
-    changeGoodsCheckFlag(id) {
+    changeGoodsCheckFlag(record) {
         this.setState((preState) => {
             preState.goodsArray.forEach(goods => {
-                if (id.toString() === goods.id.toString()) {
+                if (record.id.toString() === goods.id.toString()) {
                     goods.checked = !goods.checked;
                 }
             });
-            console.log("555",preState.goodsArray);
             let arr = [];
-            arr.push(id);
+            arr.push(record.id);
+            console.log("success",preState.goodsArray);
             $.ajax({url:"bookstoreApp/changeChecked",
                 data:{cartItemId:arr},
                 type:"POST",
@@ -216,6 +210,7 @@ export default class ShopCart extends React.Component {
                     console.log("success");
                 }
             });
+            console.log("success",this.updateSelectedCheckedArray(preState.goodsArray));
             return {
                 goodsArray: preState.goodsArray,
                 isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
@@ -225,73 +220,52 @@ export default class ShopCart extends React.Component {
         });
     }
 
-    changeSelectAllFlag(event) {
+    changeSelectAllFlag(selected, selectedRows, changeRows) {
+        console.log("all");
+        console.log("success",this.state.selectCheckedArray);
         let arr = [];
-        if (event.currentTarget.checked) {
-            this.setState((preState) => {
-                let price = 0;
-                preState.goodsArray.forEach(goods => {
-                    if(!goods.checked){
-                        arr.push(goods.id);
-                    }
-                    goods.checked = true;
-                });
-                preState.goodsArray.forEach(goods => {
-                    if (goods.checked) {
-                        price += goods.price * goods.count;
-                    }
-                });
-                $.ajax({url:"bookstoreApp/changeChecked",
-                    data:{cartItemId:arr},
-                    type:"POST",
-                    traditional:true,
-                    success:function(){
-                        console.log("success");
-                    }
-                });
-                return {
-                    goodsArray: preState.goodsArray,
-                    totalPrice: price,
-                    isSelectAll: true,
-                    selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray)
+        let price = 0;
+        this.setState((preState) => {
+            preState.goodsArray.forEach(goods => {
+                goods.checked = selected;
+                if(selected){price += goods.price * goods.count;}
+            });
+            changeRows.forEach(goods => {
+                arr.push(goods.id)
+            });
+            $.ajax({
+                url: "bookstoreApp/changeChecked",
+                data: {cartItemId: arr},
+                type: "POST",
+                traditional: true,
+                success: function () {
+                    console.log("success");
                 }
             });
-        }
-        else {
-            this.setState((preState) => {
-                preState.goodsArray.forEach(goods => {
-                    goods.checked = false;
-                    arr.push(goods.id);
-                });
-                $.ajax({url:"bookstoreApp/changeChecked",
-                    data:{cartItemId:arr},
-                    type:"POST",
-                    traditional:true,
-                    success:function(){
-                        console.log("success");
-                    }
-                });
-                return {
-                    goodsArray: preState.goodsArray,
-                    totalPrice: 0,
-                    isSelectAll: false,
-                    selectCheckedArray:[]
-
-                }
-            });
-        }
+            return {
+                goodsArray: preState.goodsArray,
+                totalPrice: price,
+                isSelectAll: selected,
+                selectCheckedArray: this.updateSelectedCheckedArray(preState.goodsArray)
+            }
+        });
+        console.log("success",this.state.selectCheckedArray);
     }
 
-    onSelectChange = (selectCheckedArray) => {
-        for(let i = 0;i<this.state.goodsArray.length;++i){
-            if((!this.state.goodsArray[i].checked) && (selectCheckedArray.indexOf(this.state.goodsArray[i].key) > -1)){
-                this.changeGoodsCheckFlag(this.state.goodsArray[i].id);
-            }
-            else if ((this.state.goodsArray[i].checked) && (selectCheckedArray.indexOf(this.state.goodsArray[i].key) < 0)){
-                this.changeGoodsCheckFlag(this.state.goodsArray[i].id);
-            }
-        }
-    };
+    orderToBeSolved(){
+        this.setState((preState) => {
+            $.ajax({
+                url: "bookstoreApp/addOrderList",
+                data: {userName:this.props.name,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+                type: "POST",
+                traditional: true,
+                success: function (data) {
+                    message.success("生成订单成功，订单号为："+JSON.parse(data)+",请前往待处理订单中查看。")
+                }
+            });
+            return this.removeChecked();
+        })
+    }
 
     render() {
         const columns = [
@@ -300,62 +274,90 @@ export default class ShopCart extends React.Component {
                 key:'name'
             }, {
                 title: '价格',
-                dataIndex: 'price',
-                key:'price'
+                dataIndex:'price',
+                key:'price',
+                sorter: (a, b) => a.price - b.price,
+                render: (text,record) =>{ return<a style={{color:"black"}}>¥{record.price} </a>
+                }
             }, {
-            title: '数量',
-                dataIndex: 'count',
+                title: '数量',
+                key:'count',
+                sorter: (a, b) => a.count - b.count,
                 render: (text,record) =>{
-                    return <InputNumber min={0} max={10000} defaultValue={record.count} onChange={(value) => this.setGoodsCount(record.id,value)}></InputNumber>
-                    }
-                }, {
-            title: '总价',
+                    return <InputNumber
+                        min={0}
+                        max={10000}
+                        defaultValue={record.count}
+                        onChange={(value) => this.setGoodsCount(record.id,value)}>&nbsp;</InputNumber>
+                }
+            }, {
+                title: '总价',
                 dataIndex: '',
-                render: (text,record) =>{ return<a style={{color:"black"}}>{record.price * record.count} </a>}
-                }, {
-            title: '操作',
+                key:'totalPrice',
+                sorter: (a, b) => a.price*a.count - b.price*b.count,
+                render: (text,record) =>{ return<a style={{color:"black"}}>¥{record.price * record.count} </a>}
+            }, {
+                title: '操作',
                 dataIndex: 'operation',
                 render: (text,record) => {
-                return (<Popconfirm title="确定要删除吗？" onConfirm={() => this.deleteGoods(record.id)}>
-                    <Icon type="delete"/>
-                </Popconfirm>)}}
+                    return (<Popconfirm title="确定要删除吗？" onConfirm={() => this.deleteGoods(record.id)}>
+                        <Icon type="delete"/>
+                    </Popconfirm>)}}
         ];
 
         const rowSelection = {
             selectedRowKeys:this.state.selectCheckedArray,
-            onChange: this.onSelectChange,
-
+            onSelect:this.changeGoodsCheckFlag,
+            onSelectAll:this.changeSelectAllFlag,
         };
 
-        return (
+        const header =
+            <Row>
+                <Col span={6}><span className={"table-font"}>{this.props.name}的购物车</span></Col>
+                <Col span={6}>
+                    <Popconfirm title="您确定要删除选中的票品吗?" onConfirm={() => this.removeChecked()}>
+                        <Button type="primary" style={{fontWeight: "bold"}}>删除选中</Button>
+                    </Popconfirm>
+                </Col>
+                <Col span={6}>
+                    <Popconfirm title="您确定要清空购物车吗?" onConfirm={() => this.removeAll()}>
+                        <Button type="primary" style={{fontWeight: "bold"}}>清空购物车</Button>
+                    </Popconfirm>
+                </Col>
+                <Col>
+                    <Button type="primary" style={{fontWeight: "bold"}}>查看历史记录</Button>
+                </Col>
+            </Row>;
 
-            <div className="form-horizontal">
-                <div className="form-group">
-                    <Row gutter={16}>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="primary" icon="shopping-cart">我的购物车</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="default">已选中：{this.state.selectCheckedArray.length} 种票品</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="default">总价钱：{this.state.totalPrice}</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="danger" onClick={this.removeAll}>清空购物车</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="primary" onClick={this.removeChecked}>删除选中</Button>
-                        </Col>
-                        <Col className="gutter-row" span={4}>
-                            <Button type="danger">去结算</Button>
-                        </Col>
-                    </Row>
-                </div>
-                <br/>
-                <Table dataSource={this.state.goodsArray} columns={columns} rowSelection={rowSelection}>
-                </Table>
-            </div>
+        const footer = <Row>
+            <Col span={16}><span className={"table-font"}>合计：¥{this.state.totalPrice}</span></Col>
+            <Col span={8}>
+                <Popconfirm title="您确定要生成选中票品的订单吗？" onConfirm={() => this.orderToBeSolved()}>
+                <Button type="primary" style={{fontWeight: "bold"}} disabled={this.state.selectCheckedArray.length===0}>
+                    去结算({this.state.selectCheckedArray.length})
+                </Button>
+                </Popconfirm>
+            </Col>
+        </Row>;
+
+        return (
+            <Table
+                rowKey={"id"}
+                dataSource={this.state.goodsArray}
+                columns={columns}
+                rowSelection={rowSelection}
+                bordered
+                title={() => header}
+                footer={() => footer}
+                pagination={{
+                    defaultPageSize:8,
+                    pageSizeOptions:['8','16','24'],
+                    showSizeChanger: true,
+                    showQuickJumper: false,
+                    position:'top'
+                }}
+            >
+            </Table>
         );
     }
 }
