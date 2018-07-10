@@ -26,6 +26,7 @@ public class ShopCartServiceImpl implements ShopCartService {
         List<ShopCart> res = new ArrayList<>();
         for (ShopCartEntity aResult : result) {
             ShopCart shop = new ShopCart();
+            shop.setKey(aResult.getShopcartId());
             shop.setId(aResult.getShopcartId());
             shop.setName(aResult.getTicketName());
             shop.setCount(aResult.getCount());
