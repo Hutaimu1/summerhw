@@ -1,80 +1,26 @@
 import React from 'react';
-import {
-    Form,
-    Input,
-    Button,
-    DatePicker,
-    Divider,
-    Checkbox,
-    Dropdown,
-    Icon,
-    Menu,
-    Tag,
-    Table,
-    Popconfirm,
-    message
-} from 'antd';
+import {Form, Input, Button, DatePicker, Divider, Checkbox, Dropdown, Icon, Menu, Tag} from 'antd';
 import moment from 'moment';
-import $ from "jquery";
 
 
 class trainTicket extends React.Component {
     state = {
         plainCheckedList: [],
-        startTimeCheckedList: [false, false, false, false],
-        arriveTimeCheckedList: [false, false, false, false],
-        starting: "上海",
-        destination: "北京",
-        date: moment(),
-        dataSource:[{id:1,model:'G101',start:'北京',time:357,arrive:'上海',price:1748},
-            {id:2,model:'G101',start:'北京',time:235,arrive:'上海',price:1000}],
-        dataSource_copy:[],
-        startTimeVisible: false,
-        arriveTimeVisible: false
+        timeCheckedList:[false,true,false,false],
+        starting:"上海",
+        destination:"北京",
+        date:moment(),
+        timeVisible: false,
     };
-
-    componentDidMount() {
-        $.ajax({
-            type: "post",
-            url: "/bookstoreApp/searchTrain",
-            data: {
-                startPlace: this.state.starting,
-                arrviePlace: this.state.destination,
-                startTime: this.state.date.format('YYYY-MM-DD')
-            },
-            async: true,
-            success: function (data) {
-                this.setState({
-                    dataSource: JSON.parse(data),
-                    dataSource_copy:JSON.parse(data)
-                })
-            }.bind(this)
-        });
-    }
 
     handleSubmit = (e) => {
         let starting = this.props.form.getFieldValue('starting');
         let destination = this.props.form.getFieldValue('destination');
         let date = this.props.form.getFieldValue('date');
-        $.ajax({
-            type: "post",
-            url: "/bookstoreApp/searchTrain",
-            data: {startPlace: starting, arrviePlace: destination, startTime: date.format('YYYY-MM-DD')},
-            async: true,
-            success: function (data) {
-                this.setState({
-                    dataSource: JSON.parse(data),
-                    dataSource_copy:JSON.parse(data)
-                })
-            }.bind(this)
-        });
         this.setState({
-            plainCheckedList: [],
-            startTimeCheckedList: [false, false, false, false],
-            arriveTimeCheckedList: [false, false, false, false],
-            starting: starting,
-            destination: destination,
-            date: date
+            starting:starting,
+            destination:destination,
+            date:date
         });
     };
 
@@ -125,229 +71,49 @@ class trainTicket extends React.Component {
         this.props.form.setFieldsValue({'starting': destination});
     };
 
-    testModel = (model,plainCheckedList) => {
-        if (plainCheckedList.length === 0) {
-            return true
-        }
-        let type;
-        switch (model[0]) {
-            case 'C':case 'G':
-                type = "高铁G/C";
-                break;
-            case 'D':
-                type = "动车D";
-                break;
-            case 'T':
-                type = "特快T";
-                break;
-            case 'K':
-                type = "快速K";
-                break;
-            case 'Z':
-                type = "直达Z";
-                break;
-            default:
-                type = "其他";
-                break;
-        }
-        return plainCheckedList.indexOf(type) > -1;
-    };
-
-    testStartTime = (startTime,startTimeCheckedList) => {
-        let date = moment(startTime,"HH:mm");
-        if (startTimeCheckedList.indexOf(true) === -1) {
-            return true
-        }
-        return startTimeCheckedList[Math.floor(date._d.getHours() / 6)];
-    };
-
-    testArriveTime = (arriveTime,arriveTimeVisible) => {
-        let date = moment(arriveTime,"HH:mm");
-        if (arriveTimeVisible.indexOf(true) === -1) {
-            return true
-        }
-        return arriveTimeVisible[Math.floor(date._d.getHours() / 6)];
-    };
-
     onPlainChange = (plainCheckedList) => {
-        let date=[];
-        this.state.dataSource_copy.forEach((ticket) => {
-            if(this.testModel(ticket.model,plainCheckedList) && this.testStartTime(ticket.start,this.state.startTimeCheckedList) && this.testArriveTime(ticket.arrive,this.state.arriveTimeCheckedList)){
-                date.push(ticket);
-            }
-        });
         this.setState({
             plainCheckedList,
-            dataSource:date
         });
     };
 
-    onStartTimeChange = (e) => {
-        let date=[];
+    onTimeChange = (e) => {
         let index = e.target.index;
-        let startTimeCheckedList = this.state.startTimeCheckedList;
-        startTimeCheckedList[index] = !startTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
-            if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,startTimeCheckedList) && this.testArriveTime(ticket.arrive,this.state.arriveTimeCheckedList)){
-                date.push(ticket);
-            }
-        });
+        let timeCheckedList = this.state.timeCheckedList;
+        timeCheckedList[index] = !timeCheckedList[index];
         this.setState({
-            startTimeCheckedList: startTimeCheckedList,
-            dataSource:date
+            timeCheckedList:timeCheckedList
         });
     };
 
-    onArriveTimeChange = (e) => {
-        let date=[];
-        let index = e.target.index;
-        let arriveTimeCheckedList = this.state.arriveTimeCheckedList;
-        arriveTimeCheckedList[index] = !arriveTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
-            if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,this.state.startTimeCheckedList) && this.testArriveTime(ticket.arrive,arriveTimeCheckedList)){
-                date.push(ticket);
-            }
-        });
+    handleTimeVisibleChange = (flag) => {
+        this.setState({ timeVisible: flag });
+    };
+
+    handleClose = (index) =>{
+        let timeCheckedList = this.state.timeCheckedList;
+        timeCheckedList[index] = !timeCheckedList[index];
         this.setState({
-            arriveTimeCheckedList: arriveTimeCheckedList,
-            dataSource:date
-        });
-    };
-
-    handleStartTimeVisibleChange = (flag) => {
-        this.setState({startTimeVisible: flag});
-    };
-
-    handleArriveTimeVisibleChange = (flag) => {
-        this.setState({arriveTimeVisible: flag});
-    };
-
-    handleStartClose = (index) => {
-        let date=[];
-        let startTimeCheckedList = this.state.startTimeCheckedList;
-        startTimeCheckedList[index] = !startTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
-            if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,startTimeCheckedList) && this.testArriveTime(ticket.arrive,this.state.arriveTimeCheckedList)){
-                date.push(ticket);
-            }
-        });
-        this.setState({
-            startTimeCheckedList: startTimeCheckedList,
-            dataSource:date
+            timeCheckedList:timeCheckedList
         })
-    };
-
-    handleArriveClose = (index) => {
-        let date=[];
-        let arriveTimeCheckedList = this.state.arriveTimeCheckedList;
-        arriveTimeCheckedList[index] = !arriveTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
-            if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,this.state.startTimeCheckedList) && this.testArriveTime(ticket.arrive,arriveTimeCheckedList)){
-                date.push(ticket);
-            }
-        });
-        this.setState({
-            arriveTimeCheckedList: arriveTimeCheckedList,
-            dataSource:date
-        })
-    };
-
-    isDisplay = () => {
-        if (this.state.startTimeCheckedList.indexOf(true) > -1 || this.state.arriveTimeCheckedList.indexOf(true) > -1) {
-            return "";
-        }
-        return "none";
-    };
-
-    BuyTicket = (id) => {
-        let userName = this.props.name;
-        let price = 0;
-        let ticketName = "";
-        this.state.dataSource.forEach((ticket) =>{
-           if(ticket.id === id){
-               price = ticket.price;
-               ticketName += ticket.model + this.state.starting + "To" + this.state.destination;
-           }
-        });
-        $.ajax({
-            url: "bookstoreApp/addToShopCart",
-            data: {shopCartId: id,userName:userName,ticketName:ticketName,price:price},
-            type: "POST",
-            traditional: true,
-            success: function () {
-                message.success("加入购物车成功!")
-            }
-        });
-    };
-
-    showTotal = (total) => {
-        return `共搜索到${total}件火车票`;
     };
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const plainOptions = ['高铁G/C', '动车D', '特快T', '快速K', '直达Z', '其他'];
-        const timeOptions = ['凌晨（0:00 - 6:00）', '上午（6:00 - 12:00）', '下午（12:00 - 18:00）', '晚上（18:00 - 24:00）'];
-        const columns = [{
-            title: '车次/车型',
-            dataIndex: 'model'
-        }, {
-            title: '出发',
-            dataIndex: 'start'
-        }, {
-            title: '耗时',
-            dataIndex: 'time',
-            render: (text, record) => {
-                return <a style={{color: "black"}}>{Math.floor(record.time / 60)}时{record.time % 60}分 </a>
-            }
-        }, {
-            title: '到达',
-            dataIndex: 'arrive'
-        }, {
-            title: '参考价',
-            dataIndex: 'price',
-            render: (text, record) => {
-                return <a style={{color: "black"}}>¥{record.price} </a>
-            }
-        }, {
-            title: '操作',
-            dataIndex: '',
-            render: (text, record) => {
-                return <div>
-                    <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.BuyTicket(record.id)}>
-                        <a href="" style={{marginLeft: '5px'}}><Icon href="#" type="shopping-cart"/></a>
-                    </Popconfirm>
-                </div>
-            }
-        }];
-        const startMenu = (
+        const plainOptions = ['高铁G/C', '动车D', '特快T','快速K', '直达Z', '其他'];
+        const timeOptions = ['凌晨（0:00 - 6:00）', '上午（6:00 - 12:00）','下午（12:00 - 18:00）','晚上（18:00 - 24:00）'];
+        const menu = (
             <Menu>
-                <Menu.Item><Checkbox index={0} checked={this.state.startTimeCheckedList[0]}
-                                     onChange={this.onStartTimeChange}>{timeOptions[0]}</Checkbox></Menu.Item>
-                <Menu.Item><Checkbox index={1} checked={this.state.startTimeCheckedList[1]}
-                                     onChange={this.onStartTimeChange}>{timeOptions[1]}</Checkbox></Menu.Item>
-                <Menu.Item><Checkbox index={2} checked={this.state.startTimeCheckedList[2]}
-                                     onChange={this.onStartTimeChange}>{timeOptions[2]}</Checkbox></Menu.Item>
-                <Menu.Item><Checkbox index={3} checked={this.state.startTimeCheckedList[3]}
-                                     onChange={this.onStartTimeChange}>{timeOptions[3]}</Checkbox></Menu.Item>
-            </Menu>
-        );
-        const arriveMenu = (
-            <Menu>
-                <Menu.Item><Checkbox index={0} checked={this.state.arriveTimeCheckedList[0]}
-                                     onChange={this.onArriveTimeChange}>{timeOptions[0]}</Checkbox></Menu.Item>
-                <Menu.Item><Checkbox index={1} checked={this.state.arriveTimeCheckedList[1]}
-                                     onChange={this.onArriveTimeChange}>{timeOptions[1]}</Checkbox></Menu.Item>
-                <Menu.Item><Checkbox index={2} checked={this.state.arriveTimeCheckedList[2]}
-                                     onChange={this.onArriveTimeChange}>{timeOptions[2]}</Checkbox></Menu.Item>
-                <Menu.Item><Checkbox index={3} checked={this.state.arriveTimeCheckedList[3]}
-                                     onChange={this.onArriveTimeChange}>{timeOptions[3]}</Checkbox></Menu.Item>
+                <Menu.Item><Checkbox index={0} checked={this.state.timeCheckedList[0]} onChange={this.onTimeChange}>{timeOptions[0]}</Checkbox></Menu.Item>
+                <Menu.Item><Checkbox index={1} checked={this.state.timeCheckedList[1]} onChange={this.onTimeChange}>{timeOptions[1]}</Checkbox></Menu.Item>
+                <Menu.Item><Checkbox index={2} checked={this.state.timeCheckedList[2]} onChange={this.onTimeChange}>{timeOptions[2]}</Checkbox></Menu.Item>
+                <Menu.Item><Checkbox index={3} checked={this.state.timeCheckedList[3]} onChange={this.onTimeChange}>{timeOptions[3]}</Checkbox></Menu.Item>
             </Menu>
         );
         return (
             // eslint-disable-next-line
-            <div style={{fontWeight: "bold"}}>
-                <Form layout="inline">
+            <div style={{fontWeight:"bold"}}>
+                <Form layout="inline" onSubmit={this.handleSubmit}>
                     <Form.Item
                         label="出发站"
                     >
@@ -375,82 +141,45 @@ class trainTicket extends React.Component {
                         {getFieldDecorator('date', {
                             initialValue: moment()
                         })(
-                            <DatePicker disabledDate={this.disabledDate} allowClear={false}/>
+                            <DatePicker disabledDate={this.disabledDate}/>
                         )}
                         <span className="calendar-text">{this.getWeek(this.props.form.getFieldValue('date'))}</span>
                     </Form.Item>
                     <Form.Item>
                         <Button
                             type="primary"
-                            onClick={this.handleSubmit}
-                            style={{fontWeight: "bold"}}
+                            htmlType="submit"
                         >
                             查询列车
                         </Button>
                     </Form.Item>
                 </Form>
-                <Divider orientation="left" style={{fontWeight: "bold"}}>选择</Divider>
-                <h3 style={{fontWeight: "bold", marginBottom: "20px"}}>
+                <Divider orientation="left" style={{fontWeight:"bold"}}>选择</Divider>
+                <h3 style={{fontWeight:"bold",marginBottom:"20px"}}>
                     <span> {this.state.starting} <em className="arrow-ico">&nbsp;</em> {this.state.destination}</span>
                     <span>（{this.state.date._d.getMonth() + 1}月{this.state.date._d.getDate()}日 {this.getWeek(this.state.date)})</span>
                 </h3>
-                <Checkbox.Group options={plainOptions} value={this.state.plainCheckedList}
-                                onChange={this.onPlainChange}/>
-                <Divider orientation="left" style={{fontWeight: "bold"}}>筛选</Divider>
-                <Dropdown overlay={startMenu}
-                          onVisibleChange={this.handleStartTimeVisibleChange}
-                          visible={this.state.startTimeVisible}
+                <Checkbox.Group options={plainOptions} value={this.state.plainCheckedList} onChange={this.onPlainChange} />
+                <Divider orientation="left" style={{fontWeight:"bold"}}>筛选</Divider>
+                <Dropdown overlay={menu}
+                          onVisibleChange={this.handleTimeVisibleChange}
+                          visible={this.state.timeVisible}
                 >
-
-                    <Button type="primary" style={{fontWeight: "bold"}}>
-                        出发时段 <Icon type="down"/>
+                    <Button style={{fontWeight:"bold"}}>
+                        出发时段 <Icon type="down" />
                     </Button>
                 </Dropdown>
-                <Dropdown overlay={arriveMenu}
-                          onVisibleChange={this.handleArriveTimeVisibleChange}
-                          visible={this.state.arriveTimeVisible}
-                >
-                    <Button type="primary" style={{fontWeight: "bold", marginLeft: "10px"}}>
-                        到达时段 <Icon type="down"/>
-                    </Button>
-                </Dropdown>
-                <Divider orientation="left" style={{fontWeight: "bold", display: this.isDisplay()}}>已选</Divider>
-                <div>{this.state.startTimeCheckedList.map((tag, index) => {
-                    if (tag === true) {
-                        return (
-                            <Tag key={index} closable afterClose={() => this.handleStartClose(index)} color="#108ee9">
-                                出发于{timeOptions[index]}
-                            </Tag>);
+                <Divider orientation="left" style={{fontWeight:"bold"}}>已选</Divider>
+                <div>{this.state.timeCheckedList.map((tag, index) => {
+                    if (tag === true){
+                        return (<Tag key ={index} closable afterClose={() => this.handleClose(index)} color="#108ee9">
+                            出发于{timeOptions[index]}
+                        </Tag>);
                     }
                     else {
                         return null
                     }
-                })}
-                    {this.state.arriveTimeCheckedList.map((tag, index) => {
-                        if (tag === true) {
-                            return (
-                                <Tag key={index} closable afterClose={() => this.handleArriveClose(index)}
-                                     color="#108ee9">
-                                    到达于{timeOptions[index]}
-                                </Tag>);
-                        }
-                        else {
-                            return null
-                        }
-                    })}
-                </div>
-                <Table rowKey={"id"}
-                       style={{marginTop: "20px"}}
-                       dataSource={this.state.dataSource}
-                       columns={columns}
-                       pagination={{
-                           defaultPageSize:8,
-                           pageSizeOptions:['8','16','24'],
-                           showSizeChanger: true,
-                           showQuickJumper: true,
-                           showTotal: this.showTotal,
-                           total: this.state.dataSource.length
-                       }}/>
+                })}</div>
             </div>
         );
     }

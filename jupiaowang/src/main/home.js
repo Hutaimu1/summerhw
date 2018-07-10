@@ -1,8 +1,8 @@
-import {Layout, Menu, Icon, Popconfirm, message,} from 'antd';
+import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
-import ShopCart from '../BigComponrnts/shopCart'
+import ShopCart from '../BigComponrnts/shopcart'
 import TrainTicket from '../BigComponrnts/trainTicket'
-import  OrderToBeResolved from '../BigComponrnts/orderToBeResolved'
+
 const {Header, Content, Footer, Sider} = Layout;
 
 const SubMenu = Menu.SubMenu;
@@ -33,11 +33,9 @@ class homepage extends React.Component {
     getComponents() {
         switch (this.state.selectValue) {
             case '3':
-                return <TrainTicket name={this.props.match.params.name}/>;
+                return <TrainTicket/>;
             case '6':
                 return <ShopCart name={this.props.match.params.name}/>;
-            case '7':
-                return <OrderToBeResolved name={this.props.match.params.name}/>;
             default:
                 return <div>{this.state.selectValue}</div>;
         }
