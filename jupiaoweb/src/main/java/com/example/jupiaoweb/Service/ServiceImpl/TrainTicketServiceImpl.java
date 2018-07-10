@@ -36,6 +36,7 @@ public class TrainTicketServiceImpl implements TrainTicketService {
                 t.setStart(sdf2.format(aResult.getStartTime()));
                 t.setTime(aResult.getSpendTime());
                 t.setArrive(sdf2.format(aResult.getArriveTime()));
+                t.setLeft(aResult.getLeftTicket());
                 t.setPrice(aResult.getPrice());
                 res.add(t);
             }

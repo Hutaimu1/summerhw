@@ -6,6 +6,7 @@ public class TrainTicket {
     private String start;
     private int time;
     private String arrive;
+    private int left;
     private int price;
 
     public int getId() {
@@ -43,5 +44,11 @@ public class TrainTicket {
     }
     public void setPrice(int price) {
         this.price = price;
+    }
+    public int getLeft() {
+        return left;
+    }
+    public void setLeft(int left) {
+        this.left = left;
     }
 }

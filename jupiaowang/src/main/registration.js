@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, Input, Tooltip, Icon, Select, Checkbox, Button, Radio, message} from 'antd';
+import {Form, Input, Tooltip, Icon, Select, Checkbox, Button, Radio, message, notification} from 'antd';
 import $ from "jquery";
 
 
@@ -262,6 +262,16 @@ class Registration extends React.Component {
         return (isFieldTouched(index) && getFieldError(index)) || ''
     };
 
+    openNotification = () => {
+        const args = {
+            message: '聚票网网页应用服务条款',
+            description: "没错,老子还没写,咬我啊!",
+            duration: 0,
+        };
+        notification.open(args);
+    };
+
+
     render() {
         const {getFieldDecorator, getFieldsError} = this.props.form;
         const formItemLayout = {
@@ -454,7 +464,7 @@ class Registration extends React.Component {
                             rules: [{validator: this.checkAgree}],
                             valuePropName: 'checked',
                         })(
-                            <Checkbox>注册即代表阅读并同意<a href="">服务条款</a></Checkbox>
+                            <Checkbox>注册即代表阅读并同意<a onClick={this.openNotification}>服务条款</a></Checkbox>
                         )}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
