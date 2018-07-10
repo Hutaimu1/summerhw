@@ -3,7 +3,17 @@ import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message} from 'antd'
 import $ from 'jquery'
 import moment from 'moment'
 
-let goodsArray = [];
+let goodsArray = [
+    {/* {key:0,id: 1, name: "商品1", price: 45, count: 9, checked: false},
+    {key:1,id: 2, name: "商品2", price: 46, count: 1, checked: false},
+    {key:2,id: 3, name: "商品3", price: 35, count: 8, checked: true},
+    {key:3,id: 4, name: "商品4", price: 86, count: 1, checked: false},
+    {key:4,id: 5, name: "商品5", price: 4, count: 3, checked: false},
+    {key:5,id: 6, name: "商品6", price: 53, count: 6, checked: false},
+    {key:6,id: 7, name: "商品7", price: 66, count: 1, checked: false},
+    {key:7,id: 8, name: "商品8", price: 15, count: 5, checked: false},
+    {key:8,id: 9, name: "商品9", price: 6, count: 8, checked: false},*/}
+];
 ;
 
 export default class ShopCart extends React.Component {
@@ -339,6 +349,13 @@ export default class ShopCart extends React.Component {
                 bordered
                 title={() => header}
                 footer={() => footer}
+                pagination={{
+                    defaultPageSize:8,
+                    pageSizeOptions:['8','16','24'],
+                    showSizeChanger: true,
+                    showQuickJumper: false,
+                    position:'top'
+                }}
             >
             </Table>
         );

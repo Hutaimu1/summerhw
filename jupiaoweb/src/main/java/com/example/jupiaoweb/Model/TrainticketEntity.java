@@ -14,7 +14,6 @@ public class TrainticketEntity {
     private Timestamp startTime;
     private int spendTime;
     private Timestamp arriveTime;
-    private int leftTicket;
     private int price;
 
     @Id
@@ -88,16 +87,6 @@ public class TrainticketEntity {
     }
 
     @Basic
-    @Column(name = "left_ticket")
-    public int getLeftTicket() {
-        return leftTicket;
-    }
-
-    public void setLeftTicket(int leftTicket) {
-        this.leftTicket = leftTicket;
-    }
-
-    @Basic
     @Column(name = "price")
     public int getPrice() {
         return price;
@@ -114,7 +103,6 @@ public class TrainticketEntity {
         TrainticketEntity that = (TrainticketEntity) o;
         return ticketId == that.ticketId &&
                 spendTime == that.spendTime &&
-                leftTicket == that.leftTicket &&
                 price == that.price &&
                 Objects.equals(startPlace, that.startPlace) &&
                 Objects.equals(arrviePlace, that.arrviePlace) &&
@@ -126,6 +114,6 @@ public class TrainticketEntity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(ticketId, startPlace, arrviePlace, model, startTime, spendTime, arriveTime, leftTicket, price);
+        return Objects.hash(ticketId, startPlace, arrviePlace, model, startTime, spendTime, arriveTime, price);
     }
 }

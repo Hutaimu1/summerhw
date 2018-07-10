@@ -26,7 +26,6 @@ public class ShopCartServiceImpl implements ShopCartService {
         List<ShopCart> res = new ArrayList<>();
         for (ShopCartEntity aResult : result) {
             ShopCart shop = new ShopCart();
-            shop.setKey(aResult.getShopcartId());
             shop.setId(aResult.getShopcartId());
             shop.setName(aResult.getTicketName());
             shop.setCount(aResult.getCount());
@@ -104,4 +103,18 @@ public class ShopCartServiceImpl implements ShopCartService {
         }
     }
 
+    @Override
+    public String addToShopCart(int ticketId,String userName,String ticketName,int price){
+        ShopCartEntity shopCart = new ShopCartEntity();
+        shopCart.setUserName(userName);
+        shopCart.setPrice(price);
+        shopCart.setTicketName(ticketName);
+        shopCart.setIsCheck((byte)0);
+        shopCart.setCount(1);
+        shopCart.setShopcartId(ticketId);
+        shopCartRepository.save(shopCart);
+
+        Gson gson = new Gson();
+        return gson.toJson(true);
+    }
 }
