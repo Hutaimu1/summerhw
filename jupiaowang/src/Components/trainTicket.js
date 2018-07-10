@@ -27,8 +27,8 @@ class trainTicket extends React.Component {
         starting: "上海",
         destination: "北京",
         date: moment(),
-        dataSource:[],
-        dataSource_copy:[],
+        dataSource:[{"id":3,"model":"G101","start":"06:43","time":357,"arrive":"12:40","left":7,"price":1748},{"id":4,"model":"G5","start":"07:00","time":280,"arrive":"11:40","left":13,"price":1762},{"id":5,"model":"1461","start":"11:54","time":1165,"arrive":"07:19","left":29,"price":156},{"id":6,"model":"D313","start":"19:34","time":727,"arrive":"07:41","left":8,"price":780},{"id":7,"model":"D321","start":"21:04","time":725,"arrive":"09:09","left":4,"price":780},{"id":8,"model":"T109","start":"19:30","time":913,"arrive":"10:43","left":0,"price":1056}],
+        dataSource_copy:[{"id":3,"model":"G101","start":"06:43","time":357,"arrive":"12:40","left":7,"price":1748},{"id":4,"model":"G5","start":"07:00","time":280,"arrive":"11:40","left":13,"price":1762},{"id":5,"model":"1461","start":"11:54","time":1165,"arrive":"07:19","left":29,"price":156},{"id":6,"model":"D313","start":"19:34","time":727,"arrive":"07:41","left":8,"price":780},{"id":7,"model":"D321","start":"21:04","time":725,"arrive":"09:09","left":4,"price":780},{"id":8,"model":"T109","start":"19:30","time":913,"arrive":"10:43","left":0,"price":1056}],
         startTimeVisible: false,
         arriveTimeVisible: false,
         sortedInfo: null,
@@ -267,11 +267,10 @@ class trainTicket extends React.Component {
     };
 
     BuyTicket = (record) => {
-        let userName = this.props.location.query.userName;
-        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
+        let ticketName =record.model + this.state.starting + "to" + this.state.destination;
         $.ajax({
             url: "bookstoreApp/addToShopCart",
-            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price},
+            data: {shopCartId: record.id,userName:this.props.name,ticketName:ticketName,price:record.price,leftTicket:record.left},
             type: "POST",
             traditional: true,
             success: function () {
@@ -348,8 +347,8 @@ class trainTicket extends React.Component {
             render: (text, record) => {
                 if (record.left === 0) {
                     return <div>
-                                <span style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></span>
-                                <span style={{marginLeft: '5px'}}><Icon type="rocket"/></span>
+                        <span style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></span>
+                        <span style={{marginLeft: '5px'}}><Icon type="rocket"/></span>
                     </div>
                 }
                 else{

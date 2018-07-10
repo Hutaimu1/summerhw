@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
 import {Switch, Route, HashRouter} from 'react-router-dom'
+import Login from './main/login'
+import Registration from './main/registration'
+import Forget from './main/forget'
+import HomePage from './main/home'
 import {LocaleProvider} from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
-import Login from "./main/login";
-import Registration from "./main/registration";
-import Forget from "./main/forget";
-import HomePage from "./main/home";
 import './App.css';
-
-
 
 
 class App extends Component {
@@ -20,7 +18,7 @@ class App extends Component {
                         <Route exact path='/' component={Login}/>
                         <Route path='/registration' component={Registration}/>
                         <Route path='/forget' component={Forget}/>
-                        <Route path='/home' component={HomePage}/>
+                        <Route path='/home/:name' component={HomePage}/>
                     </Switch>
                 </HashRouter>
             </LocaleProvider>

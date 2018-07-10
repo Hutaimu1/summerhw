@@ -3,21 +3,31 @@ import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message} from 'antd'
 import $ from 'jquery'
 import moment from 'moment'
 
-let goodsArray = [];
-
+let goodsArray = [
+];
 
 export default class ShopCart extends React.Component {
     constructor() {
         super();
+        let leftTicket = [];
+        goodsArray.forEach((goods) =>{
+            leftTicket.push({
+                id:goods.id,
+                left:goods.leftTicket}
+            );
+        });
         this.state = {
             goodsArray: goodsArray,
             totalPrice: 0,
             isSelectAll: false,
             selectCheckedArray:[],
+            selectCount:[],
+            leftTicket:leftTicket
         };
         this.changeGoodsCheckFlag = this.changeGoodsCheckFlag.bind(this);
         this.changeSelectAllFlag = this.changeSelectAllFlag.bind(this);
         this.deleteGoods = this.deleteGoods.bind(this);
+        this.getMax = this.getMax.bind(this);
         this.removeAll = this.removeAll.bind(this);
         this.removeChecked = this.removeChecked.bind(this);
         this.setGoodsCount = this.setGoodsCount.bind(this);
@@ -25,7 +35,7 @@ export default class ShopCart extends React.Component {
     }
 
     componentDidMount(){
-        let userName = this.props.location.query.userName;
+        let userName = this.props.name;
         let result = [];
         $.ajax({
             type: "post",
@@ -38,7 +48,10 @@ export default class ShopCart extends React.Component {
                     goodsArray:result,
                     totalPrice:this.updatePrice(result),
                     isSelectAll:ShopCart.updateSelectAllFlag(result),
-                    selectCheckedArray:this.updateSelectedCheckedArray(result)
+                    selectCheckedArray:this.updateSelectedCheckedArray(result),
+                    selectCount:this.updateSelectedCount(result),
+                    leftTicket:this.updateLeftTicket(result),
+                    orderItem:[]
                 });
             }.bind(this)
         });
@@ -54,6 +67,17 @@ export default class ShopCart extends React.Component {
             }
         });
         return price;
+    }
+
+    updateLeftTicket(goodsArray){
+        let leftTicket = [];
+        goodsArray.forEach((goods) =>{
+            leftTicket.push({
+                id:goods.id,
+                left:goods.leftTicket}
+            );
+        });
+        return leftTicket;
     }
 
     static updateSelectAllFlag(goodsArray) {
@@ -73,6 +97,16 @@ export default class ShopCart extends React.Component {
             }
         });
         return array;
+    }
+
+    updateSelectedCount(goodsArray){
+        let SelectCount = [];
+        goodsArray.forEach((goods) => {
+            if(goods.checked){
+                SelectCount.push(goods.count);
+            }
+        });
+        return SelectCount;
     }
 
     removeAll() {
@@ -98,7 +132,9 @@ export default class ShopCart extends React.Component {
                 goodsArray: preState.goodsArray,
                 totalPrice: this.updatePrice(preState.goodsArray),
                 isSelectAll: false,
-                selectCheckedArray:[]
+                selectCheckedArray:[],
+                selectCount:[],
+                leftTicket:[]
             }
         })
     }
@@ -125,7 +161,9 @@ export default class ShopCart extends React.Component {
                 goodsArray:preState.goodsArray,
                 totalPrice: this.updatePrice(preState.goodsArray),
                 isSelectAll: false,
-                selectCheckedArray:[]
+                selectCheckedArray:[],
+                selectCount:[],
+                leftTicket:this.updateLeftTicket(preState.goodsArray)
             }
         });
     }
@@ -152,32 +190,26 @@ export default class ShopCart extends React.Component {
                 goodsArray: preState.goodsArray,
                 totalPrice: this.updatePrice(preState.goodsArray),
                 isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
-                selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray)
+                selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray),
+                selectCount:this.updateSelectedCount(preState.goodsArray),
+                leftTicket:this.updateLeftTicket(preState.goodsArray)
             }
         })
     }
 
-    setGoodsCount(id, count) {
+    setGoodsCount(record,index,count) {
         this.setState((preState) => {
-            let i;
-            for (i = 0; i < preState.goodsArray.length; ++i) {
-                if (id.toString() === preState.goodsArray[i].id.toString()){
-                    if(count === 0){
-                        preState.goodsArray.splice(i,1)
-                    }
-                    else {
-                        preState.goodsArray[i].count = count;
-                    }
-                    break;
-                }
+            record.count = count;
+            preState.goodsArray[index] = record;
+            if(count === 0){
+                preState.goodsArray.splice(index,1);
             }
-            $.post("/bookstoreApp/updateCount", {cartItemId:id,count:count}, function (data) {
+            $.post("/bookstoreApp/updateCount", {cartItemId:record.id,count:count}, function (data) {
             });
             return {
                 goodsArray: preState.goodsArray,
                 totalPrice: this.updatePrice(preState.goodsArray),
-                isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
-                selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray)
+                leftTicket:this.updateLeftTicket(preState.goodsArray)
             }
         })
     }
@@ -191,7 +223,6 @@ export default class ShopCart extends React.Component {
             });
             let arr = [];
             arr.push(record.id);
-            console.log("success",preState.goodsArray);
             $.ajax({url:"bookstoreApp/changeChecked",
                 data:{cartItemId:arr},
                 type:"POST",
@@ -200,19 +231,17 @@ export default class ShopCart extends React.Component {
                     console.log("success");
                 }
             });
-            console.log("success",this.updateSelectedCheckedArray(preState.goodsArray));
             return {
                 goodsArray: preState.goodsArray,
                 isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
                 selectCheckedArray:this.updateSelectedCheckedArray(preState.goodsArray),
-                totalPrice:this.updatePrice(preState.goodsArray),
+                selectCount:this.updateSelectedCount(preState.goodsArray),
+                totalPrice:this.updatePrice(preState.goodsArray)
             }
         });
     }
 
     changeSelectAllFlag(selected, selectedRows, changeRows) {
-        console.log("all");
-        console.log("success",this.state.selectCheckedArray);
         let arr = [];
         let price = 0;
         this.setState((preState) => {
@@ -236,25 +265,65 @@ export default class ShopCart extends React.Component {
                 goodsArray: preState.goodsArray,
                 totalPrice: price,
                 isSelectAll: selected,
-                selectCheckedArray: this.updateSelectedCheckedArray(preState.goodsArray)
+                selectCheckedArray: this.updateSelectedCheckedArray(preState.goodsArray),
+                selectCount:this.updateSelectedCount(preState.goodsArray),
+                leftTicket:this.updateLeftTicket(preState.leftTicket)
             }
         });
-        console.log("success",this.state.selectCheckedArray);
     }
 
     orderToBeSolved(){
+        let cartIdArray = [];
+        let cartNameArray = [];
+        let cartPriceArray = [];
+        let cartCountArray = [];
         this.setState((preState) => {
+            preState.goodsArray.forEach((goods) =>{
+                if(goods.checked){
+                    cartIdArray.push(goods.id);
+                    cartNameArray.push(goods.name);
+                    cartPriceArray.push(goods.price);
+                    cartCountArray.push(goods.count);
+                }
+            });
             $.ajax({
                 url: "bookstoreApp/addOrderList",
-                data: {userName:this.props.location.query.userName,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+                data: {userName:this.props.name,
+                    totalPrice:preState.totalPrice,
+                    date:moment().format('YYYY-MM-DD HH:mm:ss'),
+                    cartIdArray:cartIdArray,
+                    cartNameArray:cartNameArray,
+                    cartPriceArray:cartPriceArray,
+                    cartCountArray:cartCountArray},
                 type: "POST",
                 traditional: true,
                 success: function (data) {
-                    message.success("生成订单成功，订单号为："+JSON.parse(data)+",请前往待处理订单中查看。")
+                    message.success("生成订单成功，订单号为："+JSON.parse(data)+",请前往待处理订单中查看。");
                 }
             });
-            return this.removeChecked();
-        })
+            this.removeChecked();
+
+            $.ajax({
+                url: "bookstoreApp/updateLeftTicket",
+                data: {shopCartId:this.state.selectCheckedArray,count:this.state.selectCount},
+                type: "POST",
+                traditional: true,
+                success: function (data) {
+                    console.log("库存已更新");
+                }
+            });
+        });
+    }
+
+    getMax(id){
+        let tempArray = this.state.leftTicket;
+        let result;
+        tempArray.forEach((lef) =>{
+          if(lef.id === id){
+              result = lef.left;
+          }
+        });
+        return result;
     }
 
     render() {
@@ -267,8 +336,7 @@ export default class ShopCart extends React.Component {
                 dataIndex:'price',
                 key:'price',
                 sorter: (a, b) => a.price - b.price,
-                render: (text,record) =>{ return<a style={{color:"black"}}>¥{record.price} </a>
-                }
+                render: (text,record) =>{ return<a style={{color:"black"}}>¥{record.price} </a>}
             }, {
                 title: '数量',
                 key:'count',
@@ -276,9 +344,9 @@ export default class ShopCart extends React.Component {
                 render: (text,record,index) =>{
                     return <InputNumber
                         min={0}
-                        max={10000}
+                        max={this.getMax(record.id)}
                         defaultValue={record.count}
-                        onChange={(value) => this.setGoodsCount(record.id,value)}>&nbsp;</InputNumber>
+                        onChange={(value) => this.setGoodsCount(record,index,value)}>&nbsp;</InputNumber>
                 }
             }, {
                 title: '总价',
@@ -303,7 +371,7 @@ export default class ShopCart extends React.Component {
 
         const header =
             <Row>
-                <Col span={6}><span className={"table-font"}>{this.props.location.query.userName}的购物车</span></Col>
+                <Col span={6}><span className={"table-font"}>{this.props.name}的购物车</span></Col>
                 <Col span={6}>
                     <Popconfirm title="您确定要删除选中的票品吗?" onConfirm={() => this.removeChecked()}>
                         <Button type="primary" style={{fontWeight: "bold"}}>删除选中</Button>

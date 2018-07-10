@@ -17,8 +17,8 @@ public class ShopCartController {
 
     @PostMapping(value = "addToShopCart")
     @ResponseBody
-    public String addToShopCart(@RequestParam("shopCartId") int id,@RequestParam("userName") String username,@RequestParam("ticketName") String ticketname,@RequestParam("price") int price) {
-        return shopCartService.addToShopCart(id,username,ticketname,price);
+    public String addToShopCart(@RequestParam("shopCartId") int id,@RequestParam("userName") String username,@RequestParam("ticketName") String ticketname,@RequestParam("price") int price,@RequestParam("leftTicket") int leftticket) {
+        return shopCartService.addToShopCart(id,username,ticketname,price,leftticket);
     }
 
     @PostMapping(value = "deleteShopCartItem")

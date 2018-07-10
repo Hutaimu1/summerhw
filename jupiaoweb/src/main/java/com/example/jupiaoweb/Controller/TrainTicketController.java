@@ -19,4 +19,11 @@ public class TrainTicketController {
                                   @RequestParam("startTime") String startTime){
         return trainTicketService.searchTrain(startPlace, arrviePlace, startTime) ;
     }
+
+    @PostMapping(value = "updateLeftTicket")
+    @ResponseBody
+    public String updateLeftTicket(@RequestParam("shopCartId") int[] shopCartId,
+                              @RequestParam("count") int[] count){
+        return trainTicketService.updateLeftTicket(shopCartId,count);
+    }
 }

@@ -1,8 +1,11 @@
 package com.example.jupiaoweb.Service.ServiceImpl;
 
+import com.example.jupiaoweb.Model.OrderItemEntity;
 import com.example.jupiaoweb.Model.TicketorderEntity;
 import com.example.jupiaoweb.Service.TicketOrderService;
+import com.example.jupiaoweb.bean.OrderItem;
 import com.example.jupiaoweb.bean.TicketOrder;
+import com.example.jupiaoweb.dao.OrderItemRepository;
 import com.example.jupiaoweb.dao.TicketOrderRepository;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
@@ -19,17 +22,34 @@ public class TicketOrderServiceImpl implements TicketOrderService {
     @Resource
     private TicketOrderRepository TicketOrderRepository;
 
+    @Resource
+    private OrderItemRepository OrderItemRepository;
     @Override
-    public    String addOrderList(String userName, int totalPrice,String date){
+    public String addOrderList(String userName, int totalPrice, String dateTime,int[]cartId,String[]cartName,int[]price,int[]count){
         Gson gson = new Gson();
         TicketorderEntity order = new TicketorderEntity();
         order.setUserName(userName);
         order.setIsPaid((byte)0);
         order.setTotalPrice(totalPrice);
-        Timestamp ts = Timestamp.valueOf(date);
+        Timestamp ts = Timestamp.valueOf(dateTime);
         order.setDate(ts);
         TicketOrderRepository.save(order);
         List<TicketorderEntity> res = TicketOrderRepository.findByUserNameAndDate(userName,ts);
+        for(int i = 0; i < cartId.length;i++){
+            OrderItemEntity order1 = new OrderItemEntity();
+            order1.setOrderId(res.get(0).getOrderId());
+            order1.setShopcartId(cartId[i]);
+            order1.setShopcartName(cartName[i]);
+            order1.setPrice(price[i]);
+            order1.setCount(count[i]);
+            OrderItemRepository.save(order1);
+            System.out.println(res.get(0).getOrderId());
+            System.out.println(cartId.length);
+            System.out.println(cartId[i]);
+            System.out.println(cartName[i]);
+            System.out.println(price[i]);
+            System.out.println(count[i]);
+        }
         return gson.toJson(res.get(0).getOrderId());
     };
 
@@ -52,5 +72,21 @@ public class TicketOrderServiceImpl implements TicketOrderService {
             }
         }
         return gson.toJson(result);
+    }
+
+    @Override
+    public String showOrderDetail(int orderId){
+           List<OrderItemEntity> result = OrderItemRepository.findByOrderId(orderId);
+           List<OrderItem> showOrder = new ArrayList<>();
+           Gson gson = new Gson();
+        for(OrderItemEntity aResult:result){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrderId(aResult.getShopcartId());
+            orderItem.setName(aResult.getShopcartName());
+            orderItem.setPrice(aResult.getPrice());
+            orderItem.setCount(aResult.getCount());
+            showOrder.add(orderItem);
+        }
+        return gson.toJson(showOrder);
     }
 }

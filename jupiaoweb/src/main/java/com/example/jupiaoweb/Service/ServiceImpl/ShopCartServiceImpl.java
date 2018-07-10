@@ -30,6 +30,7 @@ public class ShopCartServiceImpl implements ShopCartService {
             shop.setName(aResult.getTicketName());
             shop.setCount(aResult.getCount());
             shop.setPrice(aResult.getPrice());
+            shop.setLeftTicket(aResult.getLeftTicket());
             if ((aResult.getIsCheck() & 0xFF) == 1) {
                 shop.setChecked(true);
             } else {
@@ -104,18 +105,18 @@ public class ShopCartServiceImpl implements ShopCartService {
     }
 
     @Override
-    public String addToShopCart(int ticketId,String userName,String ticketName,int price){
+    public String addToShopCart(int ticketId,String userName,String ticketName,int price,int leftTicket){
         ShopCartEntity shopCart = new ShopCartEntity();
         shopCart.setUserName(userName);
         shopCart.setPrice(price);
         shopCart.setTicketName(ticketName);
         shopCart.setIsCheck((byte)0);
         shopCart.setCount(1);
+        shopCart.setLeftTicket(leftTicket);
         shopCart.setShopcartId(ticketId);
         shopCartRepository.save(shopCart);
 
         Gson gson = new Gson();
         return gson.toJson(true);
     }
-
 }

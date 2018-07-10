@@ -81,7 +81,7 @@ class Login extends React.Component {
                         }
                         else {
                             message.success('以用户身份登陆成功!');
-                            this.props.history.push({ pathname : '/home' ,query : { userName: userName} })
+                            this.props.history.push('/home/' + userName);
                         }
                     }
                 }
@@ -126,7 +126,6 @@ class Login extends React.Component {
         const {isFieldTouched, getFieldError} = this.props.form;
         return (isFieldTouched(index) && getFieldError(index)) || ''
     };
-
 
 
     render() {
