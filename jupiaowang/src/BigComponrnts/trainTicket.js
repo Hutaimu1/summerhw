@@ -12,7 +12,8 @@ import {
     Tag,
     Table,
     Popconfirm,
-    message
+    message,
+    Tooltip
 } from 'antd';
 import moment from 'moment';
 import $ from "jquery";
@@ -26,11 +27,11 @@ class trainTicket extends React.Component {
         starting: "上海",
         destination: "北京",
         date: moment(),
-        dataSource:[{id:1,model:'G101',start:'北京',time:357,arrive:'上海',price:1748},
-            {id:2,model:'G101',start:'北京',time:235,arrive:'上海',price:1000}],
+        dataSource:[],
         dataSource_copy:[],
         startTimeVisible: false,
-        arriveTimeVisible: false
+        arriveTimeVisible: false,
+        sortedInfo: null,
     };
 
     componentDidMount() {
@@ -252,6 +253,12 @@ class trainTicket extends React.Component {
         })
     };
 
+    handleSort = (pagination, filters, sorter) => {
+        this.setState({
+            sortedInfo: sorter,
+        });
+    };
+
     isDisplay = () => {
         if (this.state.startTimeCheckedList.indexOf(true) > -1 || this.state.arriveTimeCheckedList.indexOf(true) > -1) {
             return "";
@@ -259,19 +266,12 @@ class trainTicket extends React.Component {
         return "none";
     };
 
-    BuyTicket = (id) => {
+    BuyTicket = (record) => {
         let userName = this.props.name;
-        let price = 0;
-        let ticketName = "";
-        this.state.dataSource.forEach((ticket) =>{
-           if(ticket.id === id){
-               price = ticket.price;
-               ticketName += ticket.model + this.state.starting + "To" + this.state.destination;
-           }
-        });
+        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
         $.ajax({
             url: "bookstoreApp/addToShopCart",
-            data: {shopCartId: id,userName:userName,ticketName:ticketName,price:price},
+            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price},
             type: "POST",
             traditional: true,
             success: function () {
@@ -286,6 +286,8 @@ class trainTicket extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
+        let { sortedInfo } = this.state;
+        sortedInfo = sortedInfo || {};
         const plainOptions = ['高铁G/C', '动车D', '特快T', '快速K', '直达Z', '其他'];
         const timeOptions = ['凌晨（0:00 - 6:00）', '上午（6:00 - 12:00）', '下午（12:00 - 18:00）', '晚上（18:00 - 24:00）'];
         const columns = [{
@@ -293,19 +295,50 @@ class trainTicket extends React.Component {
             dataIndex: 'model'
         }, {
             title: '出发',
-            dataIndex: 'start'
+            dataIndex: 'start',
+            sorter: (a, b) => moment(a.start,"HH:mm")._d.valueOf() - moment(b.start,"HH:mm")._d.valueOf(),
+            sortOrder: sortedInfo.columnKey === 'start' && sortedInfo.order,
         }, {
             title: '耗时',
             dataIndex: 'time',
+            sorter: (a, b) => a.time - b.time,
+            sortOrder: sortedInfo.columnKey === 'time' && sortedInfo.order,
             render: (text, record) => {
                 return <a style={{color: "black"}}>{Math.floor(record.time / 60)}时{record.time % 60}分 </a>
             }
         }, {
             title: '到达',
-            dataIndex: 'arrive'
+            dataIndex: 'arrive',
+            sorter: (a, b) => moment(a.arrive,"HH:mm")._d.valueOf() - moment(b.arrive,"HH:mm")._d.valueOf(),
+            sortOrder: sortedInfo.columnKey === 'arrive' && sortedInfo.order,
+        },  {
+            title: '剩余票数',
+            dataIndex: 'left',
+            sorter: (a, b) => a.left - b.left,
+            sortOrder: sortedInfo.columnKey === 'left' && sortedInfo.order,
+            render: (text, record) => {
+                if (record.left === 0) {
+                    return <div>
+                        <span style={{color: "#96a6b1"}}>0</span>
+                    </div>
+                }
+                else if (record.left < 10) {
+                    return <div>
+                        <span style={{color: "#ff5741"}}>{record.left}</span>
+                        <span className="leftTicket-ico">&nbsp;</span>
+                    </div>
+                }
+                else {
+                    return <div>
+                        <span>{record.left}</span>
+                    </div>
+                }
+            }
         }, {
             title: '参考价',
             dataIndex: 'price',
+            sorter: (a, b) => a.price - b.price,
+            sortOrder: sortedInfo.columnKey === 'price' && sortedInfo.order,
             render: (text, record) => {
                 return <a style={{color: "black"}}>¥{record.price} </a>
             }
@@ -313,11 +346,26 @@ class trainTicket extends React.Component {
             title: '操作',
             dataIndex: '',
             render: (text, record) => {
-                return <div>
-                    <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.BuyTicket(record.id)}>
-                        <a href="" style={{marginLeft: '5px'}}><Icon href="#" type="shopping-cart"/></a>
-                    </Popconfirm>
-                </div>
+                if (record.left === 0) {
+                    return <div>
+                                <span style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></span>
+                                <span style={{marginLeft: '5px'}}><Icon type="rocket"/></span>
+                    </div>
+                }
+                else{
+                    return <div>
+                        <Tooltip placement="topLeft" title="加入购物车" arrowPointAtCenter>
+                            <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.BuyTicket(record)}>
+                                <a style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></a>
+                            </Popconfirm>
+                        </Tooltip>
+                        <Tooltip placement="topLeft" title="一键下单" arrowPointAtCenter>
+                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.BuyTicket()}>
+                                <a style={{marginLeft: '5px'}}><Icon type="rocket"/></a>
+                            </Popconfirm>
+                        </Tooltip>
+                    </div>
+                }
             }
         }];
         const startMenu = (
@@ -443,6 +491,7 @@ class trainTicket extends React.Component {
                        style={{marginTop: "20px"}}
                        dataSource={this.state.dataSource}
                        columns={columns}
+                       onChange={this.handleSort}
                        pagination={{
                            defaultPageSize:8,
                            pageSizeOptions:['8','16','24'],
@@ -450,7 +499,8 @@ class trainTicket extends React.Component {
                            showQuickJumper: true,
                            showTotal: this.showTotal,
                            total: this.state.dataSource.length
-                       }}/>
+                       }}
+                />
             </div>
         );
     }

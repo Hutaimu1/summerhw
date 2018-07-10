@@ -146,3 +146,11 @@
   padding: 0 6px;
   background: url(//img.alicdn.com/tps/i1/T1TwTxFbXgXXa.hdbX-19-6.png) no-repeat center;
 }
+
+.leftTicket-ico {
+  margin-left: 3px;
+  background: url(//img.alicdn.com/tps/i3/T11.hTFe8eXXXNx3Td-33-41.png) 0 -13px;
+  display: inline-block;
+  width: 33px;
+  height: 13px;
+}

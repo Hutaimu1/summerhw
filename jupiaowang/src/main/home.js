@@ -1,8 +1,9 @@
-import {Layout, Menu, Icon, Popconfirm, message,} from 'antd';
+import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
-import ShopCart from '../BigComponrnts/shopCart'
+import ShopCart from '../BigComponrnts/shoppingCart'
 import TrainTicket from '../BigComponrnts/trainTicket'
-import  OrderToBeResolved from '../BigComponrnts/orderToBeResolved'
+import OrderToBeResolved from '../BigComponrnts/orderToBeResolved'
+
 const {Header, Content, Footer, Sider} = Layout;
 
 const SubMenu = Menu.SubMenu;
