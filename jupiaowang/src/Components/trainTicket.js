@@ -267,7 +267,7 @@ class trainTicket extends React.Component {
     };
 
     BuyTicket = (record) => {
-        let userName = this.props.name;
+        let userName = this.props.location.query.userName;
         let ticketName = record.model + this.state.starting + "To" + this.state.destination;
         $.ajax({
             url: "bookstoreApp/addToShopCart",

@@ -79,7 +79,7 @@ class Registration extends React.Component {
         }, function (data) {
             if (JSON.parse(data)) {
                 message.success('注册成功,自动以用户身份登录!');
-                this.props.history.push('/home/' + userName);
+                this.props.history.push({ pathname : '/home' ,query : { userName: userName} })
             }
         }.bind(this));
     };
@@ -470,7 +470,7 @@ class Registration extends React.Component {
                     <Form.Item {...tailFormItemLayout}>
                         <Button type="primary" htmlType="submit" className="registration-form-button-left"
                                 disabled={this.hasErrors(getFieldsError())}>注册并登陆</Button>
-                        <Button type="primary" htmlType="submit" className="registration-form-button-right"
+                        <Button type="primary" className="registration-form-button-right"
                                 onClick={() => this.props.history.push('/')}>返回主页</Button>
                     </Form.Item>
                 </Form>

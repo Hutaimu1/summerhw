@@ -13,7 +13,7 @@ export default class OrderToBeResolved extends React.Component{
     }
 
     componentDidMount(){
-        let userName = this.props.name;
+        let userName = this.props.location.query.userName;
         let result =[];
         $.ajax({
             type: "post",
