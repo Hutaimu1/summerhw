@@ -1,6 +1,5 @@
 package com.example.jupiaoweb.Service.ServiceImpl;
 
-import com.example.jupiaoweb.Model.TicketorderEntity;
 import com.example.jupiaoweb.Model.TrainticketEntity;
 import com.example.jupiaoweb.Service.TrainTicketService;
 import com.example.jupiaoweb.bean.TrainTicket;
@@ -43,17 +42,5 @@ public class TrainTicketServiceImpl implements TrainTicketService {
             }
         }
         return gson.toJson(res);
-    }
-
-    @Override
-    public String updateLeftTicket(int[] shopCartId,int[] count){
-        Gson gson = new Gson();
-            for(int i = 0;i<shopCartId.length;++i){
-                List<TrainticketEntity> trainTicket = trainTicketRepository.findByTicketId(shopCartId[i]);
-                TrainticketEntity toBeModifiedTicket = trainTicket.get(0);
-                toBeModifiedTicket.setLeftTicket(toBeModifiedTicket.getLeftTicket()-count[i]);
-                trainTicketRepository.save(toBeModifiedTicket);
-            }
-            return gson.toJson(true);
     }
 }
