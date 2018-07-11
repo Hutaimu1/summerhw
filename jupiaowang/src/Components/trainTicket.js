@@ -40,7 +40,7 @@ class trainTicket extends React.Component {
             url: "/bookstoreApp/searchTrain",
             data: {
                 startPlace: this.state.starting,
-                arrviePlace: this.state.destination,
+                arrivePlace: this.state.destination,
                 startTime: this.state.date.format('YYYY-MM-DD')
             },
             async: true,
@@ -60,7 +60,7 @@ class trainTicket extends React.Component {
         $.ajax({
             type: "post",
             url: "/bookstoreApp/searchTrain",
-            data: {startPlace: starting, arrviePlace: destination, startTime: date.format('YYYY-MM-DD')},
+            data: {startPlace: starting, arrivePlace: destination, startTime: date.format('YYYY-MM-DD')},
             async: true,
             success: function (data) {
                 this.setState({

@@ -4,5 +4,5 @@ import java.text.ParseException;
 import java.util.Date;
 
 public interface TrainTicketService {
-    String searchTrain(String startPlace, String arrviePlace, String startTime);
+    String searchTrain(String startPlace, String arrivePlace, String startTime);
 }

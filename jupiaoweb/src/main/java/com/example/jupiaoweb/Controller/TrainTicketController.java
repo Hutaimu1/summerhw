@@ -15,8 +15,8 @@ public class TrainTicketController {
     @PostMapping(value = "searchTrain")
     @ResponseBody
     public String searchTrain(@RequestParam("startPlace") String startPlace,
-                                  @RequestParam("arrviePlace") String arrviePlace,
+                                  @RequestParam("arrivePlace") String arrivePlace,
                                   @RequestParam("startTime") String startTime){
-        return trainTicketService.searchTrain(startPlace, arrviePlace, startTime) ;
+        return trainTicketService.searchTrain(startPlace, arrivePlace, startTime) ;
     }
 }

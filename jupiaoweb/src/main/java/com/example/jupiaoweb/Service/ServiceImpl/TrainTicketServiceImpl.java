@@ -1,6 +1,6 @@
 package com.example.jupiaoweb.Service.ServiceImpl;
 
-import com.example.jupiaoweb.Model.TrainticketEntity;
+import com.example.jupiaoweb.Model.TrainTicketEntity;
 import com.example.jupiaoweb.Service.TrainTicketService;
 import com.example.jupiaoweb.bean.TrainTicket;
 import com.example.jupiaoweb.dao.TrainTicketRepository;
@@ -21,13 +21,13 @@ public class TrainTicketServiceImpl implements TrainTicketService {
     private TrainTicketRepository trainTicketRepository;
 
     @Override
-    public String searchTrain(String startPlace, String arrviePlace, String startTime){
+    public String searchTrain(String startPlace, String arrivePlace, String startTime){
         Gson gson = new Gson();
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
-        List<TrainticketEntity> result = trainTicketRepository.findByStartPlaceAndArrviePlace(startPlace,arrviePlace);
+        List<TrainTicketEntity> result = trainTicketRepository.findByStartPlaceAndArrviePlace(startPlace,arrivePlace);
         List<TrainTicket> res = new ArrayList<>();
-        for (TrainticketEntity aResult : result) {
+        for (TrainTicketEntity aResult : result) {
             Date date = new Date(aResult.getStartTime().getTime());
             if (sdf1.format(date).equals(startTime)) {
                 TrainTicket t = new TrainTicket();
