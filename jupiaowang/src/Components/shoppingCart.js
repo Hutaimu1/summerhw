@@ -25,7 +25,7 @@ export default class ShopCart extends React.Component {
     }
 
     componentDidMount(){
-        let userName = this.props.location.query.userName;
+        let userName = this.props.match.params.userName;
         let result = [];
         $.ajax({
             type: "post",
@@ -246,7 +246,7 @@ export default class ShopCart extends React.Component {
         this.setState((preState) => {
             $.ajax({
                 url: "bookstoreApp/addOrderList",
-                data: {userName:this.props.location.query.userName,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+                data: {userName:this.props.match.params.userName,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss')},
                 type: "POST",
                 traditional: true,
                 success: function (data) {
@@ -303,7 +303,7 @@ export default class ShopCart extends React.Component {
 
         const header =
             <Row>
-                <Col span={6}><span className={"table-font"}>{this.props.location.query.userName}的购物车</span></Col>
+                <Col span={6}><span className={"table-font"}>{this.props.match.params.userName}的购物车</span></Col>
                 <Col span={6}>
                     <Popconfirm title="您确定要删除选中的票品吗?" onConfirm={() => this.removeChecked()}>
                         <Button type="primary" style={{fontWeight: "bold"}}>删除选中</Button>

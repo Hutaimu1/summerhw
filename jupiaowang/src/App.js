@@ -20,7 +20,7 @@ class App extends Component {
                         <Route exact path='/' component={Login}/>
                         <Route path='/registration' component={Registration}/>
                         <Route path='/forget' component={Forget}/>
-                        <Route path='/home' component={HomePage}/>
+                        <Route path='/home/:userName' component={HomePage}/>
                     </Switch>
                 </HashRouter>
             </LocaleProvider>

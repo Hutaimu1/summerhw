@@ -267,7 +267,7 @@ class trainTicket extends React.Component {
     };
 
     BuyTicket = (record) => {
-        let userName = this.props.location.query.userName;
+        let userName = this.props.match.params.userName;
         let ticketName = record.model + this.state.starting + "To" + this.state.destination;
         $.ajax({
             url: "bookstoreApp/addToShopCart",
@@ -393,7 +393,6 @@ class trainTicket extends React.Component {
             </Menu>
         );
         return (
-            // eslint-disable-next-line
             <div style={{fontWeight: "bold"}}>
                 <Form layout="inline">
                     <Form.Item

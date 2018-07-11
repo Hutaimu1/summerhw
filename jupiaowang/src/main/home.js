@@ -2,6 +2,7 @@ import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
 import {Route, NavLink , Switch} from 'react-router-dom'
 import ShopCart  from "../Components/shoppingCart"
+import MovieTicket from "../Components/movieTicket"
 import TrainTicket from "../Components/trainTicket"
 import OrderToBeResolved from "../Components/orderToBeResolved"
 
@@ -34,7 +35,7 @@ class homepage extends React.Component {
 
     //defaultSelectedKeys={['3']} defaultOpenKeys={['sub2']}
     render() {
-        let userName = this.props.location.query.userName;
+        let userName = this.props.match.params.userName;
         return (
             <Layout>
                 <Sider
@@ -48,13 +49,13 @@ class homepage extends React.Component {
                             <Menu.Item key="2">我的收藏</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品</span></span>}>
-                            <Menu.Item key="3"><NavLink to={{ pathname: '/home/trainTicket' , query : { userName: userName }}}>火车票</NavLink></Menu.Item>
-                            <Menu.Item key="4">电影票</Menu.Item>
+                            <Menu.Item key="3"><NavLink to={{ pathname: '/home/'+ userName + '/trainTicket'}}>火车票</NavLink></Menu.Item>
+                            <Menu.Item key="4"><NavLink to={{ pathname: '/home/'+ userName + '/movieTicket'}}>电影票</NavLink></Menu.Item>
                             <Menu.Item key="5">飞机票</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub3" title={<span><Icon type="shopping-cart"/><span>购买</span></span>}>
-                            <Menu.Item key="6"><NavLink to={{ pathname: '/home/shoppingCart' , query : { userName: userName }}}>我的购物车</NavLink></Menu.Item>
-                            <Menu.Item key="7"><NavLink to={{ pathname: '/home/orderToBeResolved' , query : { userName: userName }}}>待处理订单</NavLink></Menu.Item>
+                            <Menu.Item key="6"><NavLink to={{ pathname: '/home/'+ userName + '/shoppingCart'}}>我的购物车</NavLink></Menu.Item>
+                            <Menu.Item key="7"><NavLink to={{ pathname: '/home/'+ userName + '/orderToBeResolved'}}>待处理订单</NavLink></Menu.Item>
                             <Menu.Item key="8">历史订单</Menu.Item>
                         </SubMenu>
                     </Menu>
@@ -81,9 +82,10 @@ class homepage extends React.Component {
                     <Content style={{margin: '0 16px'}}>
                         <div style={{padding: 24, background: '#fff', minHeight: 780}}>
                             <Switch>
-                                <Route path= "/home/trainTicket" component={TrainTicket} />
-                                <Route path= "/home/shoppingCart" component={ShopCart} />
-                                <Route path= "/home/orderToBeResolved" component={OrderToBeResolved} />
+                                <Route path= "/home/:userName/trainTicket" component={TrainTicket} />
+                                <Route path= "/home/:userName/movieTicket" component={MovieTicket} />
+                                <Route path= "/home/:userName/shoppingCart" component={ShopCart} />
+                                <Route path= "/home/:userName/orderToBeResolved" component={OrderToBeResolved} />
                             </Switch>
                         </div>
                     </Content>

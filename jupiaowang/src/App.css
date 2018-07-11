@@ -154,3 +154,17 @@
   width: 33px;
   height: 13px;
 }
+
+.movieCard {
+  width: 240px;
+  float:left;
+  margin-left:25px;
+  margin-bottom:25px;
+}
+
+.movieHead {
+  display: inline-block;
+  font-weight: bold;
+  margin-left:25px;
+  margin-right:15px;
+}

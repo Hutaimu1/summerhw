@@ -79,7 +79,7 @@ class Registration extends React.Component {
         }, function (data) {
             if (JSON.parse(data)) {
                 message.success('注册成功,自动以用户身份登录!');
-                this.props.history.push({ pathname : '/home' ,query : { userName: userName} })
+                this.props.history.push('/home/' + userName);
             }
         }.bind(this));
     };
