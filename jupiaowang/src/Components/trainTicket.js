@@ -270,13 +270,29 @@ class trainTicket extends React.Component {
         let userName = this.props.match.params.userName;
         let ticketName = record.model + this.state.starting + "To" + this.state.destination;
         $.ajax({
-            url: "bookstoreApp/addToShopCart",
-            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price},
+            url: "bookstoreApp/trainTicketAddToShopCart",
+            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left},
             type: "POST",
             traditional: true,
-            success: function () {
-                message.success("加入购物车成功!")
-            }
+            success: function (data) {
+                    message.success("加入购物车成功!");
+                   this.props.history.push('/home/'+ userName + '/shoppingCart')
+            }.bind(this)
+        });
+    };
+
+    QuickBuy = (record) => {
+        let userName = this.props.match.params.userName;
+        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
+        $.ajax({
+            url: "bookstoreApp/trainTicketQuickBuy",
+            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+            type: "POST",
+            traditional: true,
+            success: function (data) {
+                message.success("一键下单成功,已生成未处理订单");
+                this.props.history.push('/home/'+ userName + '/orderToBeResolved')
+            }.bind(this)
         });
     };
 
@@ -360,7 +376,7 @@ class trainTicket extends React.Component {
                             </Popconfirm>
                         </Tooltip>
                         <Tooltip placement="topLeft" title="一键下单" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.BuyTicket()}>
+                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.QuickBuy(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="rocket"/></a>
                             </Popconfirm>
                         </Tooltip>

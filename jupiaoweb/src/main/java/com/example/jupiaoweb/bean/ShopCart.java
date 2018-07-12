@@ -6,7 +6,7 @@ public class ShopCart {
     private int price;
     private int count;
     private boolean checked;
-
+    private int leftTicket;
 
     public int getId() {
         return id;
@@ -47,4 +47,8 @@ public class ShopCart {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+
+    public int getLeftTicket(){return leftTicket;}
+
+    public void setLeftTicket(int leftTicket) { this.leftTicket = leftTicket; }
 }

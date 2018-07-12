@@ -12,6 +12,8 @@ public class ShopCartEntity {
     private int price;
     private int count;
     private byte isCheck;
+    private int leftTicket;
+    private byte isBuy;
 
     @Id
     @Column(name = "shopcart_id")
@@ -73,6 +75,26 @@ public class ShopCartEntity {
         this.isCheck = isCheck;
     }
 
+    @Basic
+    @Column(name = "left_ticket")
+    public int getLeftTicket() {
+        return leftTicket;
+    }
+
+    public void setLeftTicket(int leftTicket) {
+        this.leftTicket = leftTicket;
+    }
+
+    @Basic
+    @Column(name = "is_buy")
+    public byte getIsBuy() {
+        return isBuy;
+    }
+
+    public void setIsBuy(byte isBuy) {
+        this.isBuy = isBuy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -82,6 +104,8 @@ public class ShopCartEntity {
                 price == that.price &&
                 count == that.count &&
                 isCheck == that.isCheck &&
+                leftTicket == that.leftTicket &&
+                isBuy == that.isBuy &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(ticketName, that.ticketName);
     }
@@ -89,6 +113,6 @@ public class ShopCartEntity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(shopcartId, userName, ticketName, price, count, isCheck);
+        return Objects.hash(shopcartId, userName, ticketName, price, count, isCheck, leftTicket, isBuy);
     }
 }

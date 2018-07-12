@@ -6,7 +6,7 @@ public class TicketOrder {
     private int orderId;
     private int totalPrice;
     private String date;
-    private boolean paid;
+    private byte paid;
 
 
     public int getOrderId() {
@@ -33,11 +33,11 @@ public class TicketOrder {
         this.date = date;
     }
 
-    public boolean isPaid() {
+    public byte isPaid() {
         return paid;
     }
 
-    public void setPaid(boolean paid) {
+    public void setPaid(byte paid) {
         this.paid = paid;
     }
 }

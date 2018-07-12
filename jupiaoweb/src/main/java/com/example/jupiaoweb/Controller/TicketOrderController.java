@@ -15,9 +15,35 @@ public class TicketOrderController {
         return ticketOrderService.getOrderNotPaidList(username);
     }
 
-    @PostMapping(value = "addOrderList")
+    @PostMapping(value = "showOrderDetail")
     @ResponseBody
-    public String addOrderList(@RequestParam("userName") String username, @RequestParam("totalPrice") int totalprice, @RequestParam("date")String time) {
-        return ticketOrderService.addOrderList(username,totalprice,time);
+    public String showOrderDetail(@RequestParam("orderId") int orderId) {
+        return ticketOrderService.showOrderDetail(orderId);
+    }
+
+
+    @PostMapping(value = "deleteOrder")
+    @ResponseBody
+    public String deleteOrder(@RequestParam("orderId") int orderId) {
+        return ticketOrderService.deleteOrder(orderId);
+    }
+
+
+    @PostMapping(value = "addToHistoryOrder")
+    @ResponseBody
+    public String addToHistoryOrder(@RequestParam("orderId") int orderId) {
+        return ticketOrderService.addToHistoryOrder(orderId);
+    }
+
+    @PostMapping(value = "getHistoryOrderList")
+    @ResponseBody
+    public String getHistoryOrderList(@RequestParam("userName") String username) {
+        return ticketOrderService.getHistoryOrderList(username);
+    }
+
+    @PostMapping(value = "deleteHistoryOrder")
+    @ResponseBody
+    public String deleteHistoryOrder(@RequestParam("orderId") int orderId) {
+        return ticketOrderService.deleteHistoryOrder(orderId);
     }
 }
