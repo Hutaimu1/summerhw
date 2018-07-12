@@ -19,4 +19,25 @@ public class TrainTicketController {
                                   @RequestParam("startTime") String startTime){
         return trainTicketService.searchTrain(startPlace, arrivePlace, startTime) ;
     }
+
+    @PostMapping(value = "trainTicketAddToShopCart")
+    @ResponseBody
+    public String trainTicketAddToShopCart(@RequestParam("shopCartId") int shopCartId,
+                                           @RequestParam("userName") String userName,
+                                           @RequestParam("ticketName") String ticketName,
+                                           @RequestParam("price") int price,
+                                           @RequestParam("leftTicket") int leftTicket){
+        return trainTicketService.trainTicketAddToShopCart(shopCartId,userName,ticketName,price,leftTicket) ;
+    }
+
+    @PostMapping(value = "trainTicketQuickBuy")
+    @ResponseBody
+    public String trainTicketQuickBuy(@RequestParam("shopCartId") int shopCartId,
+                                      @RequestParam("userName") String userName,
+                                      @RequestParam("ticketName") String ticketName,
+                                      @RequestParam("price") int price,
+                                      @RequestParam("leftTicket") int leftTicket,
+                                      @RequestParam("date") String date){
+        return trainTicketService.trainTicketQuickBuy(shopCartId,userName,ticketName,price,leftTicket,date) ;
+    }
 }

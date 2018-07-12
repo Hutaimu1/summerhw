@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "ticketorder", schema = "jupiao", catalog = "")
-public class TicketorderEntity {
+public class TicketOrderEntity {
     private int orderId;
     private String userName;
     private byte isPaid;
@@ -67,7 +67,7 @@ public class TicketorderEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TicketorderEntity that = (TicketorderEntity) o;
+        TicketOrderEntity that = (TicketOrderEntity) o;
         return orderId == that.orderId &&
                 isPaid == that.isPaid &&
                 Objects.equals(userName, that.userName) &&

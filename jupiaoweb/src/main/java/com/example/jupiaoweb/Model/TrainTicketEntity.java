@@ -14,8 +14,8 @@ public class TrainTicketEntity {
     private Timestamp startTime;
     private int spendTime;
     private Timestamp arriveTime;
-    private int leftTicket;
     private int price;
+    private int leftTicket;
 
     @Id
     @Column(name = "ticket_id")
@@ -43,8 +43,8 @@ public class TrainTicketEntity {
         return arrivePlace;
     }
 
-    public void setArrivePlace(String arrivePlace) {
-        this.arrivePlace = arrivePlace;
+    public void setArrivePlace(String arrviePlace) {
+        this.arrivePlace = arrviePlace;
     }
 
     @Basic
@@ -88,16 +88,6 @@ public class TrainTicketEntity {
     }
 
     @Basic
-    @Column(name = "left_ticket")
-    public int getLeftTicket() {
-        return leftTicket;
-    }
-
-    public void setLeftTicket(int leftTicket) {
-        this.leftTicket = leftTicket;
-    }
-
-    @Basic
     @Column(name = "price")
     public int getPrice() {
         return price;
@@ -107,6 +97,16 @@ public class TrainTicketEntity {
         this.price = price;
     }
 
+    @Basic
+    @Column(name = "left_ticket")
+    public int getLeftTicket() {
+        return leftTicket;
+    }
+
+    public void setLeftTicket(int leftTicket) {
+        this.leftTicket = leftTicket;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -114,8 +114,8 @@ public class TrainTicketEntity {
         TrainTicketEntity that = (TrainTicketEntity) o;
         return ticketId == that.ticketId &&
                 spendTime == that.spendTime &&
-                leftTicket == that.leftTicket &&
                 price == that.price &&
+                leftTicket == that.leftTicket &&
                 Objects.equals(startPlace, that.startPlace) &&
                 Objects.equals(arrivePlace, that.arrivePlace) &&
                 Objects.equals(model, that.model) &&
@@ -126,6 +126,6 @@ public class TrainTicketEntity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(ticketId, startPlace, arrivePlace, model, startTime, spendTime, arriveTime, leftTicket, price);
+        return Objects.hash(ticketId, startPlace, arrivePlace, model, startTime, spendTime, arriveTime, price, leftTicket);
     }
 }

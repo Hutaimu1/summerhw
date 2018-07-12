@@ -1,19 +1,23 @@
 import React from 'react'
-import {Table,Button,Row,Col,message,Popconfirm} from 'antd'
+import {Table,Button,message,Popconfirm} from 'antd'
 import $ from "jquery";
 
-let orderNotPaid =[
+let historyOrder =[
+    {orderId:1,totalPrice:1000,date:"2018-07-11 22:00:00",paid:1},
+    {orderId:2,totalPrice:1000,date:"2018-07-11 22:00:00",paid:1},
+    {orderId:3,totalPrice:1000,date:"2018-07-11 22:00:00",paid:1}
 ];
 
 let detailOrder = [
+    {orderId:2,name:'商品1',price:100,count:10}
 ];
-export default class OrderToBeResolved extends React.Component{
+export default class History extends React.Component{
     constructor() {
         super();
         this.state = {
-            orderNotPaid: orderNotPaid,
+            historyOrder: historyOrder,
             showDetail:false,
-            detailOrder:detailOrder,
+            detailOrder:detailOrder
         };
     }
 
@@ -22,13 +26,13 @@ export default class OrderToBeResolved extends React.Component{
         let result =[];
         $.ajax({
             type: "post",
-            url: "bookstoreApp/getOrderList",
+            url: "bookstoreApp/getHistoryOrderList",
             data: {userName: userName},
             async: true,
             success: function (data) {
                 result = JSON.parse(data);
                 this.setState({
-                    orderNotPaid:result,
+                    historyOrder:result,
                     showDetail:false
                 });
             }.bind(this),
@@ -45,66 +49,42 @@ export default class OrderToBeResolved extends React.Component{
             data: {orderId: orderId},
             async: true,
             success: function (data) {
-                    this.setState({
-                          detailOrder:JSON.parse(data)
-                    });
-                }.bind(this),
-            });
+                this.setState({
+                    detailOrder:JSON.parse(data)
+                });
+            }.bind(this),
+        });
     }
 
-    returnToOrderNotPaid(){
+    returnToHistoryOrder(){
         this.setState({
             showDetail:false
         });
     }
 
-    deleteOrder = (id) => {
+    deleteHistoryOrder = (id) => {
         this.setState((preState) =>{
-            preState.orderNotPaid.forEach((order,index) =>{
+            preState.historyOrder.forEach((order,index) =>{
                 if(order.orderId === id){
-                    preState.orderNotPaid.splice(index,1);
+                    preState.historyOrder.splice(index,1);
                 }
             });
             $.ajax({
                 type: "post",
-                url: "bookstoreApp/deleteOrder",
+                url: "bookstoreApp/deleteHistoryOrder",
                 data: {orderId: id},
                 async: true,
                 success: function (data) {
                     if(JSON.parse(data)){
-                        message.success("取消订单成功！")
+                        message.success("已删除记录！")
                     }
                 }
             });
             return {
-               orderNotPaid:preState.orderNotPaid
+                historyOrder:preState.historyOrder
             }
         })
     };
-
-    goToBuy(id){
-        this.setState((preState) =>{
-            preState.orderNotPaid.forEach((order,index) =>{
-                if(order.orderId === id){
-                    preState.orderNotPaid.splice(index,1);
-                }
-            });
-            $.ajax({
-                type: "post",
-                url: "bookstoreApp/addToHistoryOrder",
-                data: {orderId: id},
-                async: true,
-                success: function (data) {
-                    if(JSON.parse(data)){
-                        message.success("已确认订单")
-                    }
-                }
-            });
-            return {
-                orderNotPaid:preState.orderNotPaid
-            }
-        })
-    }
 
 
     render(){
@@ -132,23 +112,9 @@ export default class OrderToBeResolved extends React.Component{
                 key:'paid',
                 render: (text,record) => {
                     return (
-                        <Row>
-                            <Col span={8}>
-                                <Popconfirm title="确定使用支付宝付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <Button icon="alipay">支付</Button>
-                                </Popconfirm>
-                            </Col>
-                            <Col span={8}>
-                                <Popconfirm title="确定使用微信付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <Button icon="wechat">支付</Button>
-                                </Popconfirm>
-                            </Col>
-                            <Col span={8}>
-                                <Popconfirm title="确定要删除订单吗？机会不等人哦。。。" onConfirm={() => this.deleteOrder(record.orderId)}>
-                                    <Button style={{backgroundColor:"red"}} icon="delete">删除</Button>
-                                </Popconfirm>
-                            </Col>
-                        </Row>
+                        <Popconfirm title="确定要删除这条订单记录吗？" onConfirm={() => this.deleteHistoryOrder(record.orderId)}>
+                            <Button style={{backgroundColor:"red"}} icon="delete">删除</Button>
+                        </Popconfirm>
                     )}
             }];
 
@@ -156,7 +122,7 @@ export default class OrderToBeResolved extends React.Component{
             title: '票品名称',
             dataIndex: 'name',
             key:'name'
-        },{
+        }, {
             title: '价格',
             dataIndex:'price',
             key:'price',
@@ -166,14 +132,15 @@ export default class OrderToBeResolved extends React.Component{
             key:'count'
         }];
 
+
         return(
             <Table
-                dataSource={(this.state.showDetail)?this.state.detailOrder:this.state.orderNotPaid}
+                dataSource={(this.state.showDetail)?this.state.detailOrder:this.state.historyOrder}
                 columns={(this.state.showDetail)?detailColumn:columns}
                 rowKey={'orderId'}
                 bordered
-                title={()=> (this.state.showDetail)?"订单明细":'Tips:未支付订单会保留15分钟，请及时付款'}
-                footer={()=>(this.state.showDetail)?<Button icon="left" onClick={() => this.returnToOrderNotPaid()}>返回</Button>:""}
+                title={()=> (this.state.showDetail)?"订单明细":<span className={"table-font"}>{this.props.match.params.userName}的历史订单</span>}
+                footer={()=>(this.state.showDetail)?<Button icon="left" onClick={() => this.returnToHistoryOrder()}>返回</Button>:""}
                 pagination={{
                     defaultPageSize:8,
                     pageSizeOptions:['8','16','24'],

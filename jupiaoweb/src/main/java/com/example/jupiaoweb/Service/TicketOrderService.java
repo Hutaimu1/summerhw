@@ -1,7 +1,10 @@
 package com.example.jupiaoweb.Service;
-import java.sql.Timestamp;
 
 public interface TicketOrderService {
     String getOrderNotPaidList(String userName);
-    String addOrderList(String userName, int totalPrice, String dateTime);
+    String showOrderDetail(int orderId);
+    String deleteOrder(int orderId);
+    String addToHistoryOrder(int orderId);
+    String getHistoryOrderList(String userName);
+    String deleteHistoryOrder(int orderId);
 }

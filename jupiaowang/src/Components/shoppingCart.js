@@ -3,17 +3,19 @@ import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message} from 'antd'
 import $ from 'jquery'
 import moment from 'moment'
 
-let goodsArray = [];
+let goodsArray = [
+];
 
 
 export default class ShopCart extends React.Component {
     constructor() {
+
         super();
         this.state = {
             goodsArray: goodsArray,
             totalPrice: 0,
             isSelectAll: false,
-            selectCheckedArray:[],
+            selectCheckedArray:[]
         };
         this.changeGoodsCheckFlag = this.changeGoodsCheckFlag.bind(this);
         this.changeSelectAllFlag = this.changeSelectAllFlag.bind(this);
@@ -244,17 +246,50 @@ export default class ShopCart extends React.Component {
 
     orderToBeSolved(){
         this.setState((preState) => {
+            let shopCartIdArray = [];
+            let countArray = [];
+            preState.goodsArray.forEach((goods) =>{
+                if(goods.checked){
+                    shopCartIdArray.push(goods.id);
+                    countArray.push(goods.count);
+                }
+            });
             $.ajax({
                 url: "bookstoreApp/addOrderList",
-                data: {userName:this.props.match.params.userName,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+                data: {userName:this.props.match.params.userName,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss'),shopCartId:shopCartIdArray},
                 type: "POST",
                 traditional: true,
                 success: function (data) {
-                    message.success("生成订单成功，订单号为："+JSON.parse(data)+",请前往待处理订单中查看。")
+                    message.success("生成订单成功，订单号为："+JSON.parse(data)
+                    )
                 }
             });
-            return this.removeChecked();
+            $.ajax({
+                url: "bookstoreApp/updateLeftTicket",
+                data: {shopCartId:shopCartIdArray,count:countArray},
+                type: "POST",
+                traditional: true,
+                success: function (data) {
+                    if(JSON.parse(data)) {
+                        message.success("更新库存成功");
+                        this.props.history.push('/home/'+ this.props.match.params.userName + '/orderToBeResolved')
+                    }
+                    else{
+                        message.success("库存不足，请重新确定票品数量")
+                    }
+                }.bind(this)
+            });
         })
+    }
+
+    getMax(id){
+        let result;
+        this.state.goodsArray.forEach((goods)=>{
+            if(goods.id === id){
+                result = goods.leftTicket;
+            }
+        });
+        return result;
     }
 
     render() {
@@ -276,7 +311,7 @@ export default class ShopCart extends React.Component {
                 render: (text,record,index) =>{
                     return <InputNumber
                         min={0}
-                        max={10000}
+                        max={this.getMax(record.id)}
                         defaultValue={record.count}
                         onChange={(value) => this.setGoodsCount(record.id,value)}>&nbsp;</InputNumber>
                 }
@@ -306,16 +341,16 @@ export default class ShopCart extends React.Component {
                 <Col span={6}><span className={"table-font"}>{this.props.match.params.userName}的购物车</span></Col>
                 <Col span={6}>
                     <Popconfirm title="您确定要删除选中的票品吗?" onConfirm={() => this.removeChecked()}>
-                        <Button type="primary" style={{fontWeight: "bold"}}>删除选中</Button>
+                        <Button type="primary" style={{fontWeight: "bold"}} disabled = {this.state.selectCheckedArray.length === 0}>删除选中</Button>
                     </Popconfirm>
                 </Col>
                 <Col span={6}>
                     <Popconfirm title="您确定要清空购物车吗?" onConfirm={() => this.removeAll()}>
-                        <Button type="primary" style={{fontWeight: "bold"}}>清空购物车</Button>
+                        <Button type="primary" style={{fontWeight: "bold"}} disabled={this.state.goodsArray.length === 0}>清空购物车</Button>
                     </Popconfirm>
                 </Col>
                 <Col>
-                    <Button type="primary" style={{fontWeight: "bold"}}>查看历史记录</Button>
+                    <Button type="primary" style={{fontWeight: "bold"}} onClick={() =>{this.props.history.push('/home/'+ this.props.match.params.userName + '/historyOrder')}}>查看历史记录</Button>
                 </Col>
             </Row>;
 

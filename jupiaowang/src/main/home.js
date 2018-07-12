@@ -5,6 +5,7 @@ import ShopCart  from "../Components/shoppingCart"
 import MovieTicket from "../Components/movieTicket"
 import TrainTicket from "../Components/trainTicket"
 import OrderToBeResolved from "../Components/orderToBeResolved"
+import HistoryOrder from '../Components/historyOrder'
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -56,7 +57,7 @@ class homepage extends React.Component {
                         <SubMenu key="sub3" title={<span><Icon type="shopping-cart"/><span>购买</span></span>}>
                             <Menu.Item key="6"><NavLink to={{ pathname: '/home/'+ userName + '/shoppingCart'}}>我的购物车</NavLink></Menu.Item>
                             <Menu.Item key="7"><NavLink to={{ pathname: '/home/'+ userName + '/orderToBeResolved'}}>待处理订单</NavLink></Menu.Item>
-                            <Menu.Item key="8">历史订单</Menu.Item>
+                            <Menu.Item key="8"><NavLink to={{ pathname: '/home/'+ userName + '/historyOrder'}}>历史订单</NavLink></Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>
@@ -86,6 +87,7 @@ class homepage extends React.Component {
                                 <Route path= "/home/:userName/movieTicket" component={MovieTicket} />
                                 <Route path= "/home/:userName/shoppingCart" component={ShopCart} />
                                 <Route path= "/home/:userName/orderToBeResolved" component={OrderToBeResolved} />
+                                <Route path= "/home/:userName/historyOrder" component={HistoryOrder} />
                             </Switch>
                         </div>
                     </Content>
