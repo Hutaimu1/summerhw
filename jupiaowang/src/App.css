@@ -168,3 +168,41 @@
   margin-left:25px;
   margin-right:15px;
 }
+
+.tab-title{
+  padding: 0 0 10px 20px;
+  margin-top: 10px;
+}
+
+.tab-title .on {
+  background-color: #1890ff;
+  color: #fff;
+  padding: 2px 8px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.tab-title span {
+  margin-right: 20px;
+  color: #1890ff;
+  cursor: pointer;
+}
+
+.tab-content {
+  width: 310px;
+  text-align: left;
+}
+
+.tab-content span {
+  margin: 0 10px 0 0;
+  color: #2E7AB3;
+  white-space: nowrap;
+  display: inline-block;
+  line-height: 2em;
+}
+.tab-content-mod{
+  border-bottom: 1px solid #eee;
+  margin: 5px 0 0 0;
+  padding-bottom: 5px;
+}
+
