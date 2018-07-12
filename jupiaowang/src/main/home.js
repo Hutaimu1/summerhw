@@ -14,7 +14,6 @@ const SubMenu = Menu.SubMenu;
 class homepage extends React.Component {
     state = {
         collapsed: false,
-        selectValue:'3'
     };
 
     toggle = () => {
@@ -28,13 +27,6 @@ class homepage extends React.Component {
         this.props.history.push('/');
     };
 
-    handleClick = (e) => {
-        this.setState({
-            selectValue:e.key
-        })
-    };
-
-    //defaultSelectedKeys={['3']} defaultOpenKeys={['sub2']}
     render() {
         let userName = this.props.match.params.userName;
         return (
@@ -44,20 +36,20 @@ class homepage extends React.Component {
                     collapsible
                     collapsed={this.state.collapsed}
                 >
-                    <Menu theme="dark" mode="inline" onClick={this.handleClick}>
+                    <Menu theme="dark" mode="inline" selectedKeys={[this.props.location.pathname]} defaultOpenKeys={["sub1","sub2","sub3"]}>
                         <SubMenu key="sub1" title={<span><Icon type="user"/><span>用户中心</span></span>}>
-                            <Menu.Item key="1">用户信息</Menu.Item>
-                            <Menu.Item key="2">我的收藏</Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/user"}>用户信息</Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/collection"}>我的收藏</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品</span></span>}>
-                            <Menu.Item key="3"><NavLink to={{ pathname: '/home/'+ userName + '/trainTicket'}}>火车票</NavLink></Menu.Item>
-                            <Menu.Item key="4"><NavLink to={{ pathname: '/home/'+ userName + '/movieTicket'}}>电影票</NavLink></Menu.Item>
-                            <Menu.Item key="5">飞机票</Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/trainTicket"}><NavLink to={{ pathname: '/home/'+ userName + '/trainTicket'}}>火车票</NavLink></Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/movieTicket"}><NavLink to={{ pathname: '/home/'+ userName + '/movieTicket'}}>电影票</NavLink></Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/flightTicket"}>飞机票</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub3" title={<span><Icon type="shopping-cart"/><span>购买</span></span>}>
-                            <Menu.Item key="6"><NavLink to={{ pathname: '/home/'+ userName + '/shoppingCart'}}>我的购物车</NavLink></Menu.Item>
-                            <Menu.Item key="7"><NavLink to={{ pathname: '/home/'+ userName + '/orderToBeResolved'}}>待处理订单</NavLink></Menu.Item>
-                            <Menu.Item key="8"><NavLink to={{ pathname: '/home/'+ userName + '/historyOrder'}}>历史订单</NavLink></Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/shoppingCart"}><NavLink to={{ pathname: '/home/'+ userName + '/shoppingCart'}}>我的购物车</NavLink></Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/orderToBeResolved"}><NavLink to={{ pathname: '/home/'+ userName + '/orderToBeResolved'}}>待处理订单</NavLink></Menu.Item>
+                            <Menu.Item key={"/home/" + userName + "/historyOrder"}><NavLink to={{ pathname: '/home/'+ userName + '/historyOrder'}}>历史订单</NavLink></Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>

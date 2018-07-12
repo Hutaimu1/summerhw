@@ -134,18 +134,18 @@ export default class OrderToBeResolved extends React.Component{
                     return (
                         <Row>
                             <Col span={8}>
-                                <Popconfirm title="确定使用支付宝付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
+                                <Popconfirm title="确定使用支付宝付款吗?" onConfirm={() => this.goToBuy(record.orderId)}>
                                     <Button icon="alipay">支付</Button>
                                 </Popconfirm>
                             </Col>
                             <Col span={8}>
-                                <Popconfirm title="确定使用微信付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
+                                <Popconfirm title="确定使用微信付款吗?" onConfirm={() => this.goToBuy(record.orderId)}>
                                     <Button icon="wechat">支付</Button>
                                 </Popconfirm>
                             </Col>
                             <Col span={8}>
-                                <Popconfirm title="确定要删除订单吗？机会不等人哦。。。" onConfirm={() => this.deleteOrder(record.orderId)}>
-                                    <Button style={{backgroundColor:"red"}} icon="delete">删除</Button>
+                                <Popconfirm title="确定要删除订单吗?" onConfirm={() => this.deleteOrder(record.orderId)}>
+                                    <Button type="danger" icon="delete">删除</Button>
                                 </Popconfirm>
                             </Col>
                         </Row>

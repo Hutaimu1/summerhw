@@ -357,7 +357,7 @@ export default class ShopCart extends React.Component {
         const footer = <Row>
             <Col span={16}><span className={"table-font"}>合计：¥{this.state.totalPrice}</span></Col>
             <Col span={8}>
-                <Popconfirm title="您确定要生成选中票品的订单吗？" onConfirm={() => this.orderToBeSolved()}>
+                <Popconfirm title="您确定要生成选中票品的订单吗?" onConfirm={() => this.orderToBeSolved()}>
                 <Button type="primary" style={{fontWeight: "bold"}} disabled={this.state.selectCheckedArray.length===0}>
                     去结算({this.state.selectCheckedArray.length})
                 </Button>

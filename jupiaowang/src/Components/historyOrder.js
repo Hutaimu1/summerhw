@@ -113,7 +113,7 @@ export default class History extends React.Component{
                 render: (text,record) => {
                     return (
                         <Popconfirm title="确定要删除这条订单记录吗？" onConfirm={() => this.deleteHistoryOrder(record.orderId)}>
-                            <Button style={{backgroundColor:"red"}} icon="delete">删除</Button>
+                            <Button type="danger" icon="delete">删除</Button>
                         </Popconfirm>
                     )}
             }];

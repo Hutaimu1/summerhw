@@ -301,8 +301,7 @@ class trainTicket extends React.Component {
             traditional: true,
             success: function (data) {
                     message.success("加入购物车成功!");
-                   this.props.history.push('/home/'+ userName + '/shoppingCart')
-            }.bind(this)
+            }
         });
     };
 
