@@ -14,4 +14,28 @@ public class MovieTicketController {
     public String getMovieTicket(@RequestParam("place") String place) {
         return movieTicketService.getMovieTicket(place);
     }
+
+    @PostMapping(value = "getMovieDate")
+    @ResponseBody
+    public String getMovieTime(@RequestParam("place") String place,
+                               @RequestParam("movie") String movie) {
+        return movieTicketService.getMovieDate(place, movie);
+    }
+
+    @PostMapping(value = "getMovieBrand")
+    @ResponseBody
+    public String getMovieTime(@RequestParam("place") String place,
+                               @RequestParam("movie") String movie,
+                               @RequestParam("date") String date) {
+        return movieTicketService.getMovieBrand(place, movie, date);user_name
+    }
+
+    @PostMapping(value = "getMovieTime")
+    @ResponseBody
+    public String getMovieTime(@RequestParam("place") String place,
+                               @RequestParam("movie") String movie,
+                               @RequestParam("date") String date,
+                               @RequestParam("brand") String brand) {
+        return movieTicketService.getMovieTime(place, movie, date, brand);
+    }
 }

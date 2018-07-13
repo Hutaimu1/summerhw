@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Icon, Rate, Divider, Pagination, Popover} from 'antd';
+import {Card, Icon, Rate, Divider, Pagination, Popover, Button} from 'antd';
 import $ from "jquery";
 
 const data = [{
@@ -63,6 +63,7 @@ const data = [{
     title:"猛虫过江",
     rate:2
 }];
+
 const hotCity = ["北京","上海","广州","深圳","成都","武汉","杭州","重庆","郑州","南京","西安","苏州","天津","长沙","福州","济南","沈阳","合肥","青岛","哈尔滨","温州","厦门","大连","东莞","长春"];
 const CityA_G =[
     ["A",["安庆","安阳","鞍山","安康","安顺","阿勒泰","阿克苏","阿坝"]],
@@ -99,8 +100,17 @@ class movieTicket extends React.Component {
         pageSize:6,
         data:data,
         place:"上海",
-        visible: false,
-        chooseTag: "热门"
+        date:["7月13日","7月14日","7月15日"],
+        brand:["SFC上影影城","万达影城","大地影院"],
+        time:["8:00 - 10:00","1:00 - 3:00","7:00 - 9:00"],
+        cityVisible: false,
+        shopVisible: false,
+        quickVisible: false,
+        chooseTag: "热门",
+        chooseMovie:"",
+        chooseDate:"",
+        chooseBrand:"",
+        chooseTime:""
     };
 
     componentDidMount(){
@@ -129,15 +139,31 @@ class movieTicket extends React.Component {
         });
     };
 
-    handleVisibleChange = (visible) => {
-        this.setState({ visible });
+    handleCityVisibleChange = (cityVisible) => {
+        this.setState({ cityVisible });
+    };
+
+    handleShopVisibleChange = (shopVisible) => {
+        this.setState({
+            shopVisible,
+            chooseDate:"",
+            chooseBrand:""
+        });
+    };
+
+    handleQuickVisibleChange = (quickVisible) =>{
+        this.setState({
+            quickVisible,
+            chooseDate:"",
+            chooseBrand:""
+        });
     };
 
     changeTag = (chooseTag) => {
         this.setState({chooseTag})
     };
 
-    ChangeCity = (place) =>{
+    changeCity = (place) =>{
         $.ajax({
             type: "post",
             url: "bookstoreApp/getMovieTicket",
@@ -152,8 +178,81 @@ class movieTicket extends React.Component {
         });
     };
 
+    changeMovie = (movie) => {
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/getMovieDate",
+            data: {place: this.state.place, movie:movie},
+            async: false,
+            success: function (data) {
+                this.setState({
+                    date:JSON.parse(data),
+                    chooseMovie:movie,
+                    chooseDate:"",
+                    chooseBrand:"",
+                    chooseTime:""
+                });
+            }.bind(this)
+        });
+        this.setState({
+            chooseMovie:movie,
+            chooseDate:"",
+            chooseBrand:"",
+            chooseTime:""
+        });
+    };
+
+    changeDate = (date) => {
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/getMovieBrand",
+            data: {place: this.state.place, movie:this.state.chooseMovie,date:date},
+            async: false,
+            success: function (data) {
+                this.setState({
+                    brand:JSON.parse(data),
+                    chooseDate:date,
+                    chooseBrand:"",
+                    chooseTime:""
+                });
+            }.bind(this)
+        });
+        this.setState({
+            chooseDate:date,
+            chooseBrand:"",
+            chooseTime:""
+        });
+    };
+
+    changeBrand = (brand) =>{
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/getMovieTime",
+            data: {place: this.state.place, movie:this.state.chooseMovie, date:this.state.chooseDate, brand:brand},
+            async: false,
+            success: function (data) {
+                this.setState({
+                    time:JSON.parse(data),
+                    chooseBrand:brand,
+                    chooseTime:""
+                });
+            }.bind(this)
+        });
+        this.setState({
+            chooseBrand:brand,
+            chooseTime:""
+        })
+    };
+
+    changeTime = (time) =>{
+        this.setState({
+            chooseTime:time
+        })
+    };
+
     getMovie = () =>{
         let result=[];
+        const {chooseDate,chooseBrand,chooseTime,date,brand,time}=this.state;
         this.state.data.forEach((card, index) => {
             if (index >= (this.state.current - 1) * this.state.pageSize && index < this.state.current * this.state.pageSize) {
                 result.push(<Card
@@ -161,7 +260,69 @@ class movieTicket extends React.Component {
                     hoverable
                     className="movieCard"
                     cover={<img style={{height:"300px"}} alt={card.title} src={card.src} />}
-                    actions={[<Icon type="star-o" />, <Icon type="shopping-cart" />, <Icon type="rocket" />]}
+                    actions={[<Icon type="star-o" />,
+                        <Popover
+                            placement="rightTop"
+                            content={<div style={{overflow: "hidden"}}><div className="tags-panel container">
+                                <ul className="tags-lines">
+                                    <li className="tags-line">
+                                        <div className="tags-title">日期:</div>
+                                        <ul className="tags">
+                                            {date.map(date => <li key={date} className={date === chooseDate?"active":"normal"}><a onClick={() => this.changeDate(date)}>{date}</a></li>)}
+                                        </ul>
+                                    </li>
+                                    <li className="tags-line tags-line-border" style={{display:[chooseDate === ''? "none":"inline-block"]}}>
+                                        <div className="tags-title">品牌:</div>
+                                        <ul className="tags" >
+                                            {brand.map(brand => <li key={brand} className={brand === chooseBrand?"active":"normal"}><a onClick={() => this.changeBrand(brand)}>{brand}</a></li>)}
+                                        </ul>
+                                    </li>
+                                    <li className="tags-line tags-line-border" style={{display:[chooseDate === '' || chooseBrand === ''? "none":"inline-block"]}}>
+                                        <div className="tags-title">场次:</div>
+                                        <ul className="tags" >
+                                            {time.map(time => <li key={time} className={time === chooseTime?"active":"normal"}><a onClick={() => this.changeTime(time)}>{time}</a></li>)}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === ""}>加入购物车</Button></div>}
+                            trigger="click"
+                            visible={this.state.chooseMovie === card.title?this.state.shopVisible:false}
+                            onVisibleChange={this.handleShopVisibleChange}
+                        >
+                            <Icon onClick={() => this.changeMovie(card.title)} type="shopping-cart" />
+                        </Popover>
+                    , <Popover
+                            placement="rightTop"
+                            content={<div style={{overflow: "hidden"}}><div className="tags-panel container">
+                                <ul className="tags-lines">
+                                    <li className="tags-line">
+                                        <div className="tags-title">日期:</div>
+                                        <ul className="tags">
+                                            {date.map(date => <li key={date} className={date === chooseDate?"active":"normal"}><a onClick={() => this.changeDate(date)}>{date}</a></li>)}
+                                        </ul>
+                                    </li>
+                                    <li className="tags-line tags-line-border" style={{display:[chooseDate === ''? "none":"inline-block"]}}>
+                                        <div className="tags-title">品牌:</div>
+                                        <ul className="tags" >
+                                            {brand.map(brand => <li key={brand} className={brand === chooseBrand?"active":"normal"}><a onClick={() => this.changeBrand(brand)}>{brand}</a></li>)}
+                                        </ul>
+                                    </li>
+                                    <li className="tags-line tags-line-border" style={{display:[chooseDate === '' || chooseBrand === ''? "none":"inline-block"]}}>
+                                        <div className="tags-title">场次:</div>
+                                        <ul className="tags" >
+                                            {time.map(time => <li key={time} className={time === chooseTime?"active":"normal"}><a onClick={() => this.changeTime(time)}>{time}</a></li>)}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === ""}>一键快速下单</Button></div>}
+                            trigger="click"
+                            visible={this.state.chooseMovie === card.title?this.state.quickVisible:false}
+                            onVisibleChange={this.handleQuickVisibleChange}
+                        >
+                            <Icon onClick={() => this.changeMovie(card.title)} type="rocket" />
+                        </Popover>]}
                 >
                     <Card.Meta
                         title={<span style={{fontWeight: "bold"}}>{card.title}</span>}
@@ -188,13 +349,13 @@ class movieTicket extends React.Component {
                     </div>}
                     content={<div className="tab-content" style={{fontWeight: "bold"}}>
                         <div style={{display:this.state.chooseTag === "热门"?"block":"none"}}>
-                            {hotCity.map(city => <span key={city}><a onClick={() => this.ChangeCity(city)}>{city}</a></span>)}
+                            {hotCity.map(city => <span key={city}><a onClick={() => this.changeCity(city)}>{city}</a></span>)}
                         </div>
                         <div style={{display:this.state.chooseTag === "A - G"?"block":"none"}}>
                             {CityA_G.map(index => <dl className="tab-content-mod" key={index[0]}>
                                 <dt>{index[0]}</dt>
                                 <dd>
-                                    {index[1].map(city => <span key={city}><a onClick={() => this.ChangeCity(city)}>{city}</a></span>)}
+                                    {index[1].map(city => <span key={city}><a onClick={() => this.changeCity(city)}>{city}</a></span>)}
                                 </dd>
                             </dl>)}
                         </div>
@@ -202,7 +363,7 @@ class movieTicket extends React.Component {
                             {CityH_L.map(index => <dl className="tab-content-mod" key={index[0]}>
                                 <dt>{index[0]}</dt>
                                 <dd>
-                                    {index[1].map(city => <span key={city}><a onClick={() => this.ChangeCity(city)}>{city}</a></span>)}
+                                    {index[1].map(city => <span key={city}><a onClick={() => this.changeCity(city)}>{city}</a></span>)}
                                 </dd>
                             </dl>)}
                         </div>
@@ -210,7 +371,7 @@ class movieTicket extends React.Component {
                             {CityM_T.map(index => <dl className="tab-content-mod" key={index[0]}>
                                 <dt>{index[0]}</dt>
                                 <dd>
-                                    {index[1].map(city => <span key={city}><a onClick={() => this.ChangeCity(city)}>{city}</a></span>)}
+                                    {index[1].map(city => <span key={city}><a onClick={() => this.changeCity(city)}>{city}</a></span>)}
                                 </dd>
                             </dl>)}
                         </div>
@@ -218,20 +379,20 @@ class movieTicket extends React.Component {
                             {CityW_Z.map(index => <dl className="tab-content-mod" key={index[0]}>
                                 <dt>{index[0]}</dt>
                                 <dd>
-                                    {index[1].map(city => <span key={city}><a onClick={() => this.ChangeCity(city)}>{city}</a></span>)}
+                                    {index[1].map(city => <span key={city}><a onClick={() => this.changeCity(city)}>{city}</a></span>)}
                                 </dd>
                             </dl>)}
                         </div>
                     </div>}
                     trigger="click"
-                    visible={this.state.visible}
-                    onVisibleChange={this.handleVisibleChange}
+                    visible={this.state.cityVisible}
+                    onVisibleChange={this.handleCityVisibleChange}
                 >
                     <a>[切换城市]</a>
                 </Popover>
                 <Divider orientation="left" style={{fontWeight: "bold",fontSize:"20px"}}>正在上映</Divider>
                 <div style={{overflow: "hidden"}}>
-                {this.getMovie()}
+                    {this.getMovie()}
                 </div>
                 <div>
                 <Pagination showQuickJumper showSizeChanger pageSizeOptions={['6','12','18']} onShowSizeChange={this.onShowSizeChange} current={this.state.current} defaultPageSize={this.state.pageSize} total={this.state.data.length} onChange={this.onPageChange} style={{float:"right",marginRight:"50px"}} />
