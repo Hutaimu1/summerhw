@@ -5,4 +5,5 @@ public interface MovieTicketService {
     String getMovieDate(String place, String movie);
     String getMovieBrand(String place, String movie, String date);
     String getMovieTime(String place, String movie, String date, String brand);
+    String getMovieMessage(int id);
 }

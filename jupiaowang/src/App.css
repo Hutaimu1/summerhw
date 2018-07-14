@@ -272,5 +272,61 @@
   display: inline-block;
 }
 
+.movie-info span{
+  display:block;
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+
+.clear-fix {
+  display: block;
+}
+
+.rating_num {
+  color: #494949;
+  padding: 0;
+  min-width: 30%;
+  font-size: 55px;
+  float: left;
+}
+
+.rating_self {
+  padding: 0;
+  line-height: 2;
+}
+
+.star {
+  display: inline-block;
+  zoom: 1;
+  margin: 1px 0 0 0;
+  overflow: hidden;
+}
+
+.rating_sum {
+  font-size: 20px;
+}
+
+.item{
+  height: 30px;
+  margin-bottom: 20px;
+}
+
+
+.star-stop {
+  font-size: 20px;
+  float: left;
+  margin-right: 5px;
+}
+
+.power {
+  height: 30px;
+  float: left;
+  margin: 1px 4px;
+  background: #ffd596 none repeat scroll 0 0;
+}
+
+.rating_per {
+  font-size: 20px;
+}
 
 

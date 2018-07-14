@@ -27,7 +27,7 @@ public class MovieTicketController {
     public String getMovieTime(@RequestParam("place") String place,
                                @RequestParam("movie") String movie,
                                @RequestParam("date") String date) {
-        return movieTicketService.getMovieBrand(place, movie, date);user_name
+        return movieTicketService.getMovieBrand(place, movie, date);
     }
 
     @PostMapping(value = "getMovieTime")
@@ -37,5 +37,11 @@ public class MovieTicketController {
                                @RequestParam("date") String date,
                                @RequestParam("brand") String brand) {
         return movieTicketService.getMovieTime(place, movie, date, brand);
+    }
+
+    @PostMapping(value = "getMovieMessage")
+    @ResponseBody
+    public String getMovieTime(@RequestParam("id") int id) {
+        return movieTicketService.getMovieMessage(id);
     }
 }

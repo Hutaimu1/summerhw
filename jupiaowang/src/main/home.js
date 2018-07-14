@@ -6,6 +6,7 @@ import MovieTicket from "../Components/movieTicket"
 import TrainTicket from "../Components/trainTicket"
 import OrderToBeResolved from "../Components/orderToBeResolved"
 import HistoryOrder from '../Components/historyOrder'
+import ViewMovie from '../Components/viewMovie'
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -80,6 +81,7 @@ class homepage extends React.Component {
                                 <Route path= "/home/:userName/shoppingCart" component={ShopCart} />
                                 <Route path= "/home/:userName/orderToBeResolved" component={OrderToBeResolved} />
                                 <Route path= "/home/:userName/historyOrder" component={HistoryOrder} />
+                                <Route path= "/home/:userName/viewMovie/:movieId" component={ViewMovie} />
                             </Switch>
                         </div>
                     </Content>

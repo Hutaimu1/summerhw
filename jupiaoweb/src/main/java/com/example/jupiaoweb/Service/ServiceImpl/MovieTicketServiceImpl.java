@@ -3,7 +3,7 @@ package com.example.jupiaoweb.Service.ServiceImpl;
 import com.example.jupiaoweb.Model.MovieEntity;
 import com.example.jupiaoweb.Model.MovieFieldEntity;
 import com.example.jupiaoweb.Service.MovieTicketService;
-import com.example.jupiaoweb.bean.MovieTicket;
+import com.example.jupiaoweb.bean.Movie;
 import com.example.jupiaoweb.dao.MovieFieldRepository;
 import com.example.jupiaoweb.dao.MovieRepository;
 import com.google.gson.Gson;
@@ -25,13 +25,13 @@ public class MovieTicketServiceImpl implements MovieTicketService {
     @Override
     public String getMovieTicket(String place){
         Gson gson = new Gson();
-        List<MovieTicket> res = new ArrayList<>();
+        List<Movie> res = new ArrayList<>();
         List<MovieEntity> result = movieRepository.findByPlaceContaining(place);
         for (MovieEntity aResult : result) {
-            MovieTicket m = new MovieTicket();
-            m.setId(aResult.getMovie_id());
+            Movie m = new Movie();
+            m.setId(aResult.getMovieId());
             m.setSrc(aResult.getUrl());
-            m.setTitle(aResult.getMovie_name());
+            m.setTitle(aResult.getMovieName());
             m.setRate(aResult.getRate());
             res.add(m);
         }
@@ -69,4 +69,29 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         List<MovieFieldEntity> result = movieFieldRepository.findByPlaceAndMovieAndDateAndBrand(place, movie, date, brand);
         return gson.toJson(result.get(0).getTime());
     }
+
+    @Override
+    public String getMovieMessage(int id){
+        Gson gson = new Gson();
+        List<MovieEntity> results = movieRepository.findByMovieId(id);
+        MovieEntity result = results.get(0);
+        Movie movie = new Movie();
+        movie.setId(result.getMovieId());
+        movie.setRate(result.getRate());
+        movie.setSrc(result.getUrl());
+        movie.setTitle(result.getMovieName());
+        movie.setDate(result.getDate());
+        movie.setDirector(result.getDirector());
+        movie.setLanguage(result.getLanguage());
+        movie.setLength(result.getLength());
+        movie.setMade(result.getMade());
+        movie.setNumberOfComments(result.getNumberOfComments());
+        movie.setOthers(result.getOthers());
+        movie.setScreenwriter(result.getScreenwriter());
+        movie.setType(result.getType());
+        System.out.println(movie.getTitle());
+        return gson.toJson(movie);
+    }
+
+
 }

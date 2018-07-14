@@ -260,7 +260,7 @@ class movieTicket extends React.Component {
                     hoverable
                     className="movieCard"
                     cover={<img style={{height:"300px"}} alt={card.title} src={card.src} />}
-                    actions={[<Icon type="star-o" />,
+                    actions={[<Icon type="eye" onClick={() => this.props.history.push('/home/' + this.props.match.params.userName + "/viewMovie/" + card.id)} />,
                         <Popover
                             placement="rightTop"
                             content={<div style={{overflow: "hidden"}}><div className="tags-panel container">
