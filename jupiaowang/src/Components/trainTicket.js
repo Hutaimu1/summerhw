@@ -291,7 +291,7 @@ class trainTicket extends React.Component {
         return "none";
     };
 
-    BuyTicket = (record) => {
+    trainTicketAddToShopCart = (record) => {
         let userName = this.props.match.params.userName;
         let ticketName = record.model + this.state.starting + "To" + this.state.destination;
         $.ajax({
@@ -305,7 +305,7 @@ class trainTicket extends React.Component {
         });
     };
 
-    QuickBuy = (record) => {
+    trainTicketQuickBuy = (record) => {
         let userName = this.props.match.params.userName;
         let ticketName = record.model + this.state.starting + "To" + this.state.destination;
         $.ajax({
@@ -315,8 +315,7 @@ class trainTicket extends React.Component {
             traditional: true,
             success: function (data) {
                 message.success("一键下单成功,已生成未处理订单");
-                this.props.history.push('/home/'+ userName + '/orderToBeResolved')
-            }.bind(this)
+            }
         });
     };
 
@@ -409,12 +408,12 @@ class trainTicket extends React.Component {
                 else{
                     return <div>
                         <Tooltip placement="topLeft" title="加入购物车" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.BuyTicket(record)}>
+                            <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.trainTicketAddToShopCart(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></a>
                             </Popconfirm>
                         </Tooltip>
                         <Tooltip placement="topLeft" title="一键下单" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.QuickBuy(record)}>
+                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.trainTicketQuickBuy(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="rocket"/></a>
                             </Popconfirm>
                         </Tooltip>

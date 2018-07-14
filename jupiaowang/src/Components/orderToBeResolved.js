@@ -1,12 +1,18 @@
 import React from 'react'
 import {Table,Button,Row,Col,message,Popconfirm} from 'antd'
 import $ from "jquery";
+import moment from 'moment'
 
 let orderNotPaid =[
+    {orderId:1,totalPrice:1000,date:"2018-07-14 20:00:00",paid:0},
+    {orderId:2,totalPrice:1000,date:"2018-07-14 20:00:00",paid:0},
+    {orderId:3,totalPrice:1000,date:"2018-07-14 20:00:00",paid:0}
 ];
 
 let detailOrder = [
+    {orderId:2,name:'商品1',price:100,count:10}
 ];
+
 export default class OrderToBeResolved extends React.Component{
     constructor() {
         super();
@@ -16,6 +22,7 @@ export default class OrderToBeResolved extends React.Component{
             detailOrder:detailOrder,
         };
     }
+
 
     componentDidMount(){
         let userName = this.props.match.params.userName;
@@ -106,6 +113,22 @@ export default class OrderToBeResolved extends React.Component{
         })
     }
 
+    leftTime = (id) => {
+        let result;
+        this.state.orderNotPaid.forEach((order) => {
+            if (order.orderId === id) {
+                let m2 = moment(moment().format("YYYY-MM-DD HH:mm:ss"));
+                let m1 = moment(order.date);
+                let du = moment(m2 - m1).format("mm分ss秒");
+                let minute = parseInt(du.substr(0, 2),0);
+                let second = parseInt(du.substr(3, 2),0);
+                let leftMinute = 900 - (minute * 60 + second);
+                result = parseInt((leftMinute / 60).toString(),0) + "分" + (leftMinute % 60).toString() + "秒";
+                }
+        });
+        return result;
+    }
+
 
     render(){
         const columns = [
@@ -122,10 +145,10 @@ export default class OrderToBeResolved extends React.Component{
                 dataIndex:'date',
                 key:'date'
             },{
-                title:'查看详情',
-                key:'see',
+                title:"剩余支付时间",
+                key:"leftTime",
                 render: (text,record) => {
-                    return (<Button onClick={() => this.showDetailOrder(record.orderId)} icon="eye">查看</Button>)
+                    return (<a style={{color:"black"}} id ='time'>{this.leftTime(record.orderId)}</a>)
                 }
             },{
                 title: '操作',
@@ -133,17 +156,20 @@ export default class OrderToBeResolved extends React.Component{
                 render: (text,record) => {
                     return (
                         <Row>
-                            <Col span={8}>
+                            <Col span={6}>
+                                <Button onClick={() => this.showDetailOrder(record.orderId)} icon="eye">查看</Button>
+                            </Col>
+                            <Col span={6}>
                                 <Popconfirm title="确定使用支付宝付款吗?" onConfirm={() => this.goToBuy(record.orderId)}>
                                     <Button icon="alipay">支付</Button>
                                 </Popconfirm>
                             </Col>
-                            <Col span={8}>
+                            <Col span={6}>
                                 <Popconfirm title="确定使用微信付款吗?" onConfirm={() => this.goToBuy(record.orderId)}>
                                     <Button icon="wechat">支付</Button>
                                 </Popconfirm>
                             </Col>
-                            <Col span={8}>
+                            <Col span={6}>
                                 <Popconfirm title="确定要删除订单吗?" onConfirm={() => this.deleteOrder(record.orderId)}>
                                     <Button type="danger" icon="delete">删除</Button>
                                 </Popconfirm>
