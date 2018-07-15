@@ -44,4 +44,27 @@ public class MovieTicketController {
     public String getMovieTime(@RequestParam("id") int id) {
         return movieTicketService.getMovieMessage(id);
     }
+
+    @PostMapping(value = "movieTicketAddToShopCart")
+    @ResponseBody
+    public String movieTicketAddToShopCart(@RequestParam("ticketId") int ticketId,
+                                           @RequestParam("userName") String userName,
+                                           @RequestParam("ticketName") String ticketName,
+                                           @RequestParam("price") int price,
+                                           @RequestParam("leftTicket") int leftTicket,
+                                           @RequestParam("description") String description){
+        return movieTicketService.movieTicketAddToShopCart(ticketId,userName,ticketName,price,leftTicket,description) ;
+    }
+
+    @PostMapping(value = "movieTicketQuickBuy")
+    @ResponseBody
+    public String movieTicketQuickBuy(@RequestParam("ticketId") int ticketId,
+                                      @RequestParam("userName") String userName,
+                                      @RequestParam("ticketName") String ticketName,
+                                      @RequestParam("price") int price,
+                                      @RequestParam("leftTicket") int leftTicket,
+                                      @RequestParam("date") String date,
+                                      @RequestParam("description") String description){
+        return movieTicketService.movieTicketQuickBuy(ticketId,userName,ticketName,price,leftTicket,date,description);
+    }
 }

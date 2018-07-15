@@ -1,15 +1,15 @@
 package com.example.jupiaoweb.Service.ServiceImpl;
 
-import com.example.jupiaoweb.Model.MovieEntity;
-import com.example.jupiaoweb.Model.MovieFieldEntity;
+import com.example.jupiaoweb.Model.*;
 import com.example.jupiaoweb.Service.MovieTicketService;
 import com.example.jupiaoweb.bean.Movie;
-import com.example.jupiaoweb.dao.MovieFieldRepository;
-import com.example.jupiaoweb.dao.MovieRepository;
+import com.example.jupiaoweb.dao.*;
 import com.google.gson.Gson;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +21,15 @@ public class MovieTicketServiceImpl implements MovieTicketService {
 
     @Resource
     private MovieFieldRepository movieFieldRepository;
+
+    @Resource
+    private ShopCartRepository shopCartRepository;
+
+    @Resource
+    private TicketOrderRepository ticketOrderRepository;
+
+    @Resource
+    private OrderItemRepository orderItemRepository;
 
     @Override
     public String getMovieTicket(String place){
@@ -93,5 +102,61 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         return gson.toJson(movie);
     }
 
+    @Override
+    public String movieTicketAddToShopCart(int ticketId,String userName,String ticketName,int price,int leftTicket,String description){
+        Gson gson = new Gson();
+        List<ShopCartEntity> myShopCartEntity = shopCartRepository.findByUserNameAndTicketNameAndDescription(userName,ticketName,description);
+        if((myShopCartEntity.size() != 0) && (myShopCartEntity.get(0).getIsBuy() == 0)){
+            myShopCartEntity.get(0).setCount(myShopCartEntity.get(0).getCount() + 1);
+            shopCartRepository.save(myShopCartEntity.get(0));
+            return gson.toJson(1);
+        }
+        ShopCartEntity newShopCart = new ShopCartEntity();
+        newShopCart.setTicketId(ticketId);
+        newShopCart.setUserName(userName);
+        newShopCart.setTicketName(ticketName);
+        newShopCart.setPrice(price);
+        newShopCart.setCount(1);
+        newShopCart.setIsCheck((byte)0);
+        newShopCart.setIsBuy((byte)0);
+        newShopCart.setType((byte)1);
+        newShopCart.setLeftTicket(leftTicket);
+        newShopCart.setDescription(description);
+        shopCartRepository.save(newShopCart);
+        return gson.toJson(0);
+    }
 
+    @Override
+    public String movieTicketQuickBuy(int ticketId,String userName,String ticketName,int price,int leftTicket,String date,String description) {
+        Gson gson = new Gson();
+        List<ShopCartEntity> myShopCartEntity = shopCartRepository.findByUserNameAndTicketNameAndDescription(userName,ticketName,description);
+        if((myShopCartEntity.size() != 0) && (myShopCartEntity.get(0).getIsBuy() == 0)){
+            return gson.toJson(false);
+        }
+        ShopCartEntity newShopCart = new ShopCartEntity();
+        newShopCart.setTicketId(ticketId);
+        newShopCart.setUserName(userName);
+        newShopCart.setTicketName(ticketName);
+        newShopCart.setPrice(price);
+        newShopCart.setCount(1);
+        newShopCart.setIsCheck((byte) 0);
+        newShopCart.setIsBuy((byte) 1);
+        newShopCart.setLeftTicket(leftTicket);
+        newShopCart.setDescription(description);
+        shopCartRepository.save(newShopCart);
+        TicketOrderEntity newTicketOrder = new TicketOrderEntity();
+        newTicketOrder.setIsPaid((byte) 0);
+        newTicketOrder.setTotalPrice(price);
+        newTicketOrder.setUserName(userName);
+        Timestamp ts = Timestamp.valueOf(date);
+        newTicketOrder.setDate(ts);
+        ticketOrderRepository.save(newTicketOrder);
+        TicketOrderEntity result = ticketOrderRepository.findByUserNameAndDate(userName, ts).get(0);
+        int orderId = result.getOrderId();
+        OrderItemEntity newOrderItem = new OrderItemEntity();
+        newOrderItem.setOrderId(orderId);
+        newOrderItem.setShopcartId(ticketId);
+        orderItemRepository.save(newOrderItem);
+        return gson.toJson(true);
+    }
 }

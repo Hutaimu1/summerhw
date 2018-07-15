@@ -7,4 +7,5 @@ public interface TicketOrderService {
     String addToHistoryOrder(int orderId);
     String getHistoryOrderList(String userName);
     String deleteHistoryOrder(int orderId);
+    String orderOutOfTime(int orderId);
 }

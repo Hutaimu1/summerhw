@@ -17,4 +17,5 @@ public interface TicketOrderRepository extends JpaRepository<TicketOrderEntity, 
 
     @Query("select o from TicketOrderEntity o where o.userName=:userName and o.date=:date")
     List<TicketOrderEntity> findByUserNameAndDate(@Param("userName") String userName, @Param("date")Timestamp date);
+
 }

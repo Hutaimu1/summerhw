@@ -46,4 +46,10 @@ public class TicketOrderController {
     public String deleteHistoryOrder(@RequestParam("orderId") int orderId) {
         return ticketOrderService.deleteHistoryOrder(orderId);
     }
+
+    @PostMapping(value = "orderOutOfTime")
+    @ResponseBody
+    public String orderOutOfTime(@RequestParam("orderId") int orderId) {
+        return ticketOrderService.orderOutOfTime(orderId);
+    }
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Card, Icon, Rate, Divider, Pagination, Popover, Button} from 'antd';
 import $ from "jquery";
+import {message} from "antd/lib/index";
+import moment from "moment/moment";
 
 const data = [{
     id:0,
@@ -250,6 +252,56 @@ class movieTicket extends React.Component {
         })
     };
 
+    movieTicketAddToShopCart = (id,place,date,brand,time) =>{
+        let userName = this.props.match.params.userName;
+        let ticketName;
+        let description = place +" "+ brand+ " " + date +" "+ time;
+        this.state.data.forEach((movieTicket) =>{
+            if(movieTicket.id === id){
+                ticketName = movieTicket.title;
+            }
+        });
+        $.ajax({
+            url: "bookstoreApp/movieTicketAddToShopCart",
+            data: {ticketId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,description:description},
+            type: "POST",
+            traditional: true,
+            success: function (data) {
+                if(JSON.parse(data) === 1){
+                    message.success("检测到你的购物车中已经有该票品，已在购物车中为该票品的数量加一")
+                }
+                else if(JSON.parse(data) === 0){
+                message.success("加入购物车成功!");
+                }
+            }
+        });
+    };
+
+    movieTicketQuickBuy = (id,place,date,brand,time) =>{
+        let userName = this.props.match.params.userName;
+        let ticketName;
+        let description = place +" "+ brand+ " " + date +" "+ time;
+        this.state.data.forEach((movieTicket) =>{
+            if(movieTicket.id === id){
+                ticketName = movieTicket.title;
+            }
+        });
+        $.ajax({
+            url: "bookstoreApp/movieTicketQuickBuy",
+            data: {ticketId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,date:moment().format('YYYY-MM-DD HH:mm:ss'),description:description},
+            type: "POST",
+            traditional: true,
+            success: function (data) {
+                if(JSON.parse(data) === false){
+                    message.success("检测到你的购物车中已经含有该票品，请先结算购物车中的该票品")
+                }
+                else if(JSON.parse(data) === true){
+                    message.success("一键下单成功,已生成未处理订单");
+                }
+            }
+        });
+    };
+
     getMovie = () =>{
         let result=[];
         const {chooseDate,chooseBrand,chooseTime,date,brand,time}=this.state;
@@ -285,7 +337,7 @@ class movieTicket extends React.Component {
                                     </li>
                                 </ul>
                             </div>
-                            <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === ""}>加入购物车</Button></div>}
+                            <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" } onClick={()=>this.movieTicketAddToShopCart(card.id,this.state.place,this.state.chooseDate,this.state.chooseBrand,this.state.chooseTime)}>加入购物车</Button></div>}
                             trigger="click"
                             visible={this.state.chooseMovie === card.title?this.state.shopVisible:false}
                             onVisibleChange={this.handleShopVisibleChange}
@@ -316,7 +368,7 @@ class movieTicket extends React.Component {
                                     </li>
                                 </ul>
                             </div>
-                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === ""}>一键快速下单</Button></div>}
+                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" }  onClick={()=>this.movieTicketQuickBuy(card.id,this.state.place,this.state.chooseDate,this.state.chooseBrand,this.state.chooseTime)}>一键快速下单</Button></div>}
                             trigger="click"
                             visible={this.state.chooseMovie === card.title?this.state.quickVisible:false}
                             onVisibleChange={this.handleQuickVisibleChange}

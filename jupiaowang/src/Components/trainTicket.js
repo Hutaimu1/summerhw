@@ -291,31 +291,56 @@ class trainTicket extends React.Component {
         return "none";
     };
 
-    BuyTicket = (record) => {
+    trainTicketAddToShopCart = (record) => {
         let userName = this.props.match.params.userName;
-        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
+        let ticketName = record.model
+        let description = this.state.date.format('YYYY-MM-DD') + this.state.starting+" To "+this.state.destination;
         $.ajax({
             url: "bookstoreApp/trainTicketAddToShopCart",
-            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left},
+            data: {ticketId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
-                    message.success("加入购物车成功!");
+                if(JSON.parse(data) === 0) {
+                    message.success("加入购物车成功!，请前往我的购物车查看");
+                }
+                else if(JSON.parse(data) === 1){
+                    message.success("检测到你的购物车中已经有该票品，已在购物车中为该票品的数量加一")
+                }
+                else if(JSON.parse(data) === 2){
+                    message.success("检测到你的购物车中已经有该票品,但该票品库存不足，请您看看其他票品")
+                }
             }
         });
     };
 
-    QuickBuy = (record) => {
+    trainTicketQuickBuy = (record) => {
         let userName = this.props.match.params.userName;
-        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
+        let ticketName = record.model
+        let description = this.state.date.format('YYYY-MM-DD') + this.state.starting+" To "+this.state.destination;
         $.ajax({
             url: "bookstoreApp/trainTicketQuickBuy",
-            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+            data: {ticketId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,date:moment().format('YYYY-MM-DD HH:mm:ss'),description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
-                message.success("一键下单成功,已生成未处理订单");
-                this.props.history.push('/home/'+ userName + '/orderToBeResolved')
+                if(JSON.parse(data) === true) {
+                    message.success("一键下单成功,已生成未处理订单");
+                    this.setState((preState) =>{
+                        preState.dataSource.forEach((ticket,index) =>{
+                            if(ticket.id === record.id){
+                                preState.dataSource[index].left --;
+                            }
+                        });
+                        return {
+                           dataSource:preState.dataSource,
+                            dataSource_copy:preState.dataSource
+                        }
+                    })
+                }
+                else if(JSON.parse(data) === false){
+                    message.success("检测到你的购物车中已经含有该票品，请先结算购物车中的该票品");
+                }
             }.bind(this)
         });
     };
@@ -409,12 +434,12 @@ class trainTicket extends React.Component {
                 else{
                     return <div>
                         <Tooltip placement="topLeft" title="加入购物车" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.BuyTicket(record)}>
+                            <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.trainTicketAddToShopCart(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></a>
                             </Popconfirm>
                         </Tooltip>
                         <Tooltip placement="topLeft" title="一键下单" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.QuickBuy(record)}>
+                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.trainTicketQuickBuy(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="rocket"/></a>
                             </Popconfirm>
                         </Tooltip>

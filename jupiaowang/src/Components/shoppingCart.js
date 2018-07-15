@@ -1,5 +1,5 @@
 import React from 'react';
-import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message} from 'antd'
+import {InputNumber,Icon,Row, Col, Button,Table,Popconfirm,message,Tooltip} from 'antd'
 import $ from 'jquery'
 import moment from 'moment'
 
@@ -44,7 +44,6 @@ export default class ShopCart extends React.Component {
                 });
             }.bind(this)
         });
-        console.log("success",this.state.selectCheckedArray);
     }
 
 
@@ -193,16 +192,13 @@ export default class ShopCart extends React.Component {
             });
             let arr = [];
             arr.push(record.id);
-            console.log("success",preState.goodsArray);
             $.ajax({url:"bookstoreApp/changeChecked",
                 data:{cartItemId:arr},
                 type:"POST",
                 traditional:true,
                 success:function(){
-                    console.log("success");
                 }
             });
-            console.log("success",this.updateSelectedCheckedArray(preState.goodsArray));
             return {
                 goodsArray: preState.goodsArray,
                 isSelectAll: ShopCart.updateSelectAllFlag(preState.goodsArray),
@@ -213,8 +209,6 @@ export default class ShopCart extends React.Component {
     }
 
     changeSelectAllFlag(selected, selectedRows, changeRows) {
-        console.log("all");
-        console.log("success",this.state.selectCheckedArray);
         let arr = [];
         let price = 0;
         this.setState((preState) => {
@@ -247,26 +241,29 @@ export default class ShopCart extends React.Component {
     orderToBeSolved(){
         this.setState((preState) => {
             let shopCartIdArray = [];
+            let ticketIdArray = [];
             let countArray = [];
+            let typeArray = [];
             preState.goodsArray.forEach((goods) =>{
                 if(goods.checked){
                     shopCartIdArray.push(goods.id);
+                    ticketIdArray.push(goods.ticketId);
                     countArray.push(goods.count);
+                    typeArray.push(goods.type);
                 }
             });
             $.ajax({
-                url: "bookstoreApp/addOrderList",
+                url: "bookstoreApp/addToOrderNotPaidList",
                 data: {userName:this.props.match.params.userName,totalPrice:preState.totalPrice,date:moment().format('YYYY-MM-DD HH:mm:ss'),shopCartId:shopCartIdArray},
                 type: "POST",
                 traditional: true,
                 success: function (data) {
-                    message.success("生成订单成功，订单号为："+JSON.parse(data)
-                    )
+                    message.success("生成订单成功，订单号为："+JSON.parse(data))
                 }
             });
             $.ajax({
                 url: "bookstoreApp/updateLeftTicket",
-                data: {shopCartId:shopCartIdArray,count:countArray},
+                data: {ticketId:ticketIdArray,count:countArray,type:typeArray},
                 type: "POST",
                 traditional: true,
                 success: function (data) {
@@ -292,11 +289,26 @@ export default class ShopCart extends React.Component {
         return result;
     }
 
+    showDescription = (id) =>{
+        let description;
+        this.state.goodsArray.forEach((goods) =>{
+            if(goods.id === id){
+                description = goods.description;
+            }
+        });
+        return description;
+    };
+
     render() {
         const columns = [
             { title: '票品名称',
                 dataIndex: 'name',
-                key:'name'
+                key:'name',
+                render:(text,record)=>{
+                    return <Tooltip placement="topLeft" title={()=>this.showDescription(record.id)}>
+                        <a>{record.name}</a>
+                    </Tooltip>
+            }
             }, {
                 title: '价格',
                 dataIndex:'price',

@@ -22,22 +22,24 @@ public class TrainTicketController {
 
     @PostMapping(value = "trainTicketAddToShopCart")
     @ResponseBody
-    public String trainTicketAddToShopCart(@RequestParam("shopCartId") int shopCartId,
+    public String trainTicketAddToShopCart(@RequestParam("ticketId") int shopCartId,
                                            @RequestParam("userName") String userName,
                                            @RequestParam("ticketName") String ticketName,
                                            @RequestParam("price") int price,
-                                           @RequestParam("leftTicket") int leftTicket){
-        return trainTicketService.trainTicketAddToShopCart(shopCartId,userName,ticketName,price,leftTicket) ;
+                                           @RequestParam("leftTicket") int leftTicket,
+                                           @RequestParam("description") String description){
+        return trainTicketService.trainTicketAddToShopCart(shopCartId,userName,ticketName,price,leftTicket,description);
     }
 
     @PostMapping(value = "trainTicketQuickBuy")
     @ResponseBody
-    public String trainTicketQuickBuy(@RequestParam("shopCartId") int shopCartId,
+    public String trainTicketQuickBuy(@RequestParam("ticketId") int ticketId,
                                       @RequestParam("userName") String userName,
                                       @RequestParam("ticketName") String ticketName,
                                       @RequestParam("price") int price,
                                       @RequestParam("leftTicket") int leftTicket,
-                                      @RequestParam("date") String date){
-        return trainTicketService.trainTicketQuickBuy(shopCartId,userName,ticketName,price,leftTicket,date) ;
+                                      @RequestParam("date") String date,
+                                      @RequestParam("description") String description){
+        return trainTicketService.trainTicketQuickBuy(ticketId,userName,ticketName,price,leftTicket,date,description) ;
     }
 }

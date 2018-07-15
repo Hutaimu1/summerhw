@@ -6,7 +6,6 @@ import com.example.jupiaoweb.Model.TicketOrderEntity;
 import com.example.jupiaoweb.Model.TrainTicketEntity;
 import com.example.jupiaoweb.Service.ShopCartService;
 import com.example.jupiaoweb.bean.ShopCart;
-import com.example.jupiaoweb.bean.TrainTicket;
 import com.example.jupiaoweb.dao.OrderItemRepository;
 import com.example.jupiaoweb.dao.ShopCartRepository;
 import com.example.jupiaoweb.dao.TicketOrderRepository;
@@ -16,6 +15,7 @@ import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +45,13 @@ public class ShopCartServiceImpl implements ShopCartService {
             if(aResult.getIsBuy() == 0){
                 ShopCart shop = new ShopCart();
                 shop.setId(aResult.getShopcartId());
+                shop.setTicketId(aResult.getTicketId());
                 shop.setName(aResult.getTicketName());
                 shop.setCount(aResult.getCount());
                 shop.setPrice(aResult.getPrice());
                 shop.setLeftTicket(aResult.getLeftTicket());
+                shop.setType(aResult.getType());
+                shop.setDescription(aResult.getDescription());
                 if ((aResult.getIsCheck() & 0xFF) == 1) {
                     shop.setChecked(true);
                 } else {
@@ -61,17 +64,19 @@ public class ShopCartServiceImpl implements ShopCartService {
     }
 
     @Override
-    public String updateLeftTicket(int[]shopCartId,int[]count){
-        int len = shopCartId.length;
+    public String updateLeftTicket(int[]ticketId,int[]count,int[] type){
+        int len = ticketId.length;
         Gson gson = new Gson();
         for(int i = 0;i<len;++i){
-            TrainTicketEntity trainTicket = trainTicketRepository.findByTicketId(shopCartId[i]).get(0);
+            if(type[i] == 0){
+            TrainTicketEntity trainTicket = trainTicketRepository.findByTicketId(ticketId[i]).get(0);
             int leftTicket = trainTicket.getLeftTicket()-count[i];
             if(leftTicket < 0){
                 return gson.toJson(false);
             }
             trainTicket.setLeftTicket(leftTicket);
             trainTicketRepository.save(trainTicket);
+            }
         }
         return gson.toJson(true);
     }
@@ -156,7 +161,7 @@ public class ShopCartServiceImpl implements ShopCartService {
     }
 
     @Override
-    public String addOrderList(String userName,int totalPrice,String date,int[] shopCartId){
+    public String addToOrderNotPaidList(String userName,int totalPrice,String date,int[] shopCartId){
         int len = shopCartId.length;
         TicketOrderEntity newTicketOrder = new TicketOrderEntity();
         newTicketOrder.setUserName(userName);

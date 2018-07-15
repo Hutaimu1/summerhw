@@ -13,4 +13,5 @@ public interface TrainTicketRepository extends JpaRepository<TrainTicketEntity, 
 
     @Query("select t from TrainTicketEntity t where t.ticketId=:ticketId")
     List<TrainTicketEntity> findByTicketId(@Param("ticketId") int ticketId);
+
 }
