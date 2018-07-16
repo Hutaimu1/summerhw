@@ -137,6 +137,7 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         newShopCart.setCount(1);
         newShopCart.setIsCheck((byte) 0);
         newShopCart.setIsBuy((byte) 1);
+        newShopCart.setType((byte) 1);
         newShopCart.setLeftTicket(leftTicket);
         newShopCart.setDescription(description);
         shopCartRepository.save(newShopCart);
@@ -147,11 +148,13 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         Timestamp ts = Timestamp.valueOf(date);
         newTicketOrder.setDate(ts);
         ticketOrderRepository.save(newTicketOrder);
-        TicketOrderEntity result = ticketOrderRepository.findByUserNameAndDate(userName, ts).get(0);
-        int orderId = result.getOrderId();
+        int shopCartId = shopCartRepository.getMaxId();
+        System.out.println(shopCartId);
+        int orderId = ticketOrderRepository.getMaxId();
+        System.out.println(orderId);
         OrderItemEntity newOrderItem = new OrderItemEntity();
         newOrderItem.setOrderId(orderId);
-        newOrderItem.setShopcartId(ticketId);
+        newOrderItem.setShopcartId(shopCartId);
         orderItemRepository.save(newOrderItem);
         return gson.toJson(true);
     }

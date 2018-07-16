@@ -96,7 +96,7 @@ class History extends React.Component{
                 async: true,
                 success: function (data) {
                     if(JSON.parse(data)){
-                        message.success("已删除记录！")
+                        message.success("已删除记录!")
                     }
                 }
             });
@@ -167,18 +167,23 @@ class History extends React.Component{
         })
     }
 
+    hasValue = (value) => {
+        return (value !== undefined && value !== '' && value !== null)
+    };
+
     handleDateAndNumber =(differentTypeOrder) =>{
         let date1 = this.props.form.getFieldValue('date1');
+        console.log(date1);
         let date2 = this.props.form.getFieldValue('date2');
         let startPrice = this.props.form.getFieldValue('startPrice');
         let endPrice = this.props.form.getFieldValue('endPrice');
         let result = [];
-        if(date1 === undefined && startPrice ===undefined){
+        if(!this.hasValue(date1) && !this.hasValue(startPrice)){
             differentTypeOrder.forEach((order)=>{
                 result.push(order);
             })
         }
-        else if(date1 !== undefined && startPrice ===undefined){
+        else if(this.hasValue(date1) && !this.hasValue(startPrice)){
             differentTypeOrder.forEach((order)=>{
                 let date = moment(order.date,'YYYY-MM-DD');
                 if((date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))) && (date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD')))){
@@ -186,7 +191,7 @@ class History extends React.Component{
                 }
             })
         }
-        else if(date1 === undefined && startPrice !== undefined){
+        else if(!this.hasValue(date1) && this.hasValue(startPrice)){
             differentTypeOrder.forEach((order)=>{
                 let price = order.totalPrice;
                 if((price >= startPrice) && (price <= endPrice)){
@@ -194,7 +199,7 @@ class History extends React.Component{
                 }
             })
         }
-        else if(date1 !== undefined && startPrice !==undefined){
+        else{
             differentTypeOrder.forEach((order)=>{
                 let date = moment(order.date,'YYYY-MM-DD');
                 let price = order.totalPrice;
@@ -305,7 +310,7 @@ class History extends React.Component{
                     <Form.Item>
                         {getFieldDecorator('date1', {
                         })(
-                            <DatePicker allowClear={false}/>
+                            <DatePicker allowClear={true}/>
                         )}
                     </Form.Item>
                     <Form.Item>
@@ -315,7 +320,7 @@ class History extends React.Component{
                         {getFieldDecorator('date2', {
                             initialValue: this.props.form.getFieldValue('date1')
                         })(
-                            <DatePicker disabledDate={this.disabledDate} allowClear={false}/>
+                            <DatePicker disabledDate={this.disabledDate} allowClear={true}/>
                         )}
                     </Form.Item>
                     <Form.Item label="订单价格区间">
@@ -375,6 +380,7 @@ class History extends React.Component{
                         pageSizeOptions:['8','16','24'],
                         showSizeChanger: true,
                         showQuickJumper: false,
+                        position:'bottom'
                     }}
                 >
                 </Table>

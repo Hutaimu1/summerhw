@@ -268,20 +268,19 @@ export default class ShopCart extends React.Component {
                 type: "POST",
                 traditional: true,
                 success: function (data) {
-                    console.log(typeof(JSON.parse(data)));
                     if (typeof(JSON.parse(data)) === 'number') {
-                        message.success("生成订单成功，订单号为：" + JSON.parse(data))
+                        message.success("生成订单成功，订单号为：" + JSON.parse(data));
+                        this.props.history.push('/home/' + this.props.match.params.userName + "/orderToBeResolved")
                     }
                     else if (typeof(JSON.parse(data)) === 'object') {
                         let ticketNameArray = JSON.parse(data);
-                        console.log(JSON.parse(data));
                         let name = '';
                         ticketNameArray.forEach((ticketName) => {
                             name += ticketName + ' ';
                         });
                         message.warning("票名为:" + name + "的票品库存不足，请重新确定票品数量")
                     }
-                }
+                }.bind(this)
             });
         })
     }
@@ -409,7 +408,7 @@ export default class ShopCart extends React.Component {
                     pageSizeOptions: ['8', '16', '24'],
                     showSizeChanger: true,
                     showQuickJumper: false,
-                    position: 'top'
+                    position: 'bottom'
                 }}
             >
             </Table>

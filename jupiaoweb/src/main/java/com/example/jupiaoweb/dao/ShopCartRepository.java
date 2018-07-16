@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ShopCartRepository extends JpaRepository<ShopCartEntity, String> {
+    @Query("select max(s.shopcartId) from ShopCartEntity s")
+    int getMaxId();
+
     @Query("select s from ShopCartEntity s where s.userName=:userName")
     List<ShopCartEntity> findByUserName(@Param("userName") String username);
 

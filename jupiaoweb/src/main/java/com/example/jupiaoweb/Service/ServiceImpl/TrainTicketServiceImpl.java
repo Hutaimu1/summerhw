@@ -119,10 +119,10 @@ public class TrainTicketServiceImpl implements TrainTicketService {
         Timestamp ts = Timestamp.valueOf(date);
         newTicketOrder.setDate(ts);
         ticketOrderRepository.save(newTicketOrder);
-        TicketOrderEntity result = ticketOrderRepository.findByUserNameAndDate(userName, ts).get(0);
-        int orderId = result.getOrderId();
-        ShopCartEntity newShopCartEntity = shopCartRepository.findByTicketIdAndAndUserName(ticketId, userName).get(0);
-        int shopCartId = newShopCartEntity.getShopcartId();
+        int shopCartId = shopCartRepository.getMaxId();
+        System.out.println(shopCartId);
+        int orderId = ticketOrderRepository.getMaxId();
+        System.out.println(orderId);
         OrderItemEntity newOrderItem = new OrderItemEntity();
         newOrderItem.setOrderId(orderId);
         newOrderItem.setShopcartId(shopCartId);

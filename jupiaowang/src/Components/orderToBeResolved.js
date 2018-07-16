@@ -213,7 +213,7 @@ export default class OrderToBeResolved extends React.Component{
                     pageSizeOptions:['8','16','24'],
                     showSizeChanger: true,
                     showQuickJumper: false,
-                    position:'top'
+                    position:'bottom'
                 }}
             >
             </Table>
