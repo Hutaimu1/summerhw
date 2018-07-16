@@ -23,8 +23,8 @@ public class ShopCartController {
 
     @PostMapping(value = "updateLeftTicket")
     @ResponseBody
-    public String updateLeftTicket(@RequestParam("shopCartId") int[] shopCartId,@RequestParam("count") int[] count) {
-        return shopCartService.updateLeftTicket(shopCartId,count);
+    public String updateLeftTicket(@RequestParam("ticketId") int[] ticketId,@RequestParam("count") int[] count,@RequestParam("type")int[] type) {
+        return shopCartService.updateLeftTicket(ticketId,count,type);
     }
 
     @PostMapping(value = "deleteShopCartItem")
@@ -45,13 +45,13 @@ public class ShopCartController {
         return shopCartService.changeChecked(cartItemId);
     }
 
-    @PostMapping(value = "addOrderList")
+    @PostMapping(value = "addToOrderNotPaidList")
     @ResponseBody
-    public String addOrderList(@RequestParam("userName") String username,
-                               @RequestParam("totalPrice") int totalprice,
-                               @RequestParam("date")String time,
-                               @RequestParam("shopCartId")int[] shopCatId) {
-        return shopCartService.addOrderList(username,totalprice,time,shopCatId);
+    public String addToOrderNotPaidList(@RequestParam("userName") String username,
+                                        @RequestParam("totalPrice") int totalprice,
+                                        @RequestParam("date")String time,
+                                        @RequestParam("shopCartId")int[] shopCatId) {
+        return shopCartService.addToOrderNotPaidList(username,totalprice,time,shopCatId);
     }
 
 }

@@ -252,31 +252,35 @@ class movieTicket extends React.Component {
         })
     };
 
-    movieTicketAddToShopCart = (id) =>{
+    movieTicketAddToShopCart = (id,place,date,brand,time) =>{
         let userName = this.props.match.params.userName;
         let ticketName;
+        let description = place +" "+ brand+ " " + date +" "+ time;
         this.state.data.forEach((movieTicket) =>{
             if(movieTicket.id === id){
                 ticketName = movieTicket.title;
             }
         });
-        console.log("111",userName);
-        console.log("222",id);
-        console.log("333",ticketName);
         $.ajax({
             url: "bookstoreApp/movieTicketAddToShopCart",
-            data: {shopCartId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15},
+            data: {ticketId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
-                message.success("加入购物车成功!");
+                if(JSON.parse(data) === 1){
+                    message.warning("检测到你的购物车中已经有该票品，已在购物车中为该票品的数量加一")
+                }
+                else if(JSON.parse(data) === 0){
+                    message.success("加入购物车成功!");
+                }
             }
         });
     };
 
-    movieTicketQuickBuy = (id) =>{
+    movieTicketQuickBuy = (id,place,date,brand,time) =>{
         let userName = this.props.match.params.userName;
         let ticketName;
+        let description = place +" "+ brand+ " " + date +" "+ time;
         this.state.data.forEach((movieTicket) =>{
             if(movieTicket.id === id){
                 ticketName = movieTicket.title;
@@ -284,11 +288,13 @@ class movieTicket extends React.Component {
         });
         $.ajax({
             url: "bookstoreApp/movieTicketQuickBuy",
-            data: {shopCartId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+            data: {ticketId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,date:moment().format('YYYY-MM-DD HH:mm:ss'),description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
-                message.success("一键下单成功,已生成未处理订单");
+                if(JSON.parse(data) === true){
+                    message.success("一键下单成功,已生成未处理订单");
+                }
             }
         });
     };
@@ -328,14 +334,14 @@ class movieTicket extends React.Component {
                                     </li>
                                 </ul>
                             </div>
-                            <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" } onClick={()=>this.movieTicketAddToShopCart(card.id)}>加入购物车</Button></div>}
+                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" } onClick={()=>this.movieTicketAddToShopCart(card.id,this.state.place,this.state.chooseDate,this.state.chooseBrand,this.state.chooseTime)}>加入购物车</Button></div>}
                             trigger="click"
                             visible={this.state.chooseMovie === card.title?this.state.shopVisible:false}
                             onVisibleChange={this.handleShopVisibleChange}
                         >
                             <Icon onClick={() => this.changeMovie(card.title)} type="shopping-cart" />
                         </Popover>
-                    , <Popover
+                        , <Popover
                             placement="rightTop"
                             content={<div style={{overflow: "hidden"}}><div className="tags-panel container">
                                 <ul className="tags-lines">
@@ -359,7 +365,7 @@ class movieTicket extends React.Component {
                                     </li>
                                 </ul>
                             </div>
-                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" }  onClick={()=>this.movieTicketQuickBuy(card.id)}>一键快速下单</Button></div>}
+                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" }  onClick={()=>this.movieTicketQuickBuy(card.id,this.state.place,this.state.chooseDate,this.state.chooseBrand,this.state.chooseTime)}>一键快速下单</Button></div>}
                             trigger="click"
                             visible={this.state.chooseMovie === card.title?this.state.quickVisible:false}
                             onVisibleChange={this.handleQuickVisibleChange}
@@ -438,7 +444,7 @@ class movieTicket extends React.Component {
                     {this.getMovie()}
                 </div>
                 <div>
-                <Pagination showQuickJumper showSizeChanger pageSizeOptions={['6','12','18']} onShowSizeChange={this.onShowSizeChange} current={this.state.current} defaultPageSize={this.state.pageSize} total={this.state.data.length} onChange={this.onPageChange} style={{float:"right",marginRight:"50px"}} />
+                    <Pagination showQuickJumper showSizeChanger pageSizeOptions={['6','12','18']} onShowSizeChange={this.onShowSizeChange} current={this.state.current} defaultPageSize={this.state.pageSize} total={this.state.data.length} onChange={this.onPageChange} style={{float:"right",marginRight:"50px"}} />
                 </div>
             </div>
         );

@@ -158,8 +158,8 @@ class trainTicket extends React.Component {
         let type;
         switch (model[0]) {
             case 'C':case 'G':
-                type = "高铁G/C";
-                break;
+            type = "高铁G/C";
+            break;
             case 'D':
                 type = "动车D";
                 break;
@@ -293,29 +293,53 @@ class trainTicket extends React.Component {
 
     trainTicketAddToShopCart = (record) => {
         let userName = this.props.match.params.userName;
-        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
+        let ticketName = record.model;
+        let description = this.state.date.format('YYYY-MM-DD') + this.state.starting+" To "+this.state.destination;
         $.ajax({
             url: "bookstoreApp/trainTicketAddToShopCart",
-            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left},
+            data: {ticketId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
-                    message.success("加入购物车成功!");
+                if(JSON.parse(data) === 0) {
+                    message.success("加入购物车成功!，请前往我的购物车查看");
+                }
+                else if(JSON.parse(data) === 1){
+                    message.warning("检测到你的购物车中已经有该票品，已在购物车中为该票品的数量加一")
+                }
+                else if(JSON.parse(data) === 2){
+                    message.error("检测到你的购物车中已经有该票品,但该票品库存不足，请您看看其他票品")
+                }
             }
         });
     };
 
     trainTicketQuickBuy = (record) => {
+        console.log(record.id);
         let userName = this.props.match.params.userName;
-        let ticketName = record.model + this.state.starting + "To" + this.state.destination;
+        let ticketName = record.model;
+        let description = this.state.date.format('YYYY-MM-DD') + this.state.starting+" To "+this.state.destination;
         $.ajax({
             url: "bookstoreApp/trainTicketQuickBuy",
-            data: {shopCartId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,date:moment().format('YYYY-MM-DD HH:mm:ss')},
+            data: {ticketId:record.id,userName:userName,ticketName:ticketName,price:record.price,leftTicket:record.left,date:moment().format('YYYY-MM-DD HH:mm:ss'),description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
-                message.success("一键下单成功,已生成未处理订单");
-            }
+                if(JSON.parse(data) === true) {
+                    message.success("一键下单成功,已生成未处理订单");
+                    this.setState((preState) =>{
+                        preState.dataSource.forEach((ticket,index) =>{
+                            if(ticket.id === record.id){
+                                preState.dataSource[index].left --;
+                            }
+                        });
+                        return {
+                            dataSource:preState.dataSource,
+                            dataSource_copy:preState.dataSource
+                        }
+                    })
+                }
+            }.bind(this)
         });
     };
 
@@ -324,17 +348,17 @@ class trainTicket extends React.Component {
     };
 
     createSelect = () => {
-      return <Select
-          showSearch
-          style={{ width: 200 }}
-          placeholder="城市名"
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-      >
-          {cityData.map(city => <OptGroup key={city[0]} label={city[0]}>
-              {city[1].map(name => <Option key={name} value={name}>{name}</Option >)}
-          </OptGroup >)}
-      </Select>
+        return <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="城市名"
+            optionFilterProp="children"
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+            {cityData.map(city => <OptGroup key={city[0]} label={city[0]}>
+                {city[1].map(name => <Option key={name} value={name}>{name}</Option >)}
+            </OptGroup >)}
+        </Select>
     };
 
     render() {
@@ -401,8 +425,8 @@ class trainTicket extends React.Component {
             render: (text, record) => {
                 if (record.left === 0) {
                     return <div>
-                                <span style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></span>
-                                <span style={{marginLeft: '5px'}}><Icon type="rocket"/></span>
+                        <span style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></span>
+                        <span style={{marginLeft: '5px'}}><Icon type="rocket"/></span>
                     </div>
                 }
                 else{

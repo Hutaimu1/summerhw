@@ -38,11 +38,11 @@ public class TrainTicketServiceImpl implements TrainTicketService {
 
 
     @Override
-    public String searchTrain(String startPlace, String arrivePlace, String startTime){
+    public String searchTrain(String startPlace, String arrivePlace, String startTime) {
         Gson gson = new Gson();
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
-        List<TrainTicketEntity> result = trainTicketRepository.findByStartPlaceAndArrviePlace(startPlace,arrivePlace);
+        List<TrainTicketEntity> result = trainTicketRepository.findByStartPlaceAndArrviePlace(startPlace, arrivePlace);
         List<TrainTicket> res = new ArrayList<>();
         for (TrainTicketEntity aResult : result) {
             Date date = new Date(aResult.getStartTime().getTime());
@@ -62,38 +62,54 @@ public class TrainTicketServiceImpl implements TrainTicketService {
     }
 
 
-
     @Override
-    public String trainTicketAddToShopCart(int shopCartId,String userName,String ticketName,int price,int leftTicket){
+    public String trainTicketAddToShopCart(int ticketId, String userName, String ticketName, int price, int leftTicket, String description) {
         Gson gson = new Gson();
+        List<ShopCartEntity> myShopCartEntity = shopCartRepository.findExistingTrainTicket(userName, ticketId);
+        if (myShopCartEntity.size() != 0) {
+            int count = myShopCartEntity.get(0).getCount();
+            int leftTrainTicket = trainTicketRepository.findByTicketId(ticketId).get(0).getLeftTicket();
+            System.out.println(leftTrainTicket);
+            if (leftTrainTicket >= (count + 1)) {
+                myShopCartEntity.get(0).setCount(myShopCartEntity.get(0).getCount() + 1);
+                shopCartRepository.save(myShopCartEntity.get(0));
+                return gson.toJson(1);
+            } else {
+                return gson.toJson(2);
+            }
+        }
         ShopCartEntity newShopCart = new ShopCartEntity();
-        newShopCart.setShopcartId(shopCartId);
+        newShopCart.setTicketId(ticketId);
         newShopCart.setUserName(userName);
         newShopCart.setTicketName(ticketName);
         newShopCart.setPrice(price);
         newShopCart.setCount(1);
-        newShopCart.setIsCheck((byte)0);
-        newShopCart.setIsBuy((byte)0);
+        newShopCart.setIsCheck((byte) 0);
+        newShopCart.setIsBuy((byte) 0);
+        newShopCart.setType((byte) 0);
         newShopCart.setLeftTicket(leftTicket);
+        newShopCart.setDescription(description);
         shopCartRepository.save(newShopCart);
-
-        return gson.toJson(true);
+        gson.toJson(0);
+        return gson.toJson(0);
     }
 
     @Override
-    public String trainTicketQuickBuy(int shopCartId,String userName,String ticketName,int price,int leftTicket,String date){
+    public String trainTicketQuickBuy(int ticketId, String userName, String ticketName, int price, int leftTicket, String date, String description) {
         Gson gson = new Gson();
         ShopCartEntity newShopCart = new ShopCartEntity();
-        newShopCart.setShopcartId(shopCartId);
+        newShopCart.setTicketId(ticketId);
         newShopCart.setUserName(userName);
         newShopCart.setTicketName(ticketName);
         newShopCart.setPrice(price);
         newShopCart.setCount(1);
-        newShopCart.setIsCheck((byte)0);
-        newShopCart.setIsBuy((byte)1);
+        newShopCart.setIsCheck((byte) 0);
+        newShopCart.setIsBuy((byte) 1);
+        newShopCart.setType((byte) 0);
         newShopCart.setLeftTicket(leftTicket);
+        newShopCart.setDescription(description);
         shopCartRepository.save(newShopCart);
-        TrainTicketEntity newTrainTicket = trainTicketRepository.findByTicketId(shopCartId).get(0);
+        TrainTicketEntity newTrainTicket = trainTicketRepository.findByTicketId(ticketId).get(0);
         newTrainTicket.setLeftTicket(newTrainTicket.getLeftTicket() - 1);
         trainTicketRepository.save(newTrainTicket);
         TicketOrderEntity newTicketOrder = new TicketOrderEntity();
@@ -103,8 +119,10 @@ public class TrainTicketServiceImpl implements TrainTicketService {
         Timestamp ts = Timestamp.valueOf(date);
         newTicketOrder.setDate(ts);
         ticketOrderRepository.save(newTicketOrder);
-        TicketOrderEntity result = ticketOrderRepository.findByUserNameAndDate(userName,ts).get(0);
+        TicketOrderEntity result = ticketOrderRepository.findByUserNameAndDate(userName, ts).get(0);
         int orderId = result.getOrderId();
+        ShopCartEntity newShopCartEntity = shopCartRepository.findByTicketIdAndAndUserName(ticketId, userName).get(0);
+        int shopCartId = newShopCartEntity.getShopcartId();
         OrderItemEntity newOrderItem = new OrderItemEntity();
         newOrderItem.setOrderId(orderId);
         newOrderItem.setShopcartId(shopCartId);

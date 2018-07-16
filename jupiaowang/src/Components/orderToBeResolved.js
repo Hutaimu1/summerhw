@@ -1,16 +1,12 @@
 import React from 'react'
-import {Table,Button,Row,Col,message,Popconfirm} from 'antd'
+import {Table,Button,message,Popconfirm,Tooltip,Icon} from 'antd'
 import $ from "jquery";
 import moment from 'moment'
 
 let orderNotPaid =[
-    {orderId:1,totalPrice:1000,date:"2018-07-14 20:00:00",paid:0},
-    {orderId:2,totalPrice:1000,date:"2018-07-14 20:00:00",paid:0},
-    {orderId:3,totalPrice:1000,date:"2018-07-14 20:00:00",paid:0}
 ];
 
 let detailOrder = [
-    {orderId:2,name:'商品1',price:100,count:10}
 ];
 
 export default class OrderToBeResolved extends React.Component{
@@ -20,7 +16,11 @@ export default class OrderToBeResolved extends React.Component{
             orderNotPaid: orderNotPaid,
             showDetail:false,
             detailOrder:detailOrder,
+            show:true
         };
+        setInterval(()=>{
+            this.setState({show:!this.state.show})//每个一秒，showText的值取反。原来的值是这样子获取this.state.showText
+        },1000);
     }
 
 
@@ -52,11 +52,11 @@ export default class OrderToBeResolved extends React.Component{
             data: {orderId: orderId},
             async: true,
             success: function (data) {
-                    this.setState({
-                          detailOrder:JSON.parse(data)
-                    });
-                }.bind(this),
-            });
+                this.setState({
+                    detailOrder:JSON.parse(data)
+                });
+            }.bind(this),
+        });
     }
 
     returnToOrderNotPaid(){
@@ -79,12 +79,12 @@ export default class OrderToBeResolved extends React.Component{
                 async: true,
                 success: function (data) {
                     if(JSON.parse(data)){
-                        message.success("取消订单成功！")
+                        message.success("取消订单成功")
                     }
                 }
             });
             return {
-               orderNotPaid:preState.orderNotPaid
+                orderNotPaid:preState.orderNotPaid
             }
         })
     };
@@ -115,7 +115,7 @@ export default class OrderToBeResolved extends React.Component{
 
     leftTime = (id) => {
         let result;
-        this.state.orderNotPaid.forEach((order) => {
+        this.state.orderNotPaid.forEach((order,index) => {
             if (order.orderId === id) {
                 let m2 = moment(moment().format("YYYY-MM-DD HH:mm:ss"));
                 let m1 = moment(order.date);
@@ -123,11 +123,15 @@ export default class OrderToBeResolved extends React.Component{
                 let minute = parseInt(du.substr(0, 2),0);
                 let second = parseInt(du.substr(3, 2),0);
                 let leftMinute = 900 - (minute * 60 + second);
-                result = parseInt((leftMinute / 60).toString(),0) + "分" + (leftMinute % 60).toString() + "秒";
+                result = parseInt((leftMinute / 60).toString(),0) + "分" + (leftMinute % 60) + "秒";
+                if(parseInt((leftMinute / 60).toString(),0)===0 && (leftMinute % 60) === 0){
+                    this.state.orderNotPaid.splice(index,1);
+                    message.warning("订单号为"+ id + "的订单超时付款时间")
                 }
+            }
         });
         return result;
-    }
+    };
 
 
     render(){
@@ -155,26 +159,26 @@ export default class OrderToBeResolved extends React.Component{
                 key:'paid',
                 render: (text,record) => {
                     return (
-                        <Row>
-                            <Col span={6}>
-                                <Button onClick={() => this.showDetailOrder(record.orderId)} icon="eye">查看</Button>
-                            </Col>
-                            <Col span={6}>
-                                <Popconfirm title="确定使用支付宝付款吗?" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <Button icon="alipay">支付</Button>
+                        <div>
+                            <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
+                                <a style={{marginLeft: '20px',fontSize:"25px"}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
+                            </Tooltip>
+                            <Tooltip placement="topLeft" title="支付宝付款" arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title="您确定使用支付宝付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
+                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon type="alipay" /></a>
                                 </Popconfirm>
-                            </Col>
-                            <Col span={6}>
-                                <Popconfirm title="确定使用微信付款吗?" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <Button icon="wechat">支付</Button>
+                            </Tooltip>
+                            <Tooltip placement="topLeft" title="微信付款" arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title="您确定使用微信付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
+                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon style ={{color:'green'}} type="wechat"/></a>
                                 </Popconfirm>
-                            </Col>
-                            <Col span={6}>
-                                <Popconfirm title="确定要删除订单吗?" onConfirm={() => this.deleteOrder(record.orderId)}>
-                                    <Button type="danger" icon="delete">删除</Button>
+                            </Tooltip>
+                            <Tooltip placement="topLeft" title="删除" arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title="您确定要删除这条订单记录吗？" onConfirm={() => this.deleteOrder(record.orderId)}>
+                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon style ={{color:'red'}} type="delete"/></a>
                                 </Popconfirm>
-                            </Col>
-                        </Row>
+                            </Tooltip>
+                        </div>
                     )}
             }];
 
@@ -183,6 +187,10 @@ export default class OrderToBeResolved extends React.Component{
             dataIndex: 'name',
             key:'name'
         },{
+            title:'详细信息',
+            dataIndex:'description',
+            key:'description',
+        }, {
             title: '价格',
             dataIndex:'price',
             key:'price',
@@ -198,7 +206,7 @@ export default class OrderToBeResolved extends React.Component{
                 columns={(this.state.showDetail)?detailColumn:columns}
                 rowKey={'orderId'}
                 bordered
-                title={()=> (this.state.showDetail)?"订单明细":'Tips:未支付订单会保留15分钟，请及时付款'}
+                title={()=> (this.state.showDetail)?"订单明细":<a style={{color:'red'}}>Tips:未支付订单会保留15分钟，请及时付款!</a>}
                 footer={()=>(this.state.showDetail)?<Button icon="left" onClick={() => this.returnToOrderNotPaid()}>返回</Button>:""}
                 pagination={{
                     defaultPageSize:8,

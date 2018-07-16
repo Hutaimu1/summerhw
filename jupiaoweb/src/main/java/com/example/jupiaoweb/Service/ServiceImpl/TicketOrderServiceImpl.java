@@ -5,16 +5,13 @@ import com.example.jupiaoweb.Model.ShopCartEntity;
 import com.example.jupiaoweb.Model.TicketOrderEntity;
 import com.example.jupiaoweb.Model.TrainTicketEntity;
 import com.example.jupiaoweb.Service.TicketOrderService;
-import com.example.jupiaoweb.bean.ShopCart;
 import com.example.jupiaoweb.bean.TicketOrder;
-import com.example.jupiaoweb.bean.TrainTicket;
 import com.example.jupiaoweb.bean.detailOrder;
 import com.example.jupiaoweb.dao.OrderItemRepository;
 import com.example.jupiaoweb.dao.ShopCartRepository;
 import com.example.jupiaoweb.dao.TicketOrderRepository;
 import com.example.jupiaoweb.dao.TrainTicketRepository;
 import com.google.gson.Gson;
-import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -70,6 +67,7 @@ public class TicketOrderServiceImpl implements TicketOrderService {
             oneItem.setName(oneShopCart.getTicketName());
             oneItem.setCount(oneShopCart.getCount());
             oneItem.setPrice(oneShopCart.getPrice());
+            oneItem.setDescription(oneShopCart.getDescription());
             result.add(oneItem);
         }
         Gson gson = new Gson();
@@ -84,10 +82,15 @@ public class TicketOrderServiceImpl implements TicketOrderService {
         List<OrderItemEntity> orderItem = orderItemRepository.findByOrderId(orderId);
         for(OrderItemEntity oneOrder:orderItem){
             int shopCartId = oneOrder.getShopcartId();
-            int count = shopCartRepository.findByShopcartId(shopCartId).get(0).getCount();
-            TrainTicketEntity oneShopCart = trainTicketRepository.findByTicketId(shopCartId).get(0);
-            oneShopCart.setLeftTicket(oneShopCart.getLeftTicket() + count);
-            trainTicketRepository.save(oneShopCart);
+            ShopCartEntity shopCartEntity = shopCartRepository.findByShopcartId(shopCartId).get(0);
+            byte type = shopCartEntity.getType();
+            if(type == 0){
+                int count = shopCartEntity.getCount();
+                int ticketId = shopCartEntity.getTicketId();
+                TrainTicketEntity oneShopCart = trainTicketRepository.findByTicketId(ticketId).get(0);
+                oneShopCart.setLeftTicket(oneShopCart.getLeftTicket() + count);
+                trainTicketRepository.save(oneShopCart);
+            }
         }
         Gson gson = new Gson();
         return gson.toJson(true);
@@ -150,5 +153,4 @@ public class TicketOrderServiceImpl implements TicketOrderService {
         Gson gson = new Gson();
         return gson.toJson(true);
     }
-
 }

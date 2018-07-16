@@ -103,32 +103,42 @@ public class MovieTicketServiceImpl implements MovieTicketService {
     }
 
     @Override
-    public String movieTicketAddToShopCart(int shopCartId,String userName,String ticketName,int price,int leftTicket){
+    public String movieTicketAddToShopCart(int ticketId,String userName,String ticketName,int price,int leftTicket,String description){
+        Gson gson = new Gson();
+        List<ShopCartEntity> myShopCartEntity = shopCartRepository.findExistingMovieTicket(userName,ticketId,description);
+        if(myShopCartEntity.size() != 0){
+            myShopCartEntity.get(0).setCount(myShopCartEntity.get(0).getCount() + 1);
+            shopCartRepository.save(myShopCartEntity.get(0));
+            return gson.toJson(1);
+        }
         ShopCartEntity newShopCart = new ShopCartEntity();
-        newShopCart.setShopcartId(shopCartId);
+        newShopCart.setTicketId(ticketId);
         newShopCart.setUserName(userName);
         newShopCart.setTicketName(ticketName);
         newShopCart.setPrice(price);
         newShopCart.setCount(1);
         newShopCart.setIsCheck((byte)0);
         newShopCart.setIsBuy((byte)0);
+        newShopCart.setType((byte)1);
         newShopCart.setLeftTicket(leftTicket);
+        newShopCart.setDescription(description);
         shopCartRepository.save(newShopCart);
-        Gson gson = new Gson();
-        return gson.toJson(true);
+        return gson.toJson(0);
     }
 
     @Override
-    public String movieTicketQuickBuy(int shopCartId,String userName,String ticketName,int price,int leftTicket,String date) {
+    public String movieTicketQuickBuy(int ticketId,String userName,String ticketName,int price,int leftTicket,String date,String description) {
+        Gson gson = new Gson();
         ShopCartEntity newShopCart = new ShopCartEntity();
-        newShopCart.setShopcartId(shopCartId);
+        newShopCart.setTicketId(ticketId);
         newShopCart.setUserName(userName);
         newShopCart.setTicketName(ticketName);
-        newShopCart.setPrice(price);
+        newShopCart.setPrice(price);    
         newShopCart.setCount(1);
         newShopCart.setIsCheck((byte) 0);
         newShopCart.setIsBuy((byte) 1);
         newShopCart.setLeftTicket(leftTicket);
+        newShopCart.setDescription(description);
         shopCartRepository.save(newShopCart);
         TicketOrderEntity newTicketOrder = new TicketOrderEntity();
         newTicketOrder.setIsPaid((byte) 0);
@@ -141,9 +151,8 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         int orderId = result.getOrderId();
         OrderItemEntity newOrderItem = new OrderItemEntity();
         newOrderItem.setOrderId(orderId);
-        newOrderItem.setShopcartId(shopCartId);
+        newOrderItem.setShopcartId(ticketId);
         orderItemRepository.save(newOrderItem);
-        Gson gson = new Gson();
         return gson.toJson(true);
     }
 }

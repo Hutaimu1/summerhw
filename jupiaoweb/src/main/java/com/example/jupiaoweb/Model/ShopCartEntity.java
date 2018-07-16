@@ -14,6 +14,9 @@ public class ShopCartEntity {
     private byte isCheck;
     private int leftTicket;
     private byte isBuy;
+    private int ticketId;
+    private byte type;
+    private String description;
 
     @Id
     @Column(name = "shopcart_id")
@@ -95,6 +98,36 @@ public class ShopCartEntity {
         this.isBuy = isBuy;
     }
 
+    @Basic
+    @Column(name = "ticket_id")
+    public int getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    @Basic
+    @Column(name = "type")
+    public byte getType() {
+        return type;
+    }
+
+    public void setType(byte type) {
+        this.type = type;
+    }
+
+    @Basic
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -106,13 +139,16 @@ public class ShopCartEntity {
                 isCheck == that.isCheck &&
                 leftTicket == that.leftTicket &&
                 isBuy == that.isBuy &&
+                ticketId == that.ticketId &&
+                type == that.type &&
                 Objects.equals(userName, that.userName) &&
-                Objects.equals(ticketName, that.ticketName);
+                Objects.equals(ticketName, that.ticketName) &&
+                Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(shopcartId, userName, ticketName, price, count, isCheck, leftTicket, isBuy);
+        return Objects.hash(shopcartId, userName, ticketName, price, count, isCheck, leftTicket, isBuy, ticketId, type, description);
     }
 }

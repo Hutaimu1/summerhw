@@ -13,4 +13,21 @@ public interface ShopCartRepository extends JpaRepository<ShopCartEntity, String
 
     @Query("select s from ShopCartEntity s where s.shopcartId=:cartItemId")
     List<ShopCartEntity> findByShopcartId(@Param("cartItemId") int cartItemId);
+
+    @Query("select s from ShopCartEntity s where s.ticketId=:ticketId")
+    List<ShopCartEntity> findByTicketId(@Param("ticketId") int ticketId);
+
+    @Query("select s from ShopCartEntity s where s.userName=:userName and s.ticketName=:ticketName and s.description=:description")
+    List<ShopCartEntity> findByUserNameAndTicketNameAndDescription(@Param("userName") String username,
+                                                                   @Param("ticketName")String ticketName,
+                                                                   @Param("description") String description);
+
+    @Query("select s from ShopCartEntity s where s.userName=:userName and s.ticketId=:ticketId and s.isBuy=0 and s.type = 0")
+    List<ShopCartEntity> findExistingTrainTicket(@Param("userName") String username, @Param("ticketId")int ticketId);
+
+    @Query("select s from ShopCartEntity s where s.userName=:userName and s.ticketId=:ticketId and s.isBuy=0 and s.type = 1 and s.description=:description")
+    List<ShopCartEntity> findExistingMovieTicket(@Param("userName") String username, @Param("ticketId")int ticketId, @Param("description") String description);
+
+    @Query("select s from ShopCartEntity s where s.ticketId=:ticketId and s.userName=:userName")
+    List<ShopCartEntity> findByTicketIdAndAndUserName(@Param("ticketId") int ticketId,@Param("userName") String username);
 }

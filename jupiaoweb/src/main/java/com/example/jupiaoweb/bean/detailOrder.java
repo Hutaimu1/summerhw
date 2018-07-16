@@ -5,6 +5,9 @@ public class detailOrder {
     private String name;
     private int price;
     private int count;
+    private String description;
+
+
     public int getOrderId() {
         return orderId;
     }
@@ -20,6 +23,7 @@ public class detailOrder {
     public int getCount() {
         return count;
     }
+
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
@@ -35,4 +39,8 @@ public class detailOrder {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public String getDescription(){return description;}
+
+    public void setDescription(String description) { this.description = description; }
 }

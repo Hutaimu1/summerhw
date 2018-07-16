@@ -46,4 +46,5 @@ public class TicketOrderController {
     public String deleteHistoryOrder(@RequestParam("orderId") int orderId) {
         return ticketOrderService.deleteHistoryOrder(orderId);
     }
+
 }
