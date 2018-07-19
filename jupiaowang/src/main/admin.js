@@ -2,6 +2,7 @@ import {Layout, Menu, Icon, Popconfirm, message} from 'antd';
 import React from 'react';
 import {Route, NavLink, Switch} from 'react-router-dom'
 import userManagement from "../Components/userManagement";
+import trainTicketManagement from "../Components/trainTicketManagement";
 
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -41,8 +42,8 @@ class adminPage extends React.Component {
                             <Menu.Item key={ `/admin/${userName}/collection`}>订单管理</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品管理</span></span>}>
-                            <Menu.Item key={ `/admin/${userName}/trainTicket`}><NavLink
-                                to={{pathname: `/admin/${userName}/trainTicket`}}>火车票</NavLink></Menu.Item>
+                            <Menu.Item key={ `/admin/${userName}/trainTicketManagement`}><NavLink
+                                to={{pathname: `/admin/${userName}/trainTicketManagement`}}>火车票</NavLink></Menu.Item>
                             <Menu.Item key={"/admin/" + userName + "/movieTicket"}><NavLink
                                 to={{pathname: `/admin/${userName}/movieTicket`}}>电影票</NavLink></Menu.Item>
                         </SubMenu>
@@ -73,6 +74,7 @@ class adminPage extends React.Component {
                         <div style={{padding: 24, background: '#fff', minHeight: 816}}>
                             <Switch>
                                 <Route path="/admin/:userName/userManagement" component={userManagement}/>
+                                <Route path="/admin/:userName/trainTicketManagement" component={trainTicketManagement}/>
                             </Switch>
                         </div>
                     </Content>
