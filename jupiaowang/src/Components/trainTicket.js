@@ -402,7 +402,7 @@ class trainTicket extends React.Component {
                 else if (record.left < 10) {
                     return <div>
                         <span style={{color: "#ff5741"}}>{record.left}</span>
-                        <span className="leftTicket-ico">&nbsp;</span>
+                        <span className="left-ticket-ico">&nbsp;</span>
                     </div>
                 }
                 else {
@@ -470,7 +470,7 @@ class trainTicket extends React.Component {
             </Menu>
         );
         return (
-            <div style={{fontWeight: "bold"}}>
+            <div style={{fontWeight: "bold",width:"1195px"}}>
                 <Form layout="inline">
                     <Form.Item
                         label="出发站"

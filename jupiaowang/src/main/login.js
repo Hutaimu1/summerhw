@@ -78,6 +78,7 @@ class Login extends React.Component {
                     else {
                         if (JSON.parse(data)[2]) {
                             message.success('以管理员身份登陆成功!');
+                            this.props.history.push('/admin/' + userName);
                         }
                         else {
                             message.success('以用户身份登陆成功!');
@@ -165,7 +166,7 @@ class Login extends React.Component {
                             validator: this.checkCaptacha
                         }],
                     })(
-                        <Input  prefix={<Icon type="qrcode" style={{color: 'rgba(0,0,0,.25)'}}/>} className="login-form-input-captcha" placeholder="请输入验证码" />
+                        <Input  prefix={<Icon type="qrcode" style={{color: 'rgba(0,0,0,.25)'}}/>} className="login-form-input-captcha" placeholder="请输入右侧验证码" />
                     )}
                     <Button type="primary"
                             onClick={this.renderCode}

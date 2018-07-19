@@ -307,7 +307,7 @@ class movieTicket extends React.Component {
                 result.push(<Card
                     key={card.id}
                     hoverable
-                    className="movieCard"
+                    className="movie-card"
                     cover={<img style={{height:"300px"}} alt={card.title} src={card.src} />}
                     actions={[<Icon type="eye" onClick={() => this.props.history.push('/home/' + this.props.match.params.userName + "/viewMovie/" + card.id)} />,
                         <Popover
@@ -386,7 +386,7 @@ class movieTicket extends React.Component {
     render() {
         return (
             <div style={{fontWeight: "bold", overflow: "hidden"}}>
-                <h1 className="movieHead">电影票 - {this.state.place}</h1>
+                <h1 className="movie-head">电影票 - {this.state.place}</h1>
                 <Popover
                     placement="bottom"
                     title={<div className="tab-title">

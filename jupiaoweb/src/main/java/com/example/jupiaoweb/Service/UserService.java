@@ -4,6 +4,10 @@ import javax.mail.MessagingException;
 import java.security.GeneralSecurityException;
 
 public interface UserService {
+    String getAllUser();
+    String changeFreeze(String username);
+    String resetPassword(String username);
+    String editUserMessage(String username, String email, String phone, String qq);
     String logIn(String userName, String password);
     String checkUserName(String username);
     String checkQQ(String qq);

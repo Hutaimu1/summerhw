@@ -71,4 +71,31 @@ public class UserController {
                                  @RequestParam("password") String password){
         return userService.forgetPassword(username, password);
     }
+
+    @PostMapping(value = "getAllUser")
+    @ResponseBody
+    public String getAllUser() {
+        return userService.getAllUser();
+    }
+
+    @PostMapping(value = "changeFreeze")
+    @ResponseBody
+    public String changeFreeze(@RequestParam("userName") String username) {
+        return userService.changeFreeze(username);
+    }
+
+    @PostMapping(value = "resetPassword")
+    @ResponseBody
+    public String resetPassword(@RequestParam("userName") String username) {
+        return userService.resetPassword(username);
+    }
+
+    @PostMapping(value = "editUserMessage")
+    @ResponseBody
+    public String editUserMessage(@RequestParam("userName") String username,
+                                  @RequestParam("email") String email,
+                                  @RequestParam("phone") String phone,
+                                  @RequestParam("qq") String qq) {
+        return userService.editUserMessage(username, email, phone, qq);
+    }
 }

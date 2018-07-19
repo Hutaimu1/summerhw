@@ -2,6 +2,7 @@ package com.example.jupiaoweb.Service.ServiceImpl;
 
 import com.example.jupiaoweb.Model.UserEntity;
 import com.example.jupiaoweb.Service.UserService;
+import com.example.jupiaoweb.bean.User;
 import com.example.jupiaoweb.dao.UserRepository;
 import com.google.gson.Gson;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -174,4 +175,62 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return gson.toJson(true);
     }
+
+    @Override
+    public String getAllUser() {
+        List<UserEntity> result = userRepository.findAll();
+        List<User> res = new ArrayList<>();
+        Gson gson = new Gson();
+        for (UserEntity aResult : result) {
+            if (aResult.getIsAdmin() == 1){
+                continue;
+            }
+            User u = new User();
+            u.setUserName(aResult.getUserName());
+            u.setHref("http://ant.design");
+            List<String> content = new ArrayList<>();
+            content.add(aResult.geteMail());
+            content.add(aResult.getPhoneNumber());
+            content.add(aResult.getQq());
+            u.setContent(content);
+            u.setIsFreeze(aResult.getIsFreeze());
+            u.setEdit(false);
+            res.add(u);
+        }
+        return gson.toJson(res);
+    }
+
+
+    @Override
+    public String changeFreeze(String username){
+        List<UserEntity> result = userRepository.findByUserName(username);
+        Gson gson = new Gson();
+        UserEntity u = result.get(0);
+        u.setIsFreeze((byte)(((int)u.getIsFreeze() + 1) % 2));
+        userRepository.save(u);
+        return gson.toJson(u.getIsFreeze());
+    }
+
+    @Override
+    public String resetPassword(String username){
+        List<UserEntity> result = userRepository.findByUserName(username);
+        Gson gson = new Gson();
+        UserEntity u = result.get(0);
+        u.setPassword("123456");
+        userRepository.save(u);
+        return gson.toJson(true);
+    }
+
+    @Override
+    public String editUserMessage(String username, String email, String phone, String qq){
+        List<UserEntity> result = userRepository.findByUserName(username);
+        Gson gson = new Gson();
+        UserEntity u = result.get(0);
+        u.seteMail(email);
+        u.setPhoneNumber(phone);
+        u.setQq(qq);
+        userRepository.save(u);
+        return gson.toJson(true);
+    }
+
 }

@@ -11,5 +11,4 @@ public interface MovieFieldRepository extends MongoRepository<MovieFieldEntity, 
     List<MovieFieldEntity> findByPlaceAndMovieAndDate(String place,String movie,String date);
 
     List<MovieFieldEntity> findByPlaceAndMovieAndDateAndBrand(String place,String movie,String date,String brand);
-
 }

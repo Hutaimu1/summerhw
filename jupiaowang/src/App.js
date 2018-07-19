@@ -6,6 +6,7 @@ import Login from "./main/login";
 import Registration from "./main/registration";
 import Forget from "./main/forget";
 import HomePage from "./main/home";
+import AdminPage from "./main/admin";
 import './App.css';
 
 
@@ -21,6 +22,7 @@ class App extends Component {
                         <Route path='/registration' component={Registration}/>
                         <Route path='/forget' component={Forget}/>
                         <Route path='/home/:userName' component={HomePage}/>
+                        <Route path='/admin/:userName' component={AdminPage}/>
                     </Switch>
                 </HashRouter>
             </LocaleProvider>
