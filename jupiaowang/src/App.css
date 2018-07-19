@@ -40,8 +40,8 @@ body {
 }
 
 .registration-form-button-captcha {
-   width: 40%;
- }
+  width: 40%;
+}
 
 .registration-form-button-left {
   width: 40%;
@@ -138,15 +138,15 @@ body {
 }
 
 .calendar-text {
-    position: absolute;
-    cursor: text;
-    top: 50%;
-    right: 40px;
-    height: 15px;
-    color: #A1A1A1;
-    overflow: hidden;
-    margin-top: -6px;
-    font: 400 12px/15px Arial
+  position: absolute;
+  cursor: text;
+  top: 50%;
+  right: 40px;
+  height: 15px;
+  color: #A1A1A1;
+  overflow: hidden;
+  margin-top: -6px;
+  font: 400 12px/15px Arial
 }
 
 .arrow-ico {
@@ -412,4 +412,45 @@ body {
   margin-top: 24px;
 }
 
+.user-left{
+  float: left;
+  width: 110px;
+  /*border-right: 1px solid #BDBDBD;*/
+}
 
+.user-right{
+  margin-left:120px;
+  width: 600px;
+  border-left: 1px solid #BDBDBD;
+}
+
+
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+
+.edit-form-button-left {
+  width: 40%;
+  margin-right: 10%;
+}
+
+.edit-form-button-right {
+  width: 40%;
+  margin-right:30%;
+}
+
+.image-size {
+  width:110px;
+  height:112px;
+}
+
+.upload{
+  width:110px;
+  height:112px;
+}

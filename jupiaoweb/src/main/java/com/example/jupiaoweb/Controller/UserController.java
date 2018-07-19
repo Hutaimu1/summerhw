@@ -1,7 +1,9 @@
 package com.example.jupiaoweb.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/bookstoreApp")
@@ -90,12 +92,27 @@ public class UserController {
         return userService.resetPassword(username);
     }
 
+    @PostMapping(value="uploadImage",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @ResponseBody
+    public String uploadImage(@RequestParam("userName") String username,
+                              @RequestParam("url") String image){
+        return userService.uploadImage(username,image);
+    }
+
+    @PostMapping(value = "getUserMessage")
+    @ResponseBody
+    public String logIn(@RequestParam("userName") String username) {
+        return userService.getUserMessage(username);
+    }
+
     @PostMapping(value = "editUserMessage")
     @ResponseBody
     public String editUserMessage(@RequestParam("userName") String username,
+                                  @RequestParam("password") String password,
                                   @RequestParam("email") String email,
                                   @RequestParam("phone") String phone,
                                   @RequestParam("qq") String qq) {
-        return userService.editUserMessage(username, email, phone, qq);
+        return userService.editUserMessage(username,password,email,phone,qq);
     }
 }

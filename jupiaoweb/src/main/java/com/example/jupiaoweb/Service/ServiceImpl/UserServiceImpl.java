@@ -1,8 +1,11 @@
 package com.example.jupiaoweb.Service.ServiceImpl;
 
 import com.example.jupiaoweb.Model.UserEntity;
+import com.example.jupiaoweb.Model.UserImageEntity;
 import com.example.jupiaoweb.Service.UserService;
 import com.example.jupiaoweb.bean.User;
+import com.example.jupiaoweb.bean.UserMessage;
+import com.example.jupiaoweb.dao.UserImageRepository;
 import com.example.jupiaoweb.dao.UserRepository;
 import com.google.gson.Gson;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -23,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserRepository userRepository;
+
+    @Resource
+    private UserImageRepository userImageRepository;
 
     @Override
     public String logIn(String userName, String password) {
@@ -222,15 +228,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String editUserMessage(String username, String email, String phone, String qq){
+    public String uploadImage(String username,String image){
+        List<UserImageEntity> myImageList = userImageRepository.findByUserName(username);
+        if(myImageList.size() == 0){
+            UserImageEntity newImage = new UserImageEntity();
+            newImage.setUserName(username);
+            newImage.setUrl(image);
+            userImageRepository.save(newImage);
+        }
+        else{
+            UserImageEntity myImage = myImageList.get(0);
+            myImage.setUrl(image);
+            userImageRepository.save(myImage);
+        }
+        Gson gson = new Gson();
+        return gson.toJson(true);
+
+    }
+
+    @Override
+    public String getUserMessage(String userName){
+        Gson gson = new Gson();
+        UserEntity user = userRepository.findByUserName(userName).get(0);
+        List<UserImageEntity>  myImage = userImageRepository.findByUserName(userName);
+        UserMessage myMessage = new UserMessage();
+        myMessage.setPassword(user.getPassword());
+        myMessage.setEmail(user.geteMail());
+        myMessage.setQQ(user.getQq());
+        myMessage.setTelPhone(user.getPhoneNumber());
+        if(myImage.size() == 0){
+            myMessage.setImage("");
+        }
+        else{
+            myMessage.setImage(myImage.get(0).getUrl());
+        }
+        return gson.toJson(myMessage);
+    }
+
+    @Override
+    public String editUserMessage(String username,String password, String email, String phone, String qq){
         List<UserEntity> result = userRepository.findByUserName(username);
         Gson gson = new Gson();
         UserEntity u = result.get(0);
+        String oldPassword = u.getPassword();
         u.seteMail(email);
         u.setPhoneNumber(phone);
         u.setQq(qq);
+        u.setPassword(password);
         userRepository.save(u);
-        return gson.toJson(true);
+        if(oldPassword.equals(password)){
+            return gson.toJson(true);//表示密码被修改过
+        }
+        return gson.toJson(false);
     }
-
 }
