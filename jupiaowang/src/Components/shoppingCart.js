@@ -348,7 +348,7 @@ export default class ShopCart extends React.Component {
                 dataIndex: 'operation',
                 render: (text, record) => {
                     return (<Popconfirm title="确定要删除吗?" onConfirm={() => this.deleteGoods(record.id)}>
-                        <Icon type="delete" style={{fontSize:"25px"}}/>
+                        <Icon type="delete"/>
                     </Popconfirm>)
                 }
             }

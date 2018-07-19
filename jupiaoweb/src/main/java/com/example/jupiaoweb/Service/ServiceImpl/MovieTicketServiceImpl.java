@@ -76,6 +76,7 @@ public class MovieTicketServiceImpl implements MovieTicketService {
     public String getMovieTime(String place, String movie, String date, String brand){
         Gson gson = new Gson();
         List<MovieFieldEntity> result = movieFieldRepository.findByPlaceAndMovieAndDateAndBrand(place, movie, date, brand);
+        result.get(0).getTime().add(result.get(0).getPrice());
         return gson.toJson(result.get(0).getTime());
     }
 

@@ -270,11 +270,11 @@ class History extends React.Component{
                     return (
                         <div>
                             <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
-                                <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye" style ={{fontSize:"25px"}}/></a>
+                                <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
                             </Tooltip>
                             <Tooltip placement="topLeft" title="删除" arrowPointAtCenter>
                                 <Popconfirm placement="topRight" title="您确定要删除这条订单记录吗？" onConfirm={() => this.deleteHistoryOrder(record.orderId)}>
-                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'red',fontSize:"25px"}} type="delete"/></a>
+                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'red'}} type="delete"/></a>
                                 </Popconfirm>
                             </Tooltip>
                         </div>

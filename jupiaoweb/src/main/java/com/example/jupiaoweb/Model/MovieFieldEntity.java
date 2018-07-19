@@ -13,6 +13,7 @@ public class MovieFieldEntity {
     private String date;
     private String brand;
     private List<String> time;
+    private String price;
 
     public String getMovie() {
         return movie;
@@ -52,6 +53,14 @@ public class MovieFieldEntity {
 
     public void setTime(List<String> time) {
         this.time = time;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }
 

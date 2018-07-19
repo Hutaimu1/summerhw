@@ -105,6 +105,7 @@ class movieTicket extends React.Component {
         date:["7月13日","7月14日","7月15日"],
         brand:["SFC上影影城","万达影城","大地影院"],
         time:["8:00 - 10:00","1:00 - 3:00","7:00 - 9:00"],
+        price:"0",
         cityVisible: false,
         shopVisible: false,
         quickVisible: false,
@@ -192,15 +193,10 @@ class movieTicket extends React.Component {
                     chooseMovie:movie,
                     chooseDate:"",
                     chooseBrand:"",
-                    chooseTime:""
+                    chooseTime:"",
+                    price:"0"
                 });
             }.bind(this)
-        });
-        this.setState({
-            chooseMovie:movie,
-            chooseDate:"",
-            chooseBrand:"",
-            chooseTime:""
         });
     };
 
@@ -215,14 +211,10 @@ class movieTicket extends React.Component {
                     brand:JSON.parse(data),
                     chooseDate:date,
                     chooseBrand:"",
-                    chooseTime:""
+                    chooseTime:"",
+                    price:"0"
                 });
             }.bind(this)
-        });
-        this.setState({
-            chooseDate:date,
-            chooseBrand:"",
-            chooseTime:""
         });
     };
 
@@ -233,17 +225,16 @@ class movieTicket extends React.Component {
             data: {place: this.state.place, movie:this.state.chooseMovie, date:this.state.chooseDate, brand:brand},
             async: false,
             success: function (data) {
+                let time = JSON.parse(data);
+                let price = time.splice(JSON.parse(data).length - 1,1);
                 this.setState({
-                    time:JSON.parse(data),
+                    time:time,
                     chooseBrand:brand,
-                    chooseTime:""
+                    chooseTime:"",
+                    price:price
                 });
             }.bind(this)
         });
-        this.setState({
-            chooseBrand:brand,
-            chooseTime:""
-        })
     };
 
     changeTime = (time) =>{
@@ -252,7 +243,7 @@ class movieTicket extends React.Component {
         })
     };
 
-    movieTicketAddToShopCart = (id,place,date,brand,time) =>{
+    movieTicketAddToShopCart = (id,place,date,brand,time,price) =>{
         let userName = this.props.match.params.userName;
         let ticketName;
         let description = place +" "+ brand+ " " + date +" "+ time;
@@ -263,7 +254,7 @@ class movieTicket extends React.Component {
         });
         $.ajax({
             url: "bookstoreApp/movieTicketAddToShopCart",
-            data: {ticketId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,description:description},
+            data: {ticketId:id,userName:userName,ticketName:ticketName,price:price,leftTicket:15,description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
@@ -277,7 +268,7 @@ class movieTicket extends React.Component {
         });
     };
 
-    movieTicketQuickBuy = (id,place,date,brand,time) =>{
+    movieTicketQuickBuy = (id,place,date,brand,time,price) =>{
         let userName = this.props.match.params.userName;
         let ticketName;
         let description = place +" "+ brand+ " " + date +" "+ time;
@@ -288,7 +279,7 @@ class movieTicket extends React.Component {
         });
         $.ajax({
             url: "bookstoreApp/movieTicketQuickBuy",
-            data: {ticketId:id,userName:userName,ticketName:ticketName,price:25,leftTicket:15,date:moment().format('YYYY-MM-DD HH:mm:ss'),description:description},
+            data: {ticketId:id,userName:userName,ticketName:ticketName,price:price,leftTicket:15,date:moment().format('YYYY-MM-DD HH:mm:ss'),description:description},
             type: "POST",
             traditional: true,
             success: function (data) {
@@ -301,7 +292,7 @@ class movieTicket extends React.Component {
 
     getMovie = () =>{
         let result=[];
-        const {chooseDate,chooseBrand,chooseTime,date,brand,time}=this.state;
+        const {chooseDate,chooseBrand,chooseTime,date,brand,time,price,place}=this.state;
         this.state.data.forEach((card, index) => {
             if (index >= (this.state.current - 1) * this.state.pageSize && index < this.state.current * this.state.pageSize) {
                 result.push(<Card
@@ -334,7 +325,7 @@ class movieTicket extends React.Component {
                                     </li>
                                 </ul>
                             </div>
-                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" } onClick={()=>this.movieTicketAddToShopCart(card.id,this.state.place,this.state.chooseDate,this.state.chooseBrand,this.state.chooseTime)}>加入购物车</Button></div>}
+                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" } onClick={()=>this.movieTicketAddToShopCart(card.id,place,chooseDate,chooseBrand,chooseTime,price)}>加入购物车￥{price}</Button></div>}
                             trigger="click"
                             visible={this.state.chooseMovie === card.title?this.state.shopVisible:false}
                             onVisibleChange={this.handleShopVisibleChange}
@@ -365,7 +356,7 @@ class movieTicket extends React.Component {
                                     </li>
                                 </ul>
                             </div>
-                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" }  onClick={()=>this.movieTicketQuickBuy(card.id,this.state.place,this.state.chooseDate,this.state.chooseBrand,this.state.chooseTime)}>一键快速下单</Button></div>}
+                                <Button type="primary" className="tags-button" disabled={chooseDate === "" || chooseBrand === "" || chooseTime === "" }  onClick={()=>this.movieTicketQuickBuy(card.id,place,chooseDate,chooseBrand,chooseTime,price)}>一键快速下单￥{price}</Button></div>}
                             trigger="click"
                             visible={this.state.chooseMovie === card.title?this.state.quickVisible:false}
                             onVisibleChange={this.handleQuickVisibleChange}
