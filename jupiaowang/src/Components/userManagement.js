@@ -182,7 +182,7 @@ class userManagement extends React.Component {
                     type: "post",
                     url: "/bookstoreApp/editUserMessage",
                     async: true,
-                    data: {userName: item.userName, email: email, phone: phoneNumber, qq: qq},
+                    data: {userName: item.userName, email: email, phone: phoneNumber, qq: qq, password:null},
                     success: function (data) {
                         if (JSON.parse(data)) {
                             message.success("用户信息已修改!")

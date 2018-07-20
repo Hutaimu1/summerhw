@@ -5,6 +5,8 @@ import java.util.List;
 public class User {
     private String href;
     private String userName;
+    private String password;
+    private String image;
     private byte isFreeze;
     private List<String> content;
     private boolean edit;
@@ -47,5 +49,21 @@ public class User {
 
     public void setEdit(boolean edit) {
         this.edit = edit;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

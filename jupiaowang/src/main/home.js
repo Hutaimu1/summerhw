@@ -7,7 +7,7 @@ import TrainTicket from "../Components/trainTicket"
 import OrderToBeResolved from "../Components/orderToBeResolved"
 import HistoryOrder from '../Components/historyOrder'
 import ViewMovie from '../Components/viewMovie'
-import User from '../Components/user'
+import userMessage from '../Components/userMessage'
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -40,7 +40,7 @@ class homepage extends React.Component {
                 >
                     <Menu theme="dark" mode="inline" selectedKeys={[this.props.location.pathname]} defaultOpenKeys={["sub1","sub2","sub3"]}>
                         <SubMenu key="sub1" title={<span><Icon type="user"/><span>用户中心</span></span>}>
-                            <Menu.Item key={`/home/${userName}/user`}><NavLink to={{pathname:`/home/${userName}/user`}}>用户信息</NavLink></Menu.Item>
+                            <Menu.Item key={`/home/${userName}/userMessage`}><NavLink to={{pathname:`/home/${userName}/userMessage`}}>用户信息</NavLink></Menu.Item>
                             <Menu.Item key={`/home/${userName}/collection`}>我的收藏</Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品</span></span>}>
@@ -76,7 +76,7 @@ class homepage extends React.Component {
                     <Content style={{margin: '0 16px'}}>
                         <div style={{padding: 24, background: '#fff', minHeight: 816}}>
                             <Switch>
-                                <Route path="/home/:userName/user" component={User}/>
+                                <Route path="/home/:userName/userMessage" component={userMessage}/>
                                 <Route path= "/home/:userName/trainTicket" component={TrainTicket} />
                                 <Route path= "/home/:userName/movieTicket" component={MovieTicket} />
                                 <Route path= "/home/:userName/shoppingCart" component={ShopCart} />

@@ -4,7 +4,6 @@ import com.example.jupiaoweb.Model.UserEntity;
 import com.example.jupiaoweb.Model.UserImageEntity;
 import com.example.jupiaoweb.Service.UserService;
 import com.example.jupiaoweb.bean.User;
-import com.example.jupiaoweb.bean.UserMessage;
 import com.example.jupiaoweb.dao.UserImageRepository;
 import com.example.jupiaoweb.dao.UserRepository;
 import com.google.gson.Gson;
@@ -251,11 +250,14 @@ public class UserServiceImpl implements UserService {
         Gson gson = new Gson();
         UserEntity user = userRepository.findByUserName(userName).get(0);
         List<UserImageEntity>  myImage = userImageRepository.findByUserName(userName);
-        UserMessage myMessage = new UserMessage();
+        User myMessage = new User();
+        myMessage.setUserName(userName);
         myMessage.setPassword(user.getPassword());
-        myMessage.setEmail(user.geteMail());
-        myMessage.setQQ(user.getQq());
-        myMessage.setTelPhone(user.getPhoneNumber());
+        List<String> content = new ArrayList<>();
+        content.add(user.geteMail());
+        content.add(user.getPhoneNumber());
+        content.add(user.getQq());
+        myMessage.setContent(content);
         if(myImage.size() == 0){
             myMessage.setImage("");
         }
@@ -274,7 +276,10 @@ public class UserServiceImpl implements UserService {
         u.seteMail(email);
         u.setPhoneNumber(phone);
         u.setQq(qq);
-        u.setPassword(password);
+        System.out.println(password);
+        if (!password.equals("")){
+            u.setPassword(password);
+        }
         userRepository.save(u);
         if(oldPassword.equals(password)){
             return gson.toJson(true);//表示密码被修改过

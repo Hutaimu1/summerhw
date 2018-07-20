@@ -1,20 +1,14 @@
 package com.example.jupiaoweb.Model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 
 @Document(collection = "userImage")
 public class UserImageEntity {
 
     @Id
-    private String id;
     private String userName;
     private String url;
-
-    public String getId() { return id; }
-
-    public void setId(String id) { this.id = id; }
 
     public String getUserName() {
         return userName;
