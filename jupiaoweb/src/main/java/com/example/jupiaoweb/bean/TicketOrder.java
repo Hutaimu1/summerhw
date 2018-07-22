@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public class TicketOrder {
     private int orderId;
+    private String userName;
     private int totalPrice;
     private String date;
     private byte paid;
@@ -16,6 +17,10 @@ public class TicketOrder {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+
+    public String getUserName() { return userName; }
+
+    public void setUserName(String userName) { this.userName = userName; }
 
     public int getTotalPrice() {
         return totalPrice;

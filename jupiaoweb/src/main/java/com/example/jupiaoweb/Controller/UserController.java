@@ -92,14 +92,6 @@ public class UserController {
         return userService.resetPassword(username);
     }
 
-    @PostMapping(value="uploadImage",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    @ResponseBody
-    public String uploadImage(@RequestParam("userName") String username,
-                              @RequestParam("url") String image){
-        return userService.uploadImage(username,image);
-    }
-
     @PostMapping(value = "getUserMessage")
     @ResponseBody
     public String logIn(@RequestParam("userName") String username) {
@@ -114,5 +106,17 @@ public class UserController {
                                   @RequestParam("phone") String phone,
                                   @RequestParam("qq") String qq) {
         return userService.editUserMessage(username,password,email,phone,qq);
+    }
+
+    @PostMapping(value = "uploadImage")
+    @ResponseBody
+    public String uploadImage(@RequestParam("userName") String username,@RequestParam("base64Str") String base64Str) {
+        return userService.uploadImage(username,base64Str);
+    }
+
+    @PostMapping(value = "deleteImage")
+    @ResponseBody
+    public String deleteImage(@RequestParam("userName") String username) {
+        return userService.deleteImage(username);
     }
 }

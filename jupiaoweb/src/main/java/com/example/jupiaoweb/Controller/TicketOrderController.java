@@ -47,4 +47,9 @@ public class TicketOrderController {
         return ticketOrderService.deleteHistoryOrder(orderId);
     }
 
+    @PostMapping(value = "getAllOrderList")
+    @ResponseBody
+    public String getAllOrderList(){
+        return ticketOrderService.getAllOrderList();
+    }
 }

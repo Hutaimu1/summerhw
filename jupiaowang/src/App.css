@@ -414,14 +414,12 @@ body {
 
 .user-left{
   float: left;
-  width: 110px;
+  width: 600px;
   /*border-right: 1px solid #BDBDBD;*/
 }
 
 .user-right{
-  margin-left:120px;
-  width: 600px;
-  border-left: 1px solid #BDBDBD;
+  margin-left:620px;
 }
 
 
@@ -435,22 +433,17 @@ body {
   color: #666;
 }
 
-.edit-form-button-left {
+.edit-form-button {
   width: 40%;
-  margin-right: 10%;
+  margin-left: -10%;
 }
 
-.edit-form-button-right {
+.confirm-form-button {
   width: 40%;
-  margin-right:30%;
+  margin-right: 20%;
 }
 
-.image-size {
-  width:110px;
-  height:112px;
+.delete-form-button {
+  width: 40%;
 }
 
-.upload{
-  width:110px;
-  height:112px;
-}
