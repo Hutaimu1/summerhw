@@ -470,7 +470,7 @@ class trainTicket extends React.Component {
             </Menu>
         );
         return (
-            <div style={{fontWeight: "bold",width:"1195px"}}>
+            <div style={{fontWeight: "bold"}}>
                 <Form layout="inline">
                     <Form.Item
                         label="出发站"

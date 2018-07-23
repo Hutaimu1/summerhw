@@ -181,6 +181,9 @@ public class UserServiceImpl implements UserService {
         return gson.toJson(true);
     }
 
+    @Value("${picture.default}")
+    private String defaultPicture;
+
     @Override
     public String getAllUser() {
         List<UserEntity> result = userRepository.findAll();
@@ -192,6 +195,13 @@ public class UserServiceImpl implements UserService {
             }
             User u = new User();
             u.setUserName(aResult.getUserName());
+            List<UserImageEntity> myImageList = userImageRepository.findByUserName(aResult.getUserName());
+            if (myImageList.size() == 0){
+                u.setImage(defaultPicture);
+            }
+            else {
+                u.setImage(myImageList.get(0).getUrl());
+            }
             u.setHref("http://ant.design");
             List<String> content = new ArrayList<>();
             content.add(aResult.geteMail());
@@ -227,25 +237,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String uploadImage(String username,String image){
-        List<UserImageEntity> myImageList = userImageRepository.findByUserName(username);
-        if(myImageList.size() == 0){
-            UserImageEntity newImage = new UserImageEntity();
-            newImage.setUserName(username);
-            newImage.setUrl(image);
-            userImageRepository.save(newImage);
-        }
-        else{
-            UserImageEntity myImage = myImageList.get(0);
-            myImage.setUrl(image);
-            userImageRepository.save(myImage);
-        }
-        Gson gson = new Gson();
-        return gson.toJson(true);
-
-    }
-
-    @Override
     public String getUserMessage(String userName){
         Gson gson = new Gson();
         UserEntity user = userRepository.findByUserName(userName).get(0);
@@ -263,6 +254,9 @@ public class UserServiceImpl implements UserService {
         }
         else{
             myMessage.setImage(myImage.get(0).getUrl());
+            content.add("myImage.jpg");
+            content.add("done");
+            content.add("0");
         }
         return gson.toJson(myMessage);
     }
@@ -285,5 +279,35 @@ public class UserServiceImpl implements UserService {
             return gson.toJson(true);//表示密码被修改过
         }
         return gson.toJson(false);
+    }
+
+    @Override
+    public String uploadImage(String username,String base64Str){
+        Gson gson = new Gson();
+        List<UserImageEntity> myImageList = userImageRepository.findByUserName(username);
+        if(myImageList.size() != 0){
+            return  gson.toJson(false);
+        }
+        else{
+            UserImageEntity newUserImage = new UserImageEntity();
+            newUserImage.setUserName(username);
+            newUserImage.setUrl(base64Str);
+            userImageRepository.save(newUserImage);
+        }
+        return gson.toJson(true);
+    }
+    
+    @Override
+    public String deleteImage(String username){
+        List<UserImageEntity> myImageList = userImageRepository.findByUserName(username);
+        Gson gson = new Gson();
+        if(myImageList.size() == 0){
+            return gson.toJson(false);
+        }
+        else{
+            UserImageEntity myImage = myImageList.get(0);
+            userImageRepository.delete(myImage);
+        }
+        return gson.toJson(true);
     }
 }

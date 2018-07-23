@@ -49,6 +49,7 @@ public class TicketOrderServiceImpl implements TicketOrderService {
                 tsStr = sdf.format(aOrder.getDate());
                 ticketOrder.setDate(tsStr);
                 ticketOrder.setPaid((byte)0);
+                ticketOrder.setUserName(userName);
                 result.add(ticketOrder);
             }
         }
@@ -133,6 +134,7 @@ public class TicketOrderServiceImpl implements TicketOrderService {
                 tsStr = sdf.format(aOrder.getDate());
                 ticketOrder.setDate(tsStr);
                 ticketOrder.setPaid(aOrder.getIsPaid());
+                ticketOrder.setUserName(userName);
                 result.add(ticketOrder);
             }
         }
@@ -152,5 +154,25 @@ public class TicketOrderServiceImpl implements TicketOrderService {
         ticketOrderRepository.delete(ticketOrder);
         Gson gson = new Gson();
         return gson.toJson(true);
+    }
+
+    @Override
+    public String getAllOrderList(){
+        List<TicketOrderEntity> result = ticketOrderRepository.findAll();
+        List<TicketOrder> res = new ArrayList<>();
+        Gson gson = new Gson();
+        for (TicketOrderEntity aResult : result) {
+            TicketOrder t = new TicketOrder();
+            t.setUserName(aResult.getUserName());
+            t.setTotalPrice(aResult.getTotalPrice());
+            t.setOrderId(aResult.getOrderId());
+            String tsStr = "";
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            tsStr = sdf.format(aResult.getDate());
+            t.setDate(tsStr);
+            t.setPaid(aResult.getIsPaid());
+            res.add(t);
+        }
+        return gson.toJson(res);
     }
 }

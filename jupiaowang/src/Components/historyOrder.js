@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table,Button,message,Popconfirm,Menu,DatePicker,Form,InputNumber,Icon,Tooltip} from 'antd'
+import {Table,Button,Menu,DatePicker,Form,InputNumber,Icon,Tooltip} from 'antd'
 import $ from "jquery";
 import moment from "moment/moment";
 let historyOrder =[
@@ -82,30 +82,6 @@ class History extends React.Component{
         });
     }
 
-    deleteHistoryOrder = (id) => {
-        this.setState((preState) =>{
-            preState.historyOrder.forEach((order,index) =>{
-                if(order.orderId === id){
-                    preState.historyOrder.splice(index,1);
-                }
-            });
-            $.ajax({
-                type: "post",
-                url: "bookstoreApp/deleteHistoryOrder",
-                data: {orderId: id},
-                async: true,
-                success: function (data) {
-                    if(JSON.parse(data)){
-                        message.success("已删除记录!")
-                    }
-                }
-            });
-            return {
-                historyOrder:preState.historyOrder
-            }
-        })
-    };
-
     orderState =(id) =>{
         let orderStates;
         this.state.historyOrder.forEach((order) => {
@@ -116,7 +92,7 @@ class History extends React.Component{
                 else if(order.paid === 2){
                     orderStates = '超过付款时间';
                 }
-                else{
+                else if(order.paid === 3){
                     orderStates = '订单已完成';
                 }
             }
@@ -210,7 +186,8 @@ class History extends React.Component{
         }
         this.setState({
             differentTypeOrder:result,
-            differentTypeOrder_copy:result
+            differentTypeOrder_copy:result,
+            current:'全部'
         })
     };
 
@@ -268,16 +245,9 @@ class History extends React.Component{
                 title: '操作',
                 render: (text, record) => {
                     return (
-                        <div>
-                            <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
-                                <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
-                            </Tooltip>
-                            <Tooltip placement="topLeft" title="删除" arrowPointAtCenter>
-                                <Popconfirm placement="topRight" title="您确定要删除这条订单记录吗？" onConfirm={() => this.deleteHistoryOrder(record.orderId)}>
-                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'red'}} type="delete"/></a>
-                                </Popconfirm>
-                            </Tooltip>
-                        </div>
+                        <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
+                            <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
+                        </Tooltip>
                     )}
             }];
 
@@ -329,7 +299,7 @@ class History extends React.Component{
                     >
                         {getFieldDecorator('startPrice', {
                         })(
-                            <InputNumber></InputNumber>
+                            <InputNumber>&nbsp;</InputNumber>
                         )}
                     </Form.Item>
                     <Form.Item>
@@ -340,7 +310,7 @@ class History extends React.Component{
                         {getFieldDecorator('endPrice', {
                             initialValue:this.props.form.getFieldValue('startPrice')
                         })(
-                            <InputNumber min={this.props.form.getFieldValue('startPrice')} disabled={this.props.form.getFieldValue('startPrice') === undefined}></InputNumber>
+                            <InputNumber min={this.props.form.getFieldValue('startPrice')} disabled={this.props.form.getFieldValue('startPrice') === undefined}>&nbsp;</InputNumber>
                         )}
                     </Form.Item>
                     <Form.Item>
