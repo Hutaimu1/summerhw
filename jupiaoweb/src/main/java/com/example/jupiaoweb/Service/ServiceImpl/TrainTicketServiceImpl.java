@@ -129,4 +129,50 @@ public class TrainTicketServiceImpl implements TrainTicketService {
         orderItemRepository.save(newOrderItem);
         return gson.toJson(true);
     }
+
+    @Override
+    public String addTrainTicket(String ticketName,String startPlace,String arrivePlace,String startTime,int time,int leftTicket,int price){
+        Gson gson = new Gson();
+        TrainTicketEntity t = new TrainTicketEntity();
+        int index = trainTicketRepository.getRowNumber() + 1;
+        t.setTicketId(index);
+        t.setModel(ticketName);
+        t.setStartPlace(startPlace);
+        t.setArrivePlace(arrivePlace);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        try {
+            ts = Timestamp.valueOf(startTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        t.setStartTime(ts);
+        t.setSpendTime(time);
+        Date d1 = new Date(ts.getTime()+ time * 60000);
+        Date d2 = new Date(ts.getTime());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm");
+        t.setArriveTime(Timestamp.valueOf(sdf1.format(d1)));
+        t.setLeftTicket(leftTicket);
+        t.setPrice(price);
+        trainTicketRepository.save(t);
+        TrainTicket res = new TrainTicket();
+        res.setId(index);
+        res.setModel(ticketName);
+        res.setStart(sdf2.format(d2));
+        res.setTime(time);
+        res.setArrive(sdf2.format(d1));
+        res.setLeft(leftTicket);
+        res.setPrice(price);
+        return gson.toJson(res);
+    }
+
+    @Override
+    public String deleteTrainTicket(int[] ticketId){
+        Gson gson = new Gson();
+        for (int aTicketId : ticketId) {
+            TrainTicketEntity t = trainTicketRepository.findByTicketId(aTicketId).get(0);
+            trainTicketRepository.delete(t);
+        }
+        return gson.toJson(true);
+    }
 }

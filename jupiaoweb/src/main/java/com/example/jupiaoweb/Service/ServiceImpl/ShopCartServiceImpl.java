@@ -120,8 +120,8 @@ public class ShopCartServiceImpl implements ShopCartService {
     public String changeChecked(int[] cartItemId) {
         List<ShopCartEntity> result = new ArrayList<>();
         int temp = cartItemId.length;
-        for (int i = 0; i < temp; ++i) {
-            result.add(shopCartRepository.findByShopcartId(cartItemId[i]).get(0));
+        for (int aCartItemId : cartItemId) {
+            result.add(shopCartRepository.findByShopcartId(aCartItemId).get(0));
         }
         Gson gson = new Gson();
         if (result.size() == 0) {
@@ -161,8 +161,8 @@ public class ShopCartServiceImpl implements ShopCartService {
         Gson gson = new Gson();
         int len = shopCartId.length;
         List<String> res = new ArrayList<>();
-        for (int i = 0; i < len; ++i) {
-            ShopCartEntity shopCart = shopCartRepository.findByShopcartId(shopCartId[i]).get(0);
+        for (int aShopCartId1 : shopCartId) {
+            ShopCartEntity shopCart = shopCartRepository.findByShopcartId(aShopCartId1).get(0);
             int count = shopCart.getCount();
             int ticketId = shopCart.getTicketId();
             byte type = shopCart.getType();
@@ -189,12 +189,12 @@ public class ShopCartServiceImpl implements ShopCartService {
         ticketOrderRepository.save(newTicketOrder);
         TicketOrderEntity result = ticketOrderRepository.findByUserNameAndDate(userName, ts).get(0);
         orderId = result.getOrderId();
-        for (int i = 0; i < len; ++i) {
-            ShopCartEntity shopCart = shopCartRepository.findByShopcartId(shopCartId[i]).get(0);
+        for (int aShopCartId : shopCartId) {
+            ShopCartEntity shopCart = shopCartRepository.findByShopcartId(aShopCartId).get(0);
             shopCart.setIsBuy((byte) 1);
             shopCartRepository.save(shopCart);
             OrderItemEntity newOrderItem = new OrderItemEntity();
-            newOrderItem.setShopcartId(shopCartId[i]);
+            newOrderItem.setShopcartId(aShopCartId);
             newOrderItem.setOrderId(orderId);
             orderItemRepository.save(newOrderItem);
             int count = shopCart.getCount();

@@ -454,3 +454,9 @@ body {
 .delete-form-button {
   width: 40%;
 }
+
+.add-form{
+  width: 505px;
+  padding-right: 10%;
+  padding-top: 5%;
+}

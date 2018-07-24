@@ -246,15 +246,9 @@ export default class ShopCart extends React.Component {
     orderToBeSolved() {
         this.setState((preState) => {
             let shopCartIdArray = [];
-            let ticketIdArray = [];
-            let countArray = [];
-            let typeArray = [];
             preState.goodsArray.forEach((goods) => {
                 if (goods.checked) {
                     shopCartIdArray.push(goods.id);
-                    ticketIdArray.push(goods.ticketId);
-                    countArray.push(goods.count);
-                    typeArray.push(goods.type);
                 }
             });
             $.ajax({

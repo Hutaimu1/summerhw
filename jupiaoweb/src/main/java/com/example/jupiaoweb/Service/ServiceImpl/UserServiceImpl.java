@@ -296,7 +296,7 @@ public class UserServiceImpl implements UserService {
         }
         return gson.toJson(true);
     }
-    
+
     @Override
     public String deleteImage(String username){
         List<UserImageEntity> myImageList = userImageRepository.findByUserName(username);

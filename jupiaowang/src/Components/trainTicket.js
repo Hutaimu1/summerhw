@@ -43,6 +43,7 @@ const cityData = [
     ["Y",["烟台","盐城","扬州","宜春","银川","运城","延边","宜昌","阳江","营口","宜宾","永州","榆林","玉林","益阳","岳阳","玉溪","延安","鹰潭","伊犁","阳泉","云浮","雅安","伊春","杨凌区"]],
     ["Z",["郑州","中山","镇江","珠海","株洲","湛江","漳州","淄博","张家口","肇庆","枣庄","遵义","周口","驻马店","舟山","自贡","资阳","张家界","张掖","中卫","昭通"]]
 ];
+let dataSource = [];
 
 class trainTicket extends React.Component {
     state = {
@@ -53,7 +54,6 @@ class trainTicket extends React.Component {
         destination: "北京",
         date: moment(),
         dataSource:[],
-        dataSource_copy:[],
         startTimeVisible: false,
         arriveTimeVisible: false,
         sortedInfo: null,
@@ -72,8 +72,8 @@ class trainTicket extends React.Component {
             success: function (data) {
                 this.setState({
                     dataSource: JSON.parse(data),
-                    dataSource_copy:JSON.parse(data)
-                })
+                });
+                dataSource = JSON.parse(data);
             }.bind(this)
         });
     }
@@ -89,9 +89,9 @@ class trainTicket extends React.Component {
             async: true,
             success: function (data) {
                 this.setState({
-                    dataSource: JSON.parse(data),
-                    dataSource_copy:JSON.parse(data)
-                })
+                    dataSource: JSON.parse(data)
+                });
+                dataSource = JSON.parse(data);
             }.bind(this)
         });
         this.setState({
@@ -197,7 +197,7 @@ class trainTicket extends React.Component {
 
     onPlainChange = (plainCheckedList) => {
         let date=[];
-        this.state.dataSource_copy.forEach((ticket) => {
+        dataSource.forEach((ticket) => {
             if(this.testModel(ticket.model,plainCheckedList) && this.testStartTime(ticket.start,this.state.startTimeCheckedList) && this.testArriveTime(ticket.arrive,this.state.arriveTimeCheckedList)){
                 date.push(ticket);
             }
@@ -213,7 +213,7 @@ class trainTicket extends React.Component {
         let index = e.target.index;
         let startTimeCheckedList = this.state.startTimeCheckedList;
         startTimeCheckedList[index] = !startTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
+        dataSource.forEach((ticket) => {
             if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,startTimeCheckedList) && this.testArriveTime(ticket.arrive,this.state.arriveTimeCheckedList)){
                 date.push(ticket);
             }
@@ -229,7 +229,7 @@ class trainTicket extends React.Component {
         let index = e.target.index;
         let arriveTimeCheckedList = this.state.arriveTimeCheckedList;
         arriveTimeCheckedList[index] = !arriveTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
+        dataSource.forEach((ticket) => {
             if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,this.state.startTimeCheckedList) && this.testArriveTime(ticket.arrive,arriveTimeCheckedList)){
                 date.push(ticket);
             }
@@ -252,7 +252,7 @@ class trainTicket extends React.Component {
         let date=[];
         let startTimeCheckedList = this.state.startTimeCheckedList;
         startTimeCheckedList[index] = !startTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
+        dataSource.forEach((ticket) => {
             if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,startTimeCheckedList) && this.testArriveTime(ticket.arrive,this.state.arriveTimeCheckedList)){
                 date.push(ticket);
             }
@@ -267,7 +267,7 @@ class trainTicket extends React.Component {
         let date=[];
         let arriveTimeCheckedList = this.state.arriveTimeCheckedList;
         arriveTimeCheckedList[index] = !arriveTimeCheckedList[index];
-        this.state.dataSource_copy.forEach((ticket) => {
+        dataSource.forEach((ticket) => {
             if(this.testModel(ticket.model,this.state.plainCheckedList) && this.testStartTime(ticket.start,this.state.startTimeCheckedList) && this.testArriveTime(ticket.arrive,arriveTimeCheckedList)){
                 date.push(ticket);
             }
@@ -333,9 +333,9 @@ class trainTicket extends React.Component {
                                 preState.dataSource[index].left --;
                             }
                         });
+                        dataSource = preState.dataSource;
                         return {
                             dataSource:preState.dataSource,
-                            dataSource_copy:preState.dataSource
                         }
                     })
                 }

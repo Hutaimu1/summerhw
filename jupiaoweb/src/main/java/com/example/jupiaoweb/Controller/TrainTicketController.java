@@ -42,4 +42,22 @@ public class TrainTicketController {
                                       @RequestParam("description") String description){
         return trainTicketService.trainTicketQuickBuy(ticketId,userName,ticketName,price,leftTicket,date,description) ;
     }
+
+    @PostMapping(value = "addTrainTicket")
+    @ResponseBody
+    public String addTrainTicket(@RequestParam("ticketName") String ticketName,
+                                      @RequestParam("startPlace") String startPlace,
+                                      @RequestParam("arrivePlace") String arrivePlace,
+                                      @RequestParam("startTime") String startTime,
+                                      @RequestParam("time") int time,
+                                      @RequestParam("leftTicket") int leftTicket,
+                                      @RequestParam("price") int price){
+        return trainTicketService.addTrainTicket(ticketName,startPlace,arrivePlace,startTime,time,leftTicket,price) ;
+    }
+
+    @PostMapping(value = "deleteTrainTicket")
+    @ResponseBody
+    public String addTrainTicket(@RequestParam("TrainTicketId") int[] ticketId){
+        return trainTicketService.deleteTrainTicket(ticketId) ;
+    }
 }
