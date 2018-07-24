@@ -200,7 +200,7 @@ class History extends React.Component{
     };
 
     disabledDate =(current) =>{
-        if(this.props.form.getFieldValue('date1') === undefined){
+        if(this.props.form.getFieldValue('date1') === undefined || this.props.form.getFieldValue('date1') === null){
             return current < moment('2999-12-31');
         }
         return current < this.props.form.getFieldValue('date1');

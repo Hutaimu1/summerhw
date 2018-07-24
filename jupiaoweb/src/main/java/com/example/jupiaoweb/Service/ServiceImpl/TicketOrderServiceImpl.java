@@ -142,17 +142,22 @@ public class TicketOrderServiceImpl implements TicketOrderService {
     }
 
     @Override
-    public String deleteHistoryOrder(int orderId){
-        List<OrderItemEntity> orderItem = orderItemRepository.findByOrderId(orderId);
-        TicketOrderEntity ticketOrder = ticketOrderRepository.findByOrderId(orderId).get(0);
-        for(OrderItemEntity oneOrder:orderItem){
-            int shopCartId = oneOrder.getShopcartId();
-            ShopCartEntity shopCart = shopCartRepository.findByShopcartId(shopCartId).get(0);
-            orderItemRepository.delete(oneOrder);
-            shopCartRepository.delete(shopCart);
-        }
-        ticketOrderRepository.delete(ticketOrder);
+    public String deleteHistoryOrder(int[] orderIdArray){
         Gson gson = new Gson();
+        if(orderIdArray.length == 0){
+            return gson.toJson(false);
+        }
+        for(int orderId:orderIdArray){
+            List<OrderItemEntity> orderItem = orderItemRepository.findByOrderId(orderId);
+            TicketOrderEntity ticketOrder = ticketOrderRepository.findByOrderId(orderId).get(0);
+            for(OrderItemEntity oneOrder:orderItem){
+                int shopCartId = oneOrder.getShopcartId();
+                ShopCartEntity shopCart = shopCartRepository.findByShopcartId(shopCartId).get(0);
+                orderItemRepository.delete(oneOrder);
+                shopCartRepository.delete(shopCart);
+            }
+            ticketOrderRepository.delete(ticketOrder);
+        }
         return gson.toJson(true);
     }
 

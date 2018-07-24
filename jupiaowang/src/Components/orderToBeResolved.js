@@ -161,21 +161,21 @@ export default class OrderToBeResolved extends React.Component{
                     return (
                         <div>
                             <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
-                                <a style={{marginLeft: '20px',fontSize:"25px"}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
+                                <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
                             </Tooltip>
                             <Tooltip placement="topLeft" title="支付宝付款" arrowPointAtCenter>
                                 <Popconfirm placement="topRight" title="您确定使用支付宝付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon type="alipay" /></a>
+                                    <a style={{marginLeft: '20px'}}><Icon type="alipay" /></a>
                                 </Popconfirm>
                             </Tooltip>
                             <Tooltip placement="topLeft" title="微信付款" arrowPointAtCenter>
                                 <Popconfirm placement="topRight" title="您确定使用微信付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon style ={{color:'green'}} type="wechat"/></a>
+                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'green'}} type="wechat"/></a>
                                 </Popconfirm>
                             </Tooltip>
                             <Tooltip placement="topLeft" title="删除" arrowPointAtCenter>
                                 <Popconfirm placement="topRight" title="您确定要删除这条订单记录吗？" onConfirm={() => this.deleteOrder(record.orderId)}>
-                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon style ={{color:'red'}} type="delete"/></a>
+                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'red'}} type="delete"/></a>
                                 </Popconfirm>
                             </Tooltip>
                         </div>

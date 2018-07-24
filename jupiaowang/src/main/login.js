@@ -78,11 +78,11 @@ class Login extends React.Component {
                     else {
                         if (JSON.parse(data)[2]) {
                             message.success('以管理员身份登陆成功!');
-                            this.props.history.push('/admin/' + userName);
+                            this.props.history.push('/admin/' + userName + '/userManagement');
                         }
                         else {
                             message.success('以用户身份登陆成功!');
-                            this.props.history.push('/home/' + userName);
+                            this.props.history.push('/home/' + userName + '/userMessage');
                         }
                     }
                 }

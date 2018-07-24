@@ -43,8 +43,8 @@ public class TicketOrderController {
 
     @PostMapping(value = "deleteHistoryOrder")
     @ResponseBody
-    public String deleteHistoryOrder(@RequestParam("orderId") int orderId) {
-        return ticketOrderService.deleteHistoryOrder(orderId);
+    public String deleteHistoryOrder(@RequestParam("orderId") int[] orderIdArray) {
+        return ticketOrderService.deleteHistoryOrder(orderIdArray);
     }
 
     @PostMapping(value = "getAllOrderList")

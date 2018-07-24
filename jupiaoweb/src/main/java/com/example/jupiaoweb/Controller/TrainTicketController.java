@@ -60,4 +60,16 @@ public class TrainTicketController {
     public String addTrainTicket(@RequestParam("TrainTicketId") int[] ticketId){
         return trainTicketService.deleteTrainTicket(ticketId) ;
     }
+
+    @PostMapping(value = "editTrainTicket")
+    @ResponseBody
+    public String editTrainTicket(@RequestParam("TrainTicketId") int ticketId,
+                                  @RequestParam("ticketName") String ticketName,
+                                  @RequestParam("startTime") String startTime,
+                                  @RequestParam("time") int time,
+                                  @RequestParam("leftTicket") int leftTicket,
+                                  @RequestParam("price") int price){
+        return trainTicketService.editTrainTicket(ticketId, ticketName, startTime, time, leftTicket, price);
+    }
+
 }

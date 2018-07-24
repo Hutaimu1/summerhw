@@ -95,9 +95,12 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
     getInput = () => {
         if (this.props.inputType === 'number') {
-            return <InputNumber/>;
+            return <InputNumber style={{width: "140px"}}/>;
         }
-        return <Input/>;
+        else if (this.props.inputType === 'arrive') {
+            return <Input style={{width: "140px"}} disabled={true}/>;
+        }
+        return <Input style={{width: "140px"}}/>;
     };
 
     render() {
@@ -145,39 +148,7 @@ class trainTicket extends React.Component {
         starting: "上海",
         destination: "北京",
         date: moment(),
-        dataSource: [{
-            "id": 3,
-            "model": "G101",
-            "start": "06:43",
-            "time": 357,
-            "arrive": "12:40",
-            "left": 6,
-            "price": 1748
-        }, {
-            "id": 4,
-            "model": "G5",
-            "start": "07:00",
-            "time": 280,
-            "arrive": "11:40",
-            "left": 6,
-            "price": 1762
-        }, {
-            "id": 5,
-            "model": "1461",
-            "start": "11:54",
-            "time": 1165,
-            "arrive": "07:19",
-            "left": 50,
-            "price": 156
-        }, {
-            "id": 6,
-            "model": "D313",
-            "start": "19:34",
-            "time": 727,
-            "arrive": "07:41",
-            "left": 13,
-            "price": 780
-        }, {"id": 7, "model": "D321", "start": "21:04", "time": 725, "arrive": "09:09", "left": 9, "price": 780}],
+        dataSource: [],
         startTimeVisible: false,
         arriveTimeVisible: false,
         sortedInfo: null,
@@ -510,13 +481,6 @@ class trainTicket extends React.Component {
         });
     };
 
-    getInput = () => {
-        if (this.props.inputType === 'number') {
-            return <InputNumber/>;
-        }
-        return <Input/>;
-    };
-
     isEditing = (record) => {
         return record.id === this.state.editingKey;
     };
@@ -530,19 +494,34 @@ class trainTicket extends React.Component {
             if (error) {
                 return;
             }
-            const newData = [...this.state.dataSource];
-            const index = newData.findIndex(item => key === item.id);
-            if (index > -1) {
-                const item = newData[index];
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row,
-                });
-                this.setState({dataSource: newData, editingKey: ''});
-            } else {
-                newData.push(row);
-                this.setState({dataSource: newData, editingKey: ''});
-            }
+            console.log(row.start);
+            $.ajax({
+                url: "bookstoreApp/editTrainTicket",
+                data: {
+                    TrainTicketId: key,
+                    ticketName: row.model,
+                    startTime: this.state.date.format("YYYY-MM-DD") + " " + row.start + ":00",
+                    time: row.time,
+                    leftTicket: row.left,
+                    price: row.price,
+                },
+                type: "POST",
+                traditional: true,
+                success: function (data) {
+                    if (JSON.parse(data)) {
+                        message.success("票品信息更改成功!");
+                        const newData = [...this.state.dataSource];
+                        const index = newData.findIndex(item => key === item.id);
+                        newData.splice(index, 1, JSON.parse(data));
+                        dataSource.splice(index, 1, JSON.parse(data));
+                        this.setState({
+                            dataSource: newData,
+                            editingKey: ''
+                        });
+
+                    }
+                }.bind(this)
+            });
         });
     }
 
@@ -560,18 +539,21 @@ class trainTicket extends React.Component {
             title: '车次/车型',
             dataIndex: 'model',
             editable: true,
+            width: "15%"
         }, {
             title: '出发',
             dataIndex: 'start',
             sorter: (a, b) => moment(a.start, "HH:mm")._d.valueOf() - moment(b.start, "HH:mm")._d.valueOf(),
             sortOrder: sortedInfo.columnKey === 'start' && sortedInfo.order,
             editable: true,
+            width: "15%"
         }, {
             title: '耗时',
             dataIndex: 'time',
             sorter: (a, b) => a.time - b.time,
             sortOrder: sortedInfo.columnKey === 'time' && sortedInfo.order,
             editable: true,
+            width: "15%",
             render: (text, record) => {
                 return <a style={{color: "black"}}>{Math.floor(record.time / 60)}时{record.time % 60}分 </a>
             }
@@ -581,12 +563,14 @@ class trainTicket extends React.Component {
             sorter: (a, b) => moment(a.arrive, "HH:mm")._d.valueOf() - moment(b.arrive, "HH:mm")._d.valueOf(),
             sortOrder: sortedInfo.columnKey === 'arrive' && sortedInfo.order,
             editable: true,
+            width: "15%",
         }, {
             title: '剩余票数',
             dataIndex: 'left',
             sorter: (a, b) => a.left - b.left,
             sortOrder: sortedInfo.columnKey === 'left' && sortedInfo.order,
             editable: true,
+            width: "15%",
             render: (text, record) => {
                 if (record.left === 0) {
                     return <div>
@@ -611,12 +595,14 @@ class trainTicket extends React.Component {
             sorter: (a, b) => a.price - b.price,
             sortOrder: sortedInfo.columnKey === 'price' && sortedInfo.order,
             editable: true,
+            width: "15%",
             render: (text, record) => {
                 return <a style={{color: "black"}}>¥{record.price} </a>
             }
         }, {
             title: '操作',
             dataIndex: '',
+            width: "10%",
             render: (text, record) => {
                 const editable = this.isEditing(record);
                 return <div>
@@ -624,29 +610,27 @@ class trainTicket extends React.Component {
                         <span>
                   <EditableContext.Consumer>
                     {form => (
-                        <Tooltip placement="topLeft" title="保存" arrowPointAtCenter>
-                            <Popconfirm title="确定保存修改?" onConfirm={() => this.save(form, record.id)}>
-                                <a style={{marginRight: 8}}><Icon type="check"/></a>
-                            </Popconfirm>
-                        </Tooltip>
+                        <Popconfirm title={<div style={{width: "150px"}}>确定保存修改?</div>}
+                                    onConfirm={() => this.save(form, record.id)}>
+                            <a style={{marginRight: 8}}><Icon type="check"/></a>
+                        </Popconfirm>
                     )}
                   </EditableContext.Consumer>
-                            <Tooltip placement="topLeft" title="取消" arrowPointAtCenter>
-                                <Popconfirm title="确定取消修改?" onConfirm={() => this.cancel(record.id)}>
+                                <Popconfirm title={<div style={{width: "150px"}}>确定取消修改?</div>}
+                                            onConfirm={() => this.cancel(record.id)}>
                                     <a style={{marginRight: 8}}><Icon type="close"/></a>
                                 </Popconfirm>
-                            </Tooltip>
                 </span>
                     ) : (
-                        <Tooltip placement="topLeft" title="编辑票品" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="确定编辑此票品?"
+                        <Tooltip placement="topLeft" title={<div style={{width: "56px"}}>编辑票品</div>} arrowPointAtCenter>
+                            <Popconfirm placement="topRight" title={<div style={{width: "150px"}}>确定编辑此票品?</div>}
                                         onConfirm={() => this.edit(record.id)}>
                                 <a style={{marginRight: 8}}><Icon type="edit"/></a>
                             </Popconfirm>
                         </Tooltip>
                     )}
-                    <Tooltip placement="topLeft" title="删除票品" arrowPointAtCenter>
-                        <Popconfirm placement="topRight" title="确定删除此票品?"
+                    <Tooltip placement="topLeft" title={<div style={{width: "56px"}}>删除票品</div>} arrowPointAtCenter>
+                        <Popconfirm placement="topRight" title={<div style={{width: "150px"}}>确定删除此票品?</div>}
                                     onConfirm={() => this.DeleteTrainTicket([record.id], [record])}>
                             <a><Icon style={{color: "#ff5741"}} type="delete"/></a>
                         </Popconfirm>
@@ -870,10 +854,11 @@ class trainTicket extends React.Component {
                 ...col,
                 onCell: record => ({
                     record,
-                    inputType: col.dataIndex === 'left' || col.dataIndex === 'time' ? 'number' : 'text',
+                    inputType: col.dataIndex === 'left' || col.dataIndex === 'time' ? 'number' : col.dataIndex === 'arrive' ? "arrive" : "text",
                     dataIndex: col.dataIndex,
                     title: col.title,
                     editing: this.isEditing(record),
+                    width: col.width
                 }),
             };
         });

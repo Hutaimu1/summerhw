@@ -431,13 +431,13 @@ class trainTicket extends React.Component {
                 }
                 else{
                     return <div>
-                        <Tooltip placement="topLeft" title="加入购物车" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定将这件票品加入您的购物车么?" onConfirm={() => this.trainTicketAddToShopCart(record)}>
+                        <Tooltip placement="topLeft" title={<div style={{width: "70px"}}>加入购物车</div>} arrowPointAtCenter>
+                            <Popconfirm placement="topRight" title={<div style={{width:"150px"}}>您确定将这件票品加入您的购物车么?</div>} onConfirm={() => this.trainTicketAddToShopCart(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="shopping-cart"/></a>
                             </Popconfirm>
                         </Tooltip>
-                        <Tooltip placement="topLeft" title="一键下单" arrowPointAtCenter>
-                            <Popconfirm placement="topRight" title="您确定要一键下单购买这件票品么?" onConfirm={() => this.trainTicketQuickBuy(record)}>
+                        <Tooltip placement="topLeft" title={<div style={{width: "56px"}}>一键下单</div>} arrowPointAtCenter>
+                            <Popconfirm placement="topRight" title={<div style={{width:"150px"}}>您确定要一键下单购买这件票品么?</div>} onConfirm={() => this.trainTicketQuickBuy(record)}>
                                 <a style={{marginLeft: '5px'}}><Icon type="rocket"/></a>
                             </Popconfirm>
                         </Tooltip>
