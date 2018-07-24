@@ -18,7 +18,10 @@ import moment from "moment/moment";
 let allOrder = [{orderId:1,userName:'hutaimu',totalPrice:1000,paid:1,date:"2018-07-05 10:00:00"},
     {orderId:2,userName:'hutaimu1',totalPrice:900,paid:0,date:"2018-07-06 10:00:00"},
     {orderId:3,userName:'hutaimu2',totalPrice:1000,paid:3,date:"2018-07-07 10:00:00"},
-    {orderId:0,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"}];
+    {orderId:0,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"},
+    {orderId:4,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"},
+    {orderId:5,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"},
+    {orderId:6,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"}];
 
 let detailOrder = [{orderId:1,name:"商品1",price:100,count:10,description:"商品1明细"}];
 
@@ -27,6 +30,7 @@ class orderManagement extends React.Component{
     constructor() {
         super();
         this.state = {
+            selectedRowKeys:[],
             historyOrder: allOrder,
             showDetail:false,
             queryType:0,
@@ -34,6 +38,7 @@ class orderManagement extends React.Component{
             differentTypeOrder:allOrder,
             current: '全部',
             differentTypeOrder_copy:allOrder
+
         };
     }
 
@@ -62,31 +67,45 @@ class orderManagement extends React.Component{
     };
 
     deleteHistoryOrder = (id) => {
-        this.setState((preState) =>{
-            preState.historyOrder.forEach((order,index) =>{
-                if(order.orderId === id){
-                    preState.historyOrder.splice(index,1);
+        let preState = this.state;
+        preState.historyOrder.forEach((order,index) =>{
+            if(order.orderId === id){
+                preState.historyOrder.splice(index,1);
+                if(preState.selectedRowKeys.indexOf(id) > -1){
+                    preState.selectedRowKeys.splice(preState.selectedRowKeys.indexOf(id),1);
                 }
-            });
-            $.ajax({
-                type: "post",
-                url: "bookstoreApp/deleteHistoryOrder",
-                data: {orderId: id},
-                async: true,
-                success: function (data) {
-                    if(JSON.parse(data)){
-                        message.success("已删除记录!")
-                    }
-                }
-            });
-            return {
-                historyOrder:preState.historyOrder
             }
-        })
+        });
+        let newDifferentTypeOrder = preState.differentTypeOrder.filter(function (obj) {
+            return id !== obj.orderId;
+        });
+
+        let newDifferentTypeOrder_copy    =preState.differentTypeOrder_copy.filter(function (obj) {
+            return id !== obj.orderId;
+        });
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/deleteHistoryOrder",
+            data: {orderId: [id]},
+            async: true,
+            traditional:true,
+            success: function (data) {
+                if(JSON.parse(data)){
+                    message.success("已删除记录!");
+                    this.setState ({
+                        historyOrder:preState.historyOrder,
+                        differentTypeOrder:newDifferentTypeOrder,
+                        differentTypeOrder_copy:newDifferentTypeOrder_copy,
+                        selectedRowKeys:preState.selectedRowKeys
+                    })
+                }
+            }.bind(this)
+        });
     };
 
     allOrder = () =>{
         let all = this.state.historyOrder;
+        this.props.form.setFieldsValue({"userName":null,"date1":null,"date2":null,"startPrice":null,"endPrice":null,"orderId":null});
         this.setState({
             current:'全部',
             differentTypeOrder:all,
@@ -170,7 +189,7 @@ class orderManagement extends React.Component{
     showAll(){
         let order = this.state.differentTypeOrder;
         this.setState({
-            differentTypeOrder_copy:order
+                differentTypeOrder_copy:order
         });
     }
 
@@ -202,7 +221,6 @@ class orderManagement extends React.Component{
         })
     }
 
-
     showNotFinished(){
         let paidOrder = [];
         this.setState((preState) =>{
@@ -221,63 +239,93 @@ class orderManagement extends React.Component{
         return (value !== undefined && value !== '' && value !== null)
     };
 
-    handleDateAndNumber =(differentTypeOrder) =>{
+    handleUserNameAndDateAndNumber =() =>{
         let date1 = this.props.form.getFieldValue('date1');
         let date2 = this.props.form.getFieldValue('date2');
         let startPrice = this.props.form.getFieldValue('startPrice');
         let endPrice = this.props.form.getFieldValue('endPrice');
-        let result = [];
-        if(!this.hasValue(date1) && !this.hasValue(startPrice)){
-            differentTypeOrder.forEach((order)=>{
-                result.push(order);
-            })
-        }
-        else if(this.hasValue(date1) && !this.hasValue(startPrice)){
-            differentTypeOrder.forEach((order)=>{
-                let date = moment(order.date,'YYYY-MM-DD');
-                if((date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))) && (date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD')))){
-                    result.push(order);
-                }
-            })
-        }
-        else if(!this.hasValue(date1) && this.hasValue(startPrice)){
-            differentTypeOrder.forEach((order)=>{
-                let price = order.totalPrice;
-                if((price >= startPrice) && (price <= endPrice)){
-                    result.push(order);
-                }
-            })
-        }
-        else{
-            differentTypeOrder.forEach((order)=>{
-                let date = moment(order.date,'YYYY-MM-DD');
-                let price = order.totalPrice;
-                if((price >= startPrice) && (price <= endPrice) && (date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))) && (date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD')))){
-                    result.push(order);
-                }
-            })
-        }
-        this.setState({
-            differentTypeOrder:result,
-            differentTypeOrder_copy:result,
-            current:'全部'
-        })
-    };
-
-    handleUserName = (differentTypeOrder) =>{
         let userName = this.props.form.getFieldValue('userName');
         let result = [];
-        if(!this.hasValue(userName)){
-            differentTypeOrder.forEach((order)=>{
-                result.push(order);
-            })
-        }
-        else{
-            differentTypeOrder.forEach((order)=>{
-                if(order.userName === userName){
-                    result.push(order);
-                }
-            })
+        let differentTypeOrder = this.state.historyOrder;
+        let valueResult = "";
+        if(this.hasValue(userName)){valueResult += "1";}
+        else if(!this.hasValue(userName)){valueResult += "0";}
+        if(this.hasValue(date1)){valueResult += "1";}
+        else if(!this.hasValue(date1)){valueResult += "0";}
+        if(this.hasValue(startPrice)){valueResult += "1";}
+        else if(!this.hasValue(startPrice)){valueResult += "0";}
+        switch (valueResult){
+            case "000":
+                result = differentTypeOrder;
+                break;
+            case "010":
+                differentTypeOrder.forEach((order)=>{
+                    let date = moment(order.date,'YYYY-MM-DD');
+                    if(date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))
+                        && date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD'))){
+                        result.push(order);
+                    }
+                });
+                break;
+            case "001":
+                differentTypeOrder.forEach((order)=>{
+                    let price = order.totalPrice;
+                    if((price >= startPrice) && (price <= endPrice)){
+                        result.push(order);
+                    }
+                });
+                break;
+            case "011":
+                differentTypeOrder.forEach((order)=>{
+                    let date = moment(order.date,'YYYY-MM-DD');
+                    let price = order.totalPrice;
+                    if(price >= startPrice
+                        && price <= endPrice
+                        && date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))
+                        && date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD'))){
+                        result.push(order);
+                    }
+                });
+                break;
+            case "100":
+                differentTypeOrder.forEach((order)=>{
+                    if(order.userName === userName){
+                        result.push(order);
+                    }
+                });
+                break;
+            case "110":
+                differentTypeOrder.forEach((order)=>{
+                    let date = moment(order.date,'YYYY-MM-DD');
+                    if(order.userName === userName
+                        && date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))
+                        && date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD'))){
+                        result.push(order);
+                    }
+                });
+                break;
+            case "101":
+                differentTypeOrder.forEach((order)=>{
+                    let price = order.totalPrice;
+                    if(price >= startPrice && price <= endPrice && order.userName === userName){
+                        result.push(order);
+                    }
+                });
+                break;
+            case "111":
+                differentTypeOrder.forEach((order)=>{
+                    let date = moment(order.date,'YYYY-MM-DD');
+                    let price = order.totalPrice;
+                    if(order.userName === userName
+                        && price >= startPrice && price <= endPrice
+                        && date >= moment(moment(date1.format('YYYY-MM-DD'),'YYYY-MM-DD'))
+                        && date <= moment(moment(date2.format('YYYY-MM-DD'),'YYYY-MM-DD'))){
+                        result.push(order);
+                    }
+                });
+                break;
+            default:
+                break;
         }
         this.setState({
             differentTypeOrder:result,
@@ -286,9 +334,10 @@ class orderManagement extends React.Component{
         })
     };
 
-    handleOrderId = (differentTypeOrder) =>{
+    handleOrderId = () =>{
         let orderId = this.props.form.getFieldValue('orderId');
         let result = [];
+        let differentTypeOrder = this.state.historyOrder;
         if(!this.hasValue(orderId)){
             differentTypeOrder.forEach((order)=>{
                 result.push(order);
@@ -309,19 +358,64 @@ class orderManagement extends React.Component{
     };
 
     handleQueryType = (value) =>{
-        let type = 0;
-        if(value === "按日期价格查询"){
-            type = 0;
+      let type = 0;
+      if(value === "按用户日期价格查询"){
+          type = 0;
+      }
+      else if(value === "按订单号查询"){
+          type = 1;
+      }
+      this.setState({
+          queryType:type
+      })
+    };
+
+    showTotal = (total) => {
+        if(this.state.showDetail){
+            return `该订单共有${total}项票品`
         }
-        else if(value === "按用户名查询"){
-            type = 1;
-        }
-        else if(value === "按订单号查询"){
-            type = 2;
-        }
-        this.setState({
-            queryType:type
-        })
+        return `共搜索到${total}项订单`;
+    };
+
+    deleteOrders = () =>{
+        let orderIdArray = this.state.selectedRowKeys;
+        let preState = this.state;
+        let newHistoryArray = preState.historyOrder;
+        orderIdArray.forEach((orderId) =>{
+            newHistoryArray = newHistoryArray.filter(function (obj) {
+               return orderId !== obj.orderId;
+           })
+        });
+        let newDifferentTypeOrder = preState.differentTypeOrder;
+        orderIdArray.forEach((orderId) =>{
+            newDifferentTypeOrder = newDifferentTypeOrder.filter(function (obj) {
+                return orderId !== obj.orderId;
+            })
+        });
+        let newDifferentTypeOrder_copy = preState.differentTypeOrder_copy;
+        orderIdArray.forEach((orderId) =>{
+            newDifferentTypeOrder_copy = newDifferentTypeOrder_copy.filter(function (obj) {
+                return orderId !== obj.orderId;
+            })
+        });
+        $.ajax({
+            type: "post",
+            url: "bookstoreApp/deleteHistoryOrder",
+            data: {orderId: orderIdArray},
+            async: true,
+            traditional:true,
+            success: function (data) {
+                if (JSON.parse(data)) {
+                    message.success("已删除选中订单!");
+                    this.setState({
+                        historyOrder:newHistoryArray,
+                        differentTypeOrder:newDifferentTypeOrder,
+                        differentTypeOrder_copy:newDifferentTypeOrder_copy,
+                        selectedRowKeys:[]
+                    })
+                }
+            }.bind(this)
+        });
     };
 
     render(){
@@ -354,11 +448,11 @@ class orderManagement extends React.Component{
                 render: (text, record) => {
                     return (
                         <div>
-                            <Tooltip placement="top" title="查看" arrowPointAtCenter>
+                            <Tooltip placement="top" title={<div style={{width:'84px'}}>查看订单明细</div>} arrowPointAtCenter>
                                 <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
                             </Tooltip>
-                            <Tooltip placement="top" title="删除" arrowPointAtCenter>
-                                <Popconfirm placement="right" title="您确定要删除这条订单记录吗？" onConfirm={() => this.deleteHistoryOrder(record.orderId)}>
+                            <Tooltip placement="top" title={<div style={{width:'28px'}}>删除</div>}  arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title={<div style={{width:"150px"}}>您确定要删除这条订单记录吗？</div>} onConfirm={() => this.deleteHistoryOrder(record.orderId)}>
                                     <a style={{marginLeft: '20px'}}><Icon style ={{color:'red'}} type="delete"/></a>
                                 </Popconfirm>
                             </Tooltip>
@@ -387,23 +481,30 @@ class orderManagement extends React.Component{
         const {getFieldDecorator} = this.props.form;
 
         const queryType =(
-            <Select defaultValue="按日期价格查询" style={{width: 180}} onChange={(value) => this.handleQueryType(value)}>
-                <Select.Option value="按日期价格查询">按日期价格查询</Select.Option>
-                <Select.Option value="按用户名查询">按用户名查询</Select.Option>
+            <Select  defaultValue="按用户日期价格查询" style={{width: 180}} onChange={(value) => this.handleQueryType(value)}>
+                <Select.Option value="按用户日期价格查询">按用户日期价格查询</Select.Option>
                 <Select.Option value="按订单号查询">按订单号查询</Select.Option>
             </Select>
         );
 
         const dateAndPriceQuery =(
             <Form layout={"inline"}>
+                <Form.Item label={"用户姓名"}>
+                </Form.Item>
+                <Form.Item>
+                    {getFieldDecorator('userName', {
+                    })(
+                        <Input placeholder="输入姓名"/>
+                    )}
+                </Form.Item>
                 <Form.Item label="订单日期区间">
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('date1', {
-                    })(
-                        <DatePicker allowClear={true}/>
+                        })(
+                            <DatePicker allowClear={true}/>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <span className="ant-calendar-range-picker-separator"> ~ </span>
                 </Form.Item>
@@ -413,53 +514,29 @@ class orderManagement extends React.Component{
                     })(
                         <DatePicker disabledDate={this.disabledDate} allowClear={true}/>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item label="订单价格区间">
                 </Form.Item>
-                <Form.Item
-                >
+                <Form.Item>
                     {getFieldDecorator('startPrice', {
                     })(
                         <InputNumber min={0}>&nbsp;</InputNumber>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <span className="ant-calendar-range-picker-separator"> ~ </span>
                 </Form.Item>
-                <Form.Item
-                >
+                <Form.Item>
                     {getFieldDecorator('endPrice', {
                         initialValue:this.props.form.getFieldValue('startPrice')
                     })(
                         <InputNumber min={this.props.form.getFieldValue('startPrice')} disabled={this.props.form.getFieldValue('startPrice') === undefined}>&nbsp;</InputNumber>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <Button
                         type="primary"
-                        onClick={() =>this.handleDateAndNumber(this.state.historyOrder)}
-                        style={{fontWeight: "bold"}}
-                    >
-                        查询订单
-                    </Button>
-                </Form.Item>
-            </Form>
-        );
-
-        const userNameQuery =(
-            <Form layout={"inline"}>
-                <Form.Item label={"查询姓名"}>
-                </Form.Item>
-                <Form.Item>
-                    {getFieldDecorator('userName', {
-                    })(
-                        <Input placeholder="输入姓名"/>
-                    )}
-                </Form.Item>
-                <Form.Item>
-                    <Button
-                        type="primary"
-                        onClick={() =>this.handleUserName(this.state.historyOrder)}
+                        onClick={() =>this.handleUserNameAndDateAndNumber()}
                         style={{fontWeight: "bold"}}
                     >
                         查询订单
@@ -470,7 +547,7 @@ class orderManagement extends React.Component{
 
         const orderIdQuery = (
             <Form layout={"inline"}>
-                <Form.Item label={"查询订单号"}>
+                <Form.Item label={"查订单号"}>
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('orderId', {
@@ -481,7 +558,7 @@ class orderManagement extends React.Component{
                 <Form.Item>
                     <Button
                         type="primary"
-                        onClick={() =>this.handleOrderId(this.state.historyOrder)}
+                        onClick={() =>this.handleOrderId()}
                         style={{fontWeight: "bold"}}
                     >
                         查询订单
@@ -495,12 +572,18 @@ class orderManagement extends React.Component{
                 return {...dateAndPriceQuery};
             }
             else if(queryType === 1){
-                return {...userNameQuery};
-            }
-            else if(queryType === 2){
                 return {...orderIdQuery};
             }
         }
+
+        const rowSelection = {
+            selectedRowKeys:this.state.selectedRowKeys,
+            onChange:(rowKeys) =>{
+                this.setState({
+                   selectedRowKeys:rowKeys
+                });
+            }
+        };
 
         return(
             <div>
@@ -510,8 +593,27 @@ class orderManagement extends React.Component{
                     <Form.Item>
                         {queryType}
                     </Form.Item>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            onClick={() =>this.allOrder()}
+                            style={{fontWeight: "bold"}}
+                        >
+                            全部订单
+                        </Button>
+                    </Form.Item>
                 </Form>
                 {showQueryType(this.state.queryType)}
+                <Form layout="inline">
+                    <Form.Item>
+                        <Popconfirm placement="topLeft" title="您确定要删除选中的订单吗?"  onConfirm={() => this.deleteOrders()}>
+                            <Button  type="primary" style={{fontWeight: "bold"}} disabled={this.state.selectedRowKeys.length===0}>删除选中</Button>
+                        </Popconfirm>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" style={{fontWeight: "bold"}} disabled>恢复删除操作</Button>
+                    </Form.Item>
+                </Form>
                 <Menu
                     onClick={this.handleClick}
                     selectedKeys={[this.state.current]}
@@ -534,14 +636,16 @@ class orderManagement extends React.Component{
                     dataSource={(this.state.showDetail)?this.state.detailOrder:this.state.differentTypeOrder_copy}
                     columns={(this.state.showDetail)?detailColumn:columns}
                     rowKey={'orderId'}
-                    bordered
-                    title={()=> (this.state.showDetail)?"订单明细": <span className={"table-font"}>聚票网目前的{this.state.current}订单</span>}
-                    footer={()=>(this.state.showDetail)?<Button icon="left" onClick={() => this.setState({showDetail:false})}>返回</Button>:<Button onClick={()=>this.allOrder()}>全部订单</Button>}
+                    title={()=> (this.state.showDetail)?<Button icon="left" onClick={() => this.setState({showDetail:false})}>返回</Button>:
+                        <span className={"table-font"}>聚票网目前的{this.state.current}订单</span>}
+                    rowSelection={(this.state.showDetail)?null:rowSelection}
                     pagination={{
                         defaultPageSize:8,
                         pageSizeOptions:['8','16','24'],
                         showSizeChanger: true,
-                        showQuickJumper: false
+                        showQuickJumper: false,
+                        showTotal:this.showTotal,
+                        total:(this.state.showDetail)?this.state.detailOrder.length:this.state.differentTypeOrder_copy.length
                     }}
                 >
                 </Table>

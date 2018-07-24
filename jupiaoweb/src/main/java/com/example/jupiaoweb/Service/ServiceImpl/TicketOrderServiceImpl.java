@@ -1,16 +1,10 @@
 package com.example.jupiaoweb.Service.ServiceImpl;
 
-import com.example.jupiaoweb.Model.OrderItemEntity;
-import com.example.jupiaoweb.Model.ShopCartEntity;
-import com.example.jupiaoweb.Model.TicketOrderEntity;
-import com.example.jupiaoweb.Model.TrainTicketEntity;
+import com.example.jupiaoweb.Model.*;
 import com.example.jupiaoweb.Service.TicketOrderService;
 import com.example.jupiaoweb.bean.TicketOrder;
 import com.example.jupiaoweb.bean.detailOrder;
-import com.example.jupiaoweb.dao.OrderItemRepository;
-import com.example.jupiaoweb.dao.ShopCartRepository;
-import com.example.jupiaoweb.dao.TicketOrderRepository;
-import com.example.jupiaoweb.dao.TrainTicketRepository;
+import com.example.jupiaoweb.dao.*;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
@@ -142,17 +136,22 @@ public class TicketOrderServiceImpl implements TicketOrderService {
     }
 
     @Override
-    public String deleteHistoryOrder(int orderId){
-        List<OrderItemEntity> orderItem = orderItemRepository.findByOrderId(orderId);
-        TicketOrderEntity ticketOrder = ticketOrderRepository.findByOrderId(orderId).get(0);
-        for(OrderItemEntity oneOrder:orderItem){
-            int shopCartId = oneOrder.getShopcartId();
-            ShopCartEntity shopCart = shopCartRepository.findByShopcartId(shopCartId).get(0);
-            orderItemRepository.delete(oneOrder);
-            shopCartRepository.delete(shopCart);
-        }
-        ticketOrderRepository.delete(ticketOrder);
+    public String deleteHistoryOrder(int[] orderIdArray){
         Gson gson = new Gson();
+        if(orderIdArray.length == 0){
+            return gson.toJson(false);
+        }
+        for(int orderId:orderIdArray){
+            List<OrderItemEntity> orderItem = orderItemRepository.findByOrderId(orderId);
+            TicketOrderEntity ticketOrder = ticketOrderRepository.findByOrderId(orderId).get(0);
+            for(OrderItemEntity oneOrder:orderItem){
+                int shopCartId = oneOrder.getShopcartId();
+                ShopCartEntity shopCart = shopCartRepository.findByShopcartId(shopCartId).get(0);
+                orderItemRepository.delete(oneOrder);
+                shopCartRepository.delete(shopCart);
+            }
+            ticketOrderRepository.delete(ticketOrder);
+        }
         return gson.toJson(true);
     }
 

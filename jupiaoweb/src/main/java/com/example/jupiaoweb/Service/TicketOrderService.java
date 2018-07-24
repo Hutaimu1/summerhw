@@ -6,6 +6,6 @@ public interface TicketOrderService {
     String deleteOrder(int orderId);
     String addToHistoryOrder(int orderId);
     String getHistoryOrderList(String userName);
-    String deleteHistoryOrder(int orderId);
+    String deleteHistoryOrder(int[] orderIdArray);
     String getAllOrderList();
 }
