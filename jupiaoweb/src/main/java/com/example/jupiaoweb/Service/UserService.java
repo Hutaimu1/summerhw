@@ -1,9 +1,7 @@
 package com.example.jupiaoweb.Service;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.mail.MessagingException;
-import java.io.File;
 import java.security.GeneralSecurityException;
 
 public interface UserService {

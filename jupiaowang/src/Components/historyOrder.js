@@ -195,12 +195,13 @@ class History extends React.Component{
         let all = this.state.historyOrder;
         this.setState({
             differentTypeOrder:all,
-            differentTypeOrder_copy:all
+            differentTypeOrder_copy:all,
+            current:'全部'
         })
     };
 
     disabledDate =(current) =>{
-        if(this.props.form.getFieldValue('date1') === undefined || this.props.form.getFieldValue('date1') === null){
+        if(this.props.form.getFieldValue('date1') === undefined || this.props.form.getFieldValue("data1") === null){
             return current < moment('2999-12-31');
         }
         return current < this.props.form.getFieldValue('date1');
@@ -245,9 +246,9 @@ class History extends React.Component{
                 title: '操作',
                 render: (text, record) => {
                     return (
-                        <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
-                            <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
-                        </Tooltip>
+                        <Tooltip placement="topLeft" title={<div style={{width:"28px"}}>查看</div>} arrowPointAtCenter>
+                                <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
+                            </Tooltip>
                     )}
             }];
 
@@ -322,8 +323,11 @@ class History extends React.Component{
                             查询订单
                         </Button>
                     </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" style={{fontWeight:"bold"}} onClick={()=>this.allOrder()}>全部订单</Button>
+                    </Form.Item>
                 </Form>
-                <Menu
+                {this.state.showDetail?<br/>:<Menu
                     onClick={this.handleClick}
                     selectedKeys={[this.state.current]}
                     mode="horizontal"
@@ -337,14 +341,14 @@ class History extends React.Component{
                     <Menu.Item key="未完成">
                         <a style={{color:'black'}}>未完成</a>
                     </Menu.Item>
-                </Menu>
+                </Menu>}
                 <Table
                     dataSource={(this.state.showDetail)?this.state.detailOrder:this.state.differentTypeOrder_copy}
                     columns={(this.state.showDetail)?detailColumn:columns}
                     rowKey={'orderId'}
                     bordered
-                    title={()=> (this.state.showDetail)?"订单明细": <span className={"table-font"}>{this.props.match.params.userName}的{this.state.current}历史订单</span>}
-                    footer={()=>(this.state.showDetail)?<Button icon="left" onClick={() => this.returnToHistoryOrder()}>返回</Button>:<Button onClick={()=>this.allOrder()}>全部订单</Button>}
+                    title={()=> (this.state.showDetail)?<Button icon="left" onClick={() => this.returnToHistoryOrder()}>返回</Button>:
+                        <span className={"table-font"}>{this.props.match.params.userName}的{this.state.current}历史订单</span>}
                     pagination={{
                         defaultPageSize:8,
                         pageSizeOptions:['8','16','24'],

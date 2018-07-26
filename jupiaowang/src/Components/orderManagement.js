@@ -15,15 +15,9 @@ import {
 import $ from "jquery";
 import moment from "moment/moment";
 
-let allOrder = [{orderId:1,userName:'hutaimu',totalPrice:1000,paid:1,date:"2018-07-05 10:00:00"},
-    {orderId:2,userName:'hutaimu1',totalPrice:900,paid:0,date:"2018-07-06 10:00:00"},
-    {orderId:3,userName:'hutaimu2',totalPrice:1000,paid:3,date:"2018-07-07 10:00:00"},
-    {orderId:0,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"},
-    {orderId:4,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"},
-    {orderId:5,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"},
-    {orderId:6,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"}];
+let allOrder = [];
 
-let detailOrder = [{orderId:1,name:"商品1",price:100,count:10,description:"商品1明细"}];
+let detailOrder = [];
 
 class orderManagement extends React.Component{
 
@@ -60,7 +54,7 @@ class orderManagement extends React.Component{
     }
 
     disabledDate =(current) =>{
-        if(this.props.form.getFieldValue('date1') === undefined  || this.props.form.getFieldValue('date1') === null){
+        if(this.props.form.getFieldValue('date1') === undefined || this.props.form.getFieldValue("data1") === null){
             return current < moment('2999-12-31');
         }
         return current < this.props.form.getFieldValue('date1');
@@ -189,7 +183,7 @@ class orderManagement extends React.Component{
     showAll(){
         let order = this.state.differentTypeOrder;
         this.setState({
-            differentTypeOrder_copy:order
+                differentTypeOrder_copy:order
         });
     }
 
@@ -358,16 +352,16 @@ class orderManagement extends React.Component{
     };
 
     handleQueryType = (value) =>{
-        let type = 0;
-        if(value === "按用户日期价格查询"){
-            type = 0;
-        }
-        else if(value === "按订单号查询"){
-            type = 1;
-        }
-        this.setState({
-            queryType:type
-        })
+      let type = 0;
+      if(value === "按用户日期价格查询"){
+          type = 0;
+      }
+      else if(value === "按订单号查询"){
+          type = 1;
+      }
+      this.setState({
+          queryType:type
+      })
     };
 
     showTotal = (total) => {
@@ -383,8 +377,8 @@ class orderManagement extends React.Component{
         let newHistoryArray = preState.historyOrder;
         orderIdArray.forEach((orderId) =>{
             newHistoryArray = newHistoryArray.filter(function (obj) {
-                return orderId !== obj.orderId;
-            })
+               return orderId !== obj.orderId;
+           })
         });
         let newDifferentTypeOrder = preState.differentTypeOrder;
         orderIdArray.forEach((orderId) =>{
@@ -501,10 +495,10 @@ class orderManagement extends React.Component{
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('date1', {
-                    })(
-                        <DatePicker allowClear={true}/>
+                        })(
+                            <DatePicker allowClear={true}/>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <span className="ant-calendar-range-picker-separator"> ~ </span>
                 </Form.Item>
@@ -514,7 +508,7 @@ class orderManagement extends React.Component{
                     })(
                         <DatePicker disabledDate={this.disabledDate} allowClear={true}/>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item label="订单价格区间">
                 </Form.Item>
                 <Form.Item>
@@ -522,7 +516,7 @@ class orderManagement extends React.Component{
                     })(
                         <InputNumber min={0}>&nbsp;</InputNumber>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <span className="ant-calendar-range-picker-separator"> ~ </span>
                 </Form.Item>
@@ -532,7 +526,7 @@ class orderManagement extends React.Component{
                     })(
                         <InputNumber min={this.props.form.getFieldValue('startPrice')} disabled={this.props.form.getFieldValue('startPrice') === undefined}>&nbsp;</InputNumber>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <Button
                         type="primary"
@@ -580,7 +574,7 @@ class orderManagement extends React.Component{
             selectedRowKeys:this.state.selectedRowKeys,
             onChange:(rowKeys) =>{
                 this.setState({
-                    selectedRowKeys:rowKeys
+                   selectedRowKeys:rowKeys
                 });
             }
         };
@@ -606,7 +600,7 @@ class orderManagement extends React.Component{
                 {showQueryType(this.state.queryType)}
                 <Form layout="inline">
                     <Form.Item>
-                        <Popconfirm placement="topLeft" title="您确定要删除选中的订单吗?"  onConfirm={() => this.deleteOrders()}>
+                        <Popconfirm placement="topLeft" title={<div style={{width:"150px"}}>您确定要删除选中的订单吗?</div>}  onConfirm={() => this.deleteOrders()}>
                             <Button  type="primary" style={{fontWeight: "bold"}} disabled={this.state.selectedRowKeys.length===0}>删除选中</Button>
                         </Popconfirm>
                     </Form.Item>
@@ -614,31 +608,33 @@ class orderManagement extends React.Component{
                         <Button type="primary" style={{fontWeight: "bold"}} disabled>恢复删除操作</Button>
                     </Form.Item>
                 </Form>
-                <Menu
-                    onClick={this.handleClick}
-                    selectedKeys={[this.state.current]}
-                    mode="horizontal"
-                >
-                    <Menu.Item key="全部">
-                        <a style={{color:'black'}}>全部</a>
-                    </Menu.Item>
-                    <Menu.Item key="待付款">
-                        <a style={{color:'black'}}>待付款</a>
-                    </Menu.Item>
-                    <Menu.Item key="未完成">
-                        <a style={{color:'black'}}>未完成</a>
-                    </Menu.Item>
-                    <Menu.Item key="已完成">
-                        <a style={{color:'black'}}>已完成</a>
-                    </Menu.Item>
-                </Menu>
+                {this.state.showDetail?<br/>:
+                    <Menu
+                        onClick={this.handleClick}
+                        selectedKeys={[this.state.current]}
+                        mode="horizontal"
+                    >
+                        <Menu.Item key="全部">
+                            <a style={{color:'black'}}>全部</a>
+                        </Menu.Item>
+                        <Menu.Item key="待付款">
+                            <a style={{color:'black'}}>待付款</a>
+                        </Menu.Item>
+                        <Menu.Item key="未完成">
+                            <a style={{color:'black'}}>未完成</a>
+                        </Menu.Item>
+                        <Menu.Item key="已完成">
+                            <a style={{color:'black'}}>已完成</a>
+                        </Menu.Item>
+                    </Menu>}
                 <Table
                     dataSource={(this.state.showDetail)?this.state.detailOrder:this.state.differentTypeOrder_copy}
                     columns={(this.state.showDetail)?detailColumn:columns}
                     rowKey={'orderId'}
-                    title={()=> (this.state.showDetail)?<Button icon="left" onClick={() => this.setState({showDetail:false})}>返回</Button>:
+                    title={()=> (this.state.showDetail)?<Button icon="left" type="primary"  onClick={() => this.setState({showDetail:false})}>返回</Button>:
                         <span className={"table-font"}>聚票网目前的{this.state.current}订单</span>}
                     rowSelection={(this.state.showDetail)?null:rowSelection}
+                    bordered
                     pagination={{
                         defaultPageSize:8,
                         pageSizeOptions:['8','16','24'],

@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.sun.mail.util.MailSSLSocketFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
 
 import javax.annotation.Resource;
 import javax.mail.Message;
@@ -17,6 +19,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.util.*;
 import java.util.Properties;
 
@@ -181,9 +184,6 @@ public class UserServiceImpl implements UserService {
         return gson.toJson(true);
     }
 
-    @Value("${picture.default}")
-    private String defaultPicture;
-
     @Override
     public String getAllUser() {
         List<UserEntity> result = userRepository.findAll();
@@ -195,13 +195,6 @@ public class UserServiceImpl implements UserService {
             }
             User u = new User();
             u.setUserName(aResult.getUserName());
-            List<UserImageEntity> myImageList = userImageRepository.findByUserName(aResult.getUserName());
-            if (myImageList.size() == 0){
-                u.setImage(defaultPicture);
-            }
-            else {
-                u.setImage(myImageList.get(0).getUrl());
-            }
             u.setHref("http://ant.design");
             List<String> content = new ArrayList<>();
             content.add(aResult.geteMail());
@@ -270,7 +263,6 @@ public class UserServiceImpl implements UserService {
         u.seteMail(email);
         u.setPhoneNumber(phone);
         u.setQq(qq);
-        System.out.println(password);
         if (!password.equals("")){
             u.setPassword(password);
         }
@@ -279,22 +271,6 @@ public class UserServiceImpl implements UserService {
             return gson.toJson(true);//表示密码被修改过
         }
         return gson.toJson(false);
-    }
-
-    @Override
-    public String uploadImage(String username,String base64Str){
-        Gson gson = new Gson();
-        List<UserImageEntity> myImageList = userImageRepository.findByUserName(username);
-        if(myImageList.size() != 0){
-            return  gson.toJson(false);
-        }
-        else{
-            UserImageEntity newUserImage = new UserImageEntity();
-            newUserImage.setUserName(username);
-            newUserImage.setUrl(base64Str);
-            userImageRepository.save(newUserImage);
-        }
-        return gson.toJson(true);
     }
 
     @Override
@@ -307,6 +283,48 @@ public class UserServiceImpl implements UserService {
         else{
             UserImageEntity myImage = myImageList.get(0);
             userImageRepository.delete(myImage);
+        }
+        return gson.toJson(true);
+    }
+
+    @Override
+    public String uploadImage(String userName,MultipartFile mFile){
+        String type = mFile.getContentType();
+        Gson gson = new Gson();
+        File f = null;
+        String base64= null;
+        String encoded = "";
+        try {
+            f=File.createTempFile("tmp", null);
+            mFile.transferTo(f);
+            f.deleteOnExit();     //使用完成删除文件
+        }  catch (IOException e) {
+            e.printStackTrace();
+        }
+        try{
+            if(f != null){
+                FileInputStream inputFile = new FileInputStream(f);
+                byte[] buffer = new byte[(int) f.length()];
+                int inputFileSuccess = inputFile.read(buffer);
+                inputFile.close();
+                base64=new BASE64Encoder().encode(buffer);
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(base64 != null){
+            encoded += base64.replaceAll("[\\s*\t\n\r]", "");
+        }
+        String url = "data:" + type + ";base64," + encoded;
+        List<UserImageEntity> myImageList = userImageRepository.findByUserName(userName);
+        if(myImageList.size() != 0){
+            return  gson.toJson(false);
+        }
+        else{
+            UserImageEntity newUserImage = new UserImageEntity();
+            newUserImage.setUserName(userName);
+            newUserImage.setUrl(url);
+            userImageRepository.save(newUserImage);
         }
         return gson.toJson(true);
     }

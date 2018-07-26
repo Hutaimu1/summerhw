@@ -160,22 +160,22 @@ export default class OrderToBeResolved extends React.Component{
                 render: (text,record) => {
                     return (
                         <div>
-                            <Tooltip placement="topLeft" title="查看" arrowPointAtCenter>
-                                <a style={{marginLeft: '20px'}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
+                            <Tooltip placement="topLeft" title={<div style={{width:"28px"}}>查看</div>} arrowPointAtCenter>
+                                <a style={{marginLeft: '20px',fontSize:"25px"}} onClick={() => this.showDetailOrder(record.orderId)}><Icon type="eye"/></a>
                             </Tooltip>
-                            <Tooltip placement="topLeft" title="支付宝付款" arrowPointAtCenter>
-                                <Popconfirm placement="topRight" title="您确定使用支付宝付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <a style={{marginLeft: '20px'}}><Icon type="alipay" /></a>
+                            <Tooltip placement="topLeft" title={<div style={{width:'70px'}}>支付宝付款</div>} arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title={<div style={{width:"150px"}}>您确定使用支付宝付款吗？</div>} onConfirm={() => this.goToBuy(record.orderId)}>
+                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon type="alipay" /></a>
                                 </Popconfirm>
                             </Tooltip>
-                            <Tooltip placement="topLeft" title="微信付款" arrowPointAtCenter>
-                                <Popconfirm placement="topRight" title="您确定使用微信付款吗？" onConfirm={() => this.goToBuy(record.orderId)}>
-                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'green'}} type="wechat"/></a>
+                            <Tooltip placement="topLeft" title={<div style={{width:'56px'}}>微信付款</div>} arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title={<div style={{width:"150px"}}>您确定使用微信付款吗？</div>} onConfirm={() => this.goToBuy(record.orderId)}>
+                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon style ={{color:'green'}} type="wechat"/></a>
                                 </Popconfirm>
                             </Tooltip>
-                            <Tooltip placement="topLeft" title="删除" arrowPointAtCenter>
-                                <Popconfirm placement="topRight" title="您确定要删除这条订单记录吗？" onConfirm={() => this.deleteOrder(record.orderId)}>
-                                    <a style={{marginLeft: '20px'}}><Icon style ={{color:'red'}} type="delete"/></a>
+                            <Tooltip placement="topLeft" title={<div style={{width:"28px"}}>删除</div>} arrowPointAtCenter>
+                                <Popconfirm placement="topRight" title={<div style={{width:"150px"}}>您确定要删除这条订单记录吗?</div>} onConfirm={() => this.deleteOrder(record.orderId)}>
+                                    <a style={{marginLeft: '20px',fontSize:"25px"}}><Icon style ={{color:'red'}} type="delete"/></a>
                                 </Popconfirm>
                             </Tooltip>
                         </div>
@@ -206,8 +206,8 @@ export default class OrderToBeResolved extends React.Component{
                 columns={(this.state.showDetail)?detailColumn:columns}
                 rowKey={'orderId'}
                 bordered
-                title={()=> (this.state.showDetail)?"订单明细":<a style={{color:'red'}}>Tips:未支付订单会保留15分钟，请及时付款!</a>}
-                footer={()=>(this.state.showDetail)?<Button icon="left" onClick={() => this.returnToOrderNotPaid()}>返回</Button>:""}
+                title={()=> (this.state.showDetail)?<Button icon="left" onClick={() => this.returnToOrderNotPaid()}>返回</Button>
+                    :<a style={{color:'red'}}>Tips:未支付订单会保留15分钟，请及时付款!</a>}
                 pagination={{
                     defaultPageSize:8,
                     pageSizeOptions:['8','16','24'],

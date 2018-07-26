@@ -341,9 +341,12 @@ export default class ShopCart extends React.Component {
                 title: '操作',
                 dataIndex: 'operation',
                 render: (text, record) => {
-                    return (<Popconfirm title="确定要删除吗?" onConfirm={() => this.deleteGoods(record.id)}>
-                        <Icon type="delete"/>
-                    </Popconfirm>)
+                    return (
+                        <Tooltip placement="topLeft" title={<div style={{width:'28px'}}>删除</div>} arrowPointAtCenter>
+                            <Popconfirm title={<div style={{width:"150px"}}>您确定要删除吗?</div>} onConfirm={() => this.deleteGoods(record.id)}>
+                                <a><Icon type="delete"/></a>
+                            </Popconfirm>
+                        </Tooltip>)
                 }
             }
         ];
@@ -358,13 +361,13 @@ export default class ShopCart extends React.Component {
             <Row>
                 <Col span={6}><span className={"table-font"}>{this.props.match.params.userName}的购物车</span></Col>
                 <Col span={6}>
-                    <Popconfirm title="您确定要删除选中的票品吗?" onConfirm={() => this.removeChecked()}>
+                    <Popconfirm title={<div style={{width:"150px"}}>您确定要删除选中的票品吗?</div>} onConfirm={() => this.removeChecked()}>
                         <Button type="primary" style={{fontWeight: "bold"}}
                                 disabled={this.state.selectCheckedArray.length === 0}>删除选中</Button>
                     </Popconfirm>
                 </Col>
                 <Col span={6}>
-                    <Popconfirm title="您确定要清空购物车吗?" onConfirm={() => this.removeAll()}>
+                    <Popconfirm title={<div style={{width:"150px"}}>您确定要清空购物车吗?</div>} onConfirm={() => this.removeAll()}>
                         <Button type="primary" style={{fontWeight: "bold"}}
                                 disabled={this.state.goodsArray.length === 0}>清空购物车</Button>
                     </Popconfirm>
@@ -377,9 +380,9 @@ export default class ShopCart extends React.Component {
             </Row>;
 
         const footer = <Row>
-            <Col span={16}><span className={"table-font"}>合计：¥{this.state.totalPrice}</span></Col>
-            <Col span={8}>
-                <Popconfirm title="您确定要生成选中票品的订单吗?" onConfirm={() => this.orderToBeSolved()}>
+            <Col span={20}><span className={"table-font"}>合计：¥{this.state.totalPrice}</span></Col>
+            <Col span={4} style={{textAlign:"right"}}>
+                <Popconfirm title={<div style={{width:"150px"}}>您确定要生成选中票品的订单吗?</div>} onConfirm={() => this.orderToBeSolved()}>
                     <Button type="primary" style={{fontWeight: "bold"}}
                             disabled={this.state.selectCheckedArray.length === 0}>
                         去结算({this.state.selectCheckedArray.length})
