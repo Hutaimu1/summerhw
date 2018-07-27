@@ -1,7 +1,6 @@
 package com.example.jupiaoweb.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,7 +48,7 @@ public class UserController {
                                @RequestParam("email") String email,
                                @RequestParam("qq") String qq,
                                @RequestParam("phone") String phone
-    ) {
+                               ) {
         return userService.registerUser(username, password, email, qq, phone);
     }
 
@@ -63,7 +62,7 @@ public class UserController {
     @PostMapping(value = "checkBindEmail")
     @ResponseBody
     public String checkBindEmail(@RequestParam("userName") String username,
-                                 @RequestParam("email") String email){
+                                   @RequestParam("email") String email){
         return userService.checkBindEmail(username, email);
     }
 
@@ -108,15 +107,15 @@ public class UserController {
         return userService.editUserMessage(username,password,email,phone,qq);
     }
 
-    @PostMapping(value = "uploadImage")
-    @ResponseBody
-    public String uploadImage(@RequestParam("userName") String username,@RequestParam("base64Str") String base64Str) {
-        return userService.uploadImage(username,base64Str);
-    }
-
     @PostMapping(value = "deleteImage")
     @ResponseBody
     public String deleteImage(@RequestParam("userName") String username) {
         return userService.deleteImage(username);
+    }
+
+    @PostMapping(value = "uploadImage")
+    @ResponseBody
+    public String uploadImage(@RequestParam("userName") String userName,@RequestParam("file") MultipartFile file) {
+        return userService.uploadImage(userName,file);
     }
 }

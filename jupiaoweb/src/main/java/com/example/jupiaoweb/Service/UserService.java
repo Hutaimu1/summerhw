@@ -19,6 +19,6 @@ public interface UserService {
     String forgetPassword(String userName, String password);
     String getUserMessage(String userName);
     String editUserMessage(String username,String password, String email, String phone, String qq);
-    String uploadImage(String userName,String base64Str);
     String deleteImage(String username);
+    String uploadImage(String userName,MultipartFile file);
 }
