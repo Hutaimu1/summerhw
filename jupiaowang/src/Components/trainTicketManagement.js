@@ -446,12 +446,14 @@ class trainTicket extends React.Component {
             price: this.props.form.getFieldValue('addPrice')
         }, function (data) {
             message.success('添加票品成功!');
-            dataSource.push(JSON.parse(data));
             let addData = this.state.dataSource;
             addData.push(JSON.parse(data));
-            this.setState({
-                dataSource: addData
-            });
+            if (this.state.starting === this.props.form.getFieldValue('addStarting') && this.state.destination === this.props.form.getFieldValue('addDestination')){
+                dataSource.push(JSON.parse(data));
+                this.setState({
+                    dataSource: addData
+                });
+            }
             this.props.form.resetFields();
             this.props.form.validateFields();
         }.bind(this));

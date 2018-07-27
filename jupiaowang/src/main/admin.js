@@ -4,6 +4,7 @@ import {Route, NavLink, Switch} from 'react-router-dom'
 import userManagement from "../Components/userManagement";
 import trainTicketManagement from "../Components/trainTicketManagement";
 import orderManagement from "../Components/orderManagement";
+import movieTicketManagement from "../Components/movieTicketManagement";
 
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -46,8 +47,8 @@ class adminPage extends React.Component {
                         <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品管理</span></span>}>
                             <Menu.Item key={ `/admin/${userName}/trainTicketManagement`}><NavLink
                                 to={{pathname: `/admin/${userName}/trainTicketManagement`}}>火车票</NavLink></Menu.Item>
-                            <Menu.Item key={"/admin/" + userName + "/movieTicket"}><NavLink
-                                to={{pathname: `/admin/${userName}/movieTicket`}}>电影票</NavLink></Menu.Item>
+                            <Menu.Item key={`/admin/${userName}/movieTicketManagement`}><NavLink
+                                to={{pathname: `/admin/${userName}/movieTicketManagement`}}>电影票</NavLink></Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub3" title={<span><Icon type="area-chart"/><span>报表统计</span></span>}>
                         </SubMenu>
@@ -78,6 +79,7 @@ class adminPage extends React.Component {
                                 <Route path="/admin/:userName/userManagement" component={userManagement}/>
                                 <Route path="/admin/:userName/orderManagement" component={orderManagement}/>
                                 <Route path="/admin/:userName/trainTicketManagement" component={trainTicketManagement}/>
+                                <Route path="/admin/:userName/movieTicketManagement" component={movieTicketManagement}/>
                             </Switch>
                         </div>
                     </Content>

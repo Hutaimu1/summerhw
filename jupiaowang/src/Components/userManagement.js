@@ -202,7 +202,7 @@ class userManagement extends React.Component {
                     async: true,
                     data: {userName: item.userName, email: email, phone: phoneNumber, qq: qq, password: null},
                     success: function (data) {
-                        if (JSON.parse(data)) {
+                        if (!JSON.parse(data)) {
                             chooseUser.splice(chooseUser.indexOf(item.userName), 1);
                             dataSource[dataSource.indexOf(item)].edit = false;
                             dataSource[dataSource.indexOf(item)].content[0] = email;

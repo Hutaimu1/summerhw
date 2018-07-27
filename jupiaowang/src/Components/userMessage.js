@@ -2,17 +2,17 @@ import React from 'react'
 import {message,Button,Form,Input,Select,Modal,Upload,Icon,Popconfirm} from 'antd'
 import $ from "jquery";
 
-let myMessage = {userName:'hutaimu',password:"htm123280520",content:["2057572565@qq.com","13262625692","2057572565"]};
+let myMessage = {userName:'',password:"123456",content:["2057572565@qq.com","13262625692","2057572565"]};
+
 class user extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            isEdit: false,
             expression: '获取邮箱验证码',
             validate: '',
             userMessage: myMessage,
             previewVisible: false,
-            previewImage: '',
+            previewImage: "",
             fileList: [],
         };
     };
@@ -31,7 +31,7 @@ class user extends React.Component{
                 this.setState({
                     userMessage:result,
                 });
-                if(result.image !== ""){
+                if(result.image.length !== 0){
                     list.push({
                         name:result.content[3],
                         status:result.content[4],
@@ -39,18 +39,13 @@ class user extends React.Component{
                         thumbUrl:result.image
                     });
                     this.setState({
-                        fileList:list
-                    })
+                        fileList:list,
+                        previewImage:result.image
+                    });
                 }
             }.bind(this),
         });
     }
-
-    handleEdit = () =>{
-        this.setState({
-            isEdit:!this.state.isEdit
-        })
-    };
 
     handleModify = () => {
         let result = {};
@@ -69,7 +64,7 @@ class user extends React.Component{
         if(password === this.state.userMessage.password && email === this.state.userMessage.content[0] && phone === this.state.userMessage.content[1] && QQ === this.state.userMessage.content[2]) {
             message.warning("您并未修改个人信息");
             this.setState({
-                isEdit:!this.state.isEdit
+                expression:'获取邮箱验证码'
             });
         }
         else {
@@ -83,14 +78,14 @@ class user extends React.Component{
                 if (JSON.parse(data)) {
                     this.setState({
                         userMessage: result,
-                        isEdit: !this.state.isEdit
+                        expression:'获取邮箱验证码',
+                        validate:''
                     });
                     message.success('修改个人信息成功!');
                 }
                 else {
                     this.setState({
-                        userMessage: result,
-                        isEdit: !this.state.isEdit
+                        userMessage: result
                     });
                     message.success('修改个人信息成功，由于您修改了密码，请重新登录');
                     this.props.history.push('/');
@@ -121,6 +116,19 @@ class user extends React.Component{
         return (password !== this.state.userMessage.password);
     };
 
+    resetEdit = () =>{
+        let password = this.state.userMessage.password;
+        let email =this.state.userMessage.content[0];
+        let phone = this.state.userMessage.content[1];
+        let qq = this.state.userMessage.content[2];
+        this.props.form.setFieldsValue({"password":password,"email":email,"phone":phone,"qq":qq,"confirm":null});
+        this.setState({
+            expression:"获取邮箱验证码",
+            validate:''
+        });
+        this.props.form.setFieldsValue({"captcha":null});
+    };
+
     validateToNextPassword = (rule, value, callback) => {
         const form = this.props.form;
         if(!this.haveValue(value)){
@@ -134,7 +142,7 @@ class user extends React.Component{
 
     compareToFirstPassword = (rule, value, callback) => {
         const form = this.props.form;
-        if(!this.haveValue(value)){
+        if(!this.haveValue(value) && this.props.form.getFieldValue('password') !== this.state.userMessage.password){
             callback('请再次输入密码!');
         }
         else if (value && value !== form.getFieldValue('password')) {
@@ -225,10 +233,12 @@ class user extends React.Component{
         callback()
     };
 
-    checkCaptacha = (rule, value, callback) => {
-        let thisInput = value;
+    checkCaptcha = (rule, value, callback) => {
         let validateCode = this.state.validate;
-        if (this.haveValue(thisInput) && thisInput.toLowerCase() !== validateCode.toString().toLowerCase()) {
+        if(this.state.expression === "发送成功,点击重新发送" && !this.haveValue(value)){
+            callback("请输入验证码!")
+        }
+        if (this.state.expression === "发送成功,点击重新发送" && this.haveValue(value) && value.toLowerCase() !== validateCode.toString().toLowerCase()) {
             callback('验证码错误!');
         }
         callback()
@@ -240,7 +250,7 @@ class user extends React.Component{
             $.ajax({
                 type: "post",
                 url: "bookstoreApp/mailValidate",
-                data: {email: email, type: "邮箱更改"},
+                data: {email: email, type: "个人信息更改"},
                 async: true,
                 success: function (data) {
                     this.setState({//设置更新状态
@@ -276,10 +286,8 @@ class user extends React.Component{
         else if((password !== this.state.userMessage.password) && (password !== confirm)){
             return true;
         }
-        else if((password !== this.state.userMessage.password || phone !== content[1] || email !== content[0] || QQ !== content[2]) && !this.haveValue(captcha)){
-            return true;
-        }
-        else if(this.haveValue(captcha) && (captcha!==this.state.validate)){
+        else if((password !== this.state.userMessage.password || phone !== content[1] || email !== content[0] || QQ !== content[2])
+            && !this.haveValue(captcha)){
             return true;
         }
         return false;
@@ -308,53 +316,49 @@ class user extends React.Component{
         return false;
     };
 
-    repeat(str , n){
+    repeat = (str , n) =>{
         return new Array(n+1).join(str);
-    }
+    };
 
     hasErrors = (fieldsError) => {
         return Object.keys(fieldsError).some(field => fieldsError[field])
+    };
+
+    beforeUpload = (file) =>{
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('请确保上传图片的大小小于2MB!');
+        }
+        return isLt2M;
     };
 
     handleCancel = () => this.setState({ previewVisible: false });
 
     handlePreview = (file) => {
         this.setState({
-            previewImage: file.url || file.thumbUrl,
+            previewImage: file.thumbUrl || file.url,
             previewVisible: true,
         });
     };
 
     handleChange = ({fileList}) => {
         let userName = this.props.match.params.userName;
-        this.setState({fileList});
-        if (fileList.length !== 0 && fileList[0].status === 'done') {
-            $.ajax({
-                type: "post",
-                url: "bookstoreApp/uploadImage",
-                data: {userName: userName,base64Str:fileList[0].thumbUrl},
-                async: true,
-                success: function (data) {
-                    if(JSON.parse(data)){
-                        message.success('上传头像成功!');
-                        this.setState({
-                            fileList:fileList
-                        })
-                    }
-                    else{
-                        message.error('上传头像失败!');
-                        this.setState({
-                            fileList:[]
-                        })
-                    }
-                }.bind(this)
-            })
-        }
-        else if(fileList.length !== 0 && fileList[0].status === 'error'){
-            message.error('上传头像失败!请选择其他图片');
-            this.setState({
-                fileList:[]
-            })
+        if (fileList.length !== 0) {
+            this.setState({fileList});
+            if(fileList[0].status === "done"){
+                message.success("上传头像成功!");
+            }
+            else if(fileList[0].status ===undefined){
+                this.setState({
+                    fileList:[]
+                })
+            }
+            else if(fileList[0].status === "error"){
+                message.error("上传头像失败,请选择其他图片!");
+                /* this.setState({
+                     fileList:[]
+                 })*/
+            }
         }
         else if(fileList.length === 0){
             $.ajax({
@@ -366,7 +370,7 @@ class user extends React.Component{
                     if(JSON.parse(data)){
                         message.success('删除头像成功!');
                         this.setState({
-                            imageData:'',
+                            previewImage:'',
                             fileList:fileList
                         })
                     }
@@ -378,14 +382,19 @@ class user extends React.Component{
         }
     };
 
+    handleData = (file) =>{
+        let userName = this.props.match.params.userName;
+        return {userName:userName};
+    };
+
     render(){
         let userName = this.props.match.params.userName;
-        const { previewVisible, previewImage, fileList,isEdit,userMessage } = this.state;
+        const { previewVisible, previewImage, fileList,userMessage } = this.state;
         const {getFieldDecorator,getFieldsError,getFieldError} = this.props.form;
 
         const uploadButton = (
-            <div>
-                <Icon type="plus" />
+            <div className="upload-button">
+                <Icon type="user" />
                 <div className="ant-upload-text">上传头像</div>
             </div>
         );
@@ -425,40 +434,66 @@ class user extends React.Component{
             </Select>
         );
 
-
         return (
-            <div style={{ marginLeft: "10px"}}>
-                <div className="user-left">
-                    <Form>
-                        <Form.Item
-                            validateStatus={this.setValidateStatus("userName")}
-                            {...formItemLayout}
-                            label='用户名'
-                        >
-                            {getFieldDecorator('userName', {
-                            })(
-                                <span>{userName}</span>
-                            )}
-                        </Form.Item>
-                        <Form.Item
-                            validateStatus={this.setValidateStatus("password")}
-                            {...formItemLayout}
-                            label='密码'
-                        >
-                            {getFieldDecorator('password', {
-                                initialValue:userMessage.password,
-                                rules: [{
-                                    validator: this.validateToNextPassword,
-                                }],
-                            })(
-                                isEdit?<Input  type="password"/>:<span>{this.repeat('*',userMessage.password.length)}</span>
-                            )}
-                        </Form.Item>
-                        {isEdit?
+            <div style={{marginTop:"20px",marginLeft:"10px",position:'relative'}}>
+                <div className="user">
+                    <div className="message-header">
+                        <div className="message-left">
+                            <Upload
+                                action="/bookstoreApp/uploadImage"
+                                listType="picture-card"
+                                fileList={fileList}
+                                accept='image/*'
+                                beforeUpload={this.beforeUpload}
+                                onPreview={this.handlePreview}
+                                onChange={this.handleChange}
+                                data={this.handleData}
+                            >
+                                {fileList.length >= 1 ? null : uploadButton}
+                            </Upload>
+                            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                                <img alt="myImage" style={{ width: "100%" }} src={previewImage} />
+                            </Modal>
+                        </div>
+                        <div className="message-right">
+                            <br style={{height:"10px"}}/>
+                            <div className="user-name">
+                                <p className="user-name1">用户名:{userName}</p>
+                            </div>
+                            <div className="user-message1">
+                                <a style={{color:'black'}}>我的收藏</a>
+                            </div>
+                            <div className="user-message2">
+                                <a style={{color:'black'}}>我的订单</a>
+                            </div>
+                            <div className="user-message3">
+                                <a style={{color:'black'}}>重置密码</a>
+                            </div>
+                            <div className="user-message4">
+                                <a style={{color:'black'}}>To Be Continued</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="message-body-edit">
+                        <Form>
+                            <Form.Item
+                                validateStatus={this.setValidateStatus("password")}
+                                {...formItemLayout}
+                                label={<span style={{fontSize:"17px",fontWeight:'bold'}}>密码</span>}
+                            >
+                                {getFieldDecorator('password', {
+                                    initialValue:userMessage.password,
+                                    rules: [{
+                                        validator: this.validateToNextPassword,
+                                    }],
+                                })(
+                                    <Input  type="password"/>
+                                )}
+                            </Form.Item>
                             <Form.Item
                                 validateStatus={this.setValidateStatus("confirm")}
                                 {...formItemLayout}
-                                label='确认密码'
+                                label={<span style={{fontSize:"17px",fontWeight:'bold'}}>确认密码</span>}
                             >
                                 {getFieldDecorator('confirm', {
                                     rules: [ {
@@ -467,108 +502,89 @@ class user extends React.Component{
                                 })(
                                     <Input type="password" onBlur={this.handleConfirmBlur} placeholder="请确认密码" disabled={this.props.form.getFieldValue('password')===userMessage.password}/>
                                 )}
-                            </Form.Item>:null}
-                        <Form.Item
-                            validateStatus={this.setValidateStatus("qq")}
-                            {...formItemLayout}
-                            label='QQ'
-                        >
-                            {getFieldDecorator('qq', {
-                                initialValue:userMessage.content[2],
-                                rules: [{
-                                    validator: this.checkQQ
-                                }],
-                            })(
-                                isEdit?<Input placeholder={userMessage.content[2]}/>:<span>{userMessage.content[2]}</span>
-                            )}
-                        </Form.Item>
-                        <Form.Item
-                            validateStatus={this.setValidateStatus("phone")}
-                            {...formItemLayout}
-                            label='手机号码'
-                        >
-                            {getFieldDecorator('phone', {
-                                initialValue:userMessage.content[1],
-                                rules: [{
-                                    len: 11, message: '请输入正确的11位手机号码!'
-                                }, {
-                                    validator: this.checkPhoneNumber
-                                }],
-                            })(
-                                isEdit?<Input addonBefore={prefixSelector} style={{width: '100%'}} placeholder={userMessage.content[1]}/>:<span>{userMessage.content[1]}</span>
-                            )}
-                        </Form.Item>
-                        <Form.Item
-                            validateStatus={this.setValidateStatus("email")}
-                            {...formItemLayout}
-                            label='电子邮箱'
-                        >
-                            {getFieldDecorator('email', {
-                                initialValue:userMessage.content[0],
-                                rules: [{
-                                    type: 'email', message: '输入的电子邮箱地址不符合规范!',
-                                }, {
-                                    message: '请输入您的电子邮箱地址!',
-                                }, {
-                                    validator: this.checkEmail
-                                }],
-                            })(
-                                isEdit?<Select
-                                    mode="combobox"
-                                    onChange={this.handleMailChange}
-                                    filterOption={false}
-                                    placeholder={userMessage.content[0]}
-                                >
-                                    {this.state.options}
-                                </Select>:<span>{userMessage.content[0]}</span>
-                            )}
-                        </Form.Item>
-                        {isEdit?<Form.Item
-                            validateStatus={this.setValidateStatus("captcha")}
-                            {...formItemLayout}
-                            label="验证码">
-                            {getFieldDecorator('captcha', {
-                                rules: [ {required:this.state.expression === '发送成功,点击重新发送',
-                                    message:'验证码不能为空'},{
-                                    validator: this.checkCaptacha
-                                }],
-                            })(
-                                <Input className="registration-form-input-captcha" placeholder="请输入验证码" disabled={this.emailButtonDisabled() || this.state.expression==="获取邮箱验证码"}/>
-                            )}
-                            <Button type="primary"
-                                    onClick={this.renderCode}
-                                    className="registration-form-button-captcha"
-                                    disabled={this.emailButtonDisabled() || getFieldError('phone') || getFieldError('email') || getFieldError('qq') || getFieldError('password')}>
-                                {this.state.expression}</Button>
-                        </Form.Item>:null}
-                        {(isEdit)?
+                            </Form.Item>
+                            <Form.Item
+                                validateStatus={this.setValidateStatus("qq")}
+                                {...formItemLayout}
+                                label={<span style={{fontSize:"17px",fontWeight:'bold'}}>QQ</span>}
+                            >
+                                {getFieldDecorator('qq', {
+                                    initialValue:userMessage.content[2],
+                                    rules: [{
+                                        validator: this.checkQQ
+                                    }],
+                                })(
+                                    <Input placeholder={userMessage.content[2]}/>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                validateStatus={this.setValidateStatus("phone")}
+                                {...formItemLayout}
+                                label={<span style={{fontSize:"17px",fontWeight:'bold'}}>手机号码</span>}
+                            >
+                                {getFieldDecorator('phone', {
+                                    initialValue:userMessage.content[1],
+                                    rules: [{
+                                        len: 11, message: '请输入正确的11位手机号码!'
+                                    }, {
+                                        validator: this.checkPhoneNumber
+                                    }],
+                                })(
+                                    <Input addonBefore={prefixSelector} style={{width: '100%'}} placeholder={userMessage.content[1]}/>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                validateStatus={this.setValidateStatus("email")}
+                                {...formItemLayout}
+                                label={<span style={{fontSize:"17px",fontWeight:'bold'}}>电子邮箱</span>}
+                            >
+                                {getFieldDecorator('email', {
+                                    initialValue:userMessage.content[0],
+                                    rules: [{
+                                        type: 'email', message: '输入的电子邮箱地址不符合规范!',
+                                    }, {
+                                        message: '请输入您的电子邮箱地址!',
+                                    }, {
+                                        validator: this.checkEmail
+                                    }],
+                                })(
+                                    <Select
+                                        mode="combobox"
+                                        onChange={this.handleMailChange}
+                                        filterOption={false}
+                                        placeholder={userMessage.content[0]}
+                                    >
+                                        {this.state.options}
+                                    </Select>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                validateStatus={this.setValidateStatus("captcha")}
+                                {...formItemLayout}
+                                label={<span style={{fontSize:"17px",fontWeight:'bold'}}>验证码</span>}>
+                                {getFieldDecorator('captcha', {
+                                    rules: [{
+                                        validator: this.checkCaptcha
+                                    }],
+                                })(
+                                    <Input className="edit-form-input-captcha" placeholder="请输入验证码" disabled={this.emailButtonDisabled() || this.state.expression==="获取邮箱验证码"}/>
+                                )}
+                                <Button type="primary"
+                                        onClick={this.renderCode}
+                                        className="edit-form-button-captcha"
+                                        disabled={this.emailButtonDisabled() || getFieldError('phone') || getFieldError('email') || getFieldError('qq') || getFieldError('password')}>
+                                    {this.state.expression}</Button>
+                            </Form.Item>
                             <Form.Item {...tailFormItemLayout}>
-                                <Button type="primary" className="confirm-form-button"
-                                        onClick={() => this.handleModify()} disabled={this.enableClick() || this.hasErrors(getFieldsError())}>确定</Button>
-                                <Popconfirm placement="topRight" title="您确定取消编辑吗?" onConfirm={()=>this.setState({isEdit:!this.state.isEdit})}>
-                                    <Button type="primary" className="delete-form-button">取消编辑</Button>
+                                <Popconfirm placement="topRight" title={<div style={{width:'150px'}}>您确定提交吗?</div>} onConfirm={() => this.handleModify()}>
+                                    <Button type="primary" className="confirm-form-button" disabled={this.enableClick() || this.hasErrors(getFieldsError())}>提交</Button>
+                                </Popconfirm>
+                                <Popconfirm placement="topRight" title={<div style={{width:'150px'}}>您确定重新编辑吗?</div>} onConfirm={() => this.resetEdit()}>
+                                    <Button type="primary" className="delete-form-button">重新编辑</Button>
                                 </Popconfirm>
                             </Form.Item>
-                            :<Form.Item {...tailFormItemLayout}>
-                                <Button type="primary" htmlType="submit" className="edit-form-button"
-                                        onClick={() => this.handleEdit()}>编辑</Button>
-                            </Form.Item>}
-                    </Form>
-                </div>
-                <div className="user-right">
-                    <Upload
-                        action="//jsonplaceholder.typicode.com/posts/"
-                        listType="picture-card"
-                        fileList={fileList}
-                        accept='image/*'
-                        onPreview={this.handlePreview}
-                        onChange={(fileList) =>this.handleChange(fileList)}
-                    >
-                        {fileList.length >= 1 ? null : uploadButton}
-                    </Upload>
-                    <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                        <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                    </Modal>
+                        </Form>
+                    </div>
                 </div>
             </div>
         )

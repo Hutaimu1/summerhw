@@ -1,13 +1,18 @@
 package com.example.jupiaoweb.Controller;
 
+import com.example.jupiaoweb.Service.TicketOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bookstoreApp")
 public class TicketOrderController {
+    private final com.example.jupiaoweb.Service.TicketOrderService ticketOrderService;
+
     @Autowired
-    private com.example.jupiaoweb.Service.TicketOrderService ticketOrderService;
+    public TicketOrderController(TicketOrderService ticketOrderService) {
+        this.ticketOrderService = ticketOrderService;
+    }
 
     @PostMapping(value = "getOrderList")
     @ResponseBody

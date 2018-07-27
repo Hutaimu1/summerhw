@@ -32,6 +32,23 @@ public class MovieTicketServiceImpl implements MovieTicketService {
     private OrderItemRepository orderItemRepository;
 
     @Override
+    public String getAllMovie(){
+        Gson gson = new Gson();
+        List<Movie> res = new ArrayList<>();
+        List<MovieEntity> result = movieRepository.findAll();
+        for (MovieEntity aResult : result) {
+            Movie m = new Movie();
+            m.setId(aResult.getMovieId());
+            m.setSrc(aResult.getUrl());
+            m.setTitle(aResult.getMovieName());
+            m.setPlace(aResult.getPlace());
+            m.setRate(aResult.getRate());
+            res.add(m);
+        }
+        return gson.toJson(res);
+    }
+
+    @Override
     public String getMovieTicket(String place){
         Gson gson = new Gson();
         List<Movie> res = new ArrayList<>();
@@ -76,8 +93,13 @@ public class MovieTicketServiceImpl implements MovieTicketService {
     public String getMovieTime(String place, String movie, String date, String brand){
         Gson gson = new Gson();
         List<MovieFieldEntity> result = movieFieldRepository.findByPlaceAndMovieAndDateAndBrand(place, movie, date, brand);
-        result.get(0).getTime().add(result.get(0).getPrice());
-        return gson.toJson(result.get(0).getTime());
+        if (result.size() == 0){
+            return gson.toJson(null);
+        }
+        else{
+            result.get(0).getTime().add(result.get(0).getPrice());
+            return gson.toJson(result.get(0).getTime());
+        }
     }
 
     @Override
@@ -157,6 +179,51 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         newOrderItem.setOrderId(orderId);
         newOrderItem.setShopcartId(shopCartId);
         orderItemRepository.save(newOrderItem);
+        return gson.toJson(true);
+    }
+
+    @Override
+    public String addMovieTicket(String movie,String place,String date,String brand,String time){
+        Gson gson = new Gson();
+        List<MovieFieldEntity> result = movieFieldRepository.findByPlaceAndMovieAndDateAndBrand(place,movie,date,brand);
+        if (result.size() == 0){
+            MovieFieldEntity newMovieField = new MovieFieldEntity();
+            newMovieField.setMovie(movie);
+            newMovieField.setPlace(place);
+            newMovieField.setDate(date);
+            newMovieField.setBrand(brand);
+            newMovieField.setPrice("60");
+            List<String> times = new ArrayList<>();
+            times.add(time);
+            newMovieField.setTime(times);
+            movieFieldRepository.save(newMovieField);
+            List<MovieEntity> movies = movieRepository.findByMovieName(movie);
+            MovieEntity m = movies.get(0);
+            movieRepository.delete(m);
+            List<String> places = m.getPlace();
+            if(places.indexOf(place) == -1){
+                places.add(place);
+            }
+            m.setPlace(places);
+            movieRepository.save(m);
+        }
+        else{
+            List<MovieEntity> movies = movieRepository.findByMovieName(movie);
+            MovieEntity m = movies.get(0);
+            movieRepository.delete(m);
+            List<String> places = m.getPlace();
+            if(places.indexOf(place) == -1){
+                places.add(place);
+            }
+            m.setPlace(places);
+            movieRepository.save(m);
+            MovieFieldEntity movieField = result.get(0);
+            movieFieldRepository.delete(movieField);
+            List<String> times = movieField.getTime();
+            times.add(time);
+            movieField.setTime(times);
+            movieFieldRepository.save(movieField);
+        }
         return gson.toJson(true);
     }
 }

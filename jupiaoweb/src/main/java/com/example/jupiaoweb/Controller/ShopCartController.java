@@ -1,13 +1,18 @@
 package com.example.jupiaoweb.Controller;
 
+import com.example.jupiaoweb.Service.ShopCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bookstoreApp")
 public class ShopCartController {
+    private final com.example.jupiaoweb.Service.ShopCartService shopCartService;
+
     @Autowired
-    private com.example.jupiaoweb.Service.ShopCartService shopCartService;
+    public ShopCartController(ShopCartService shopCartService) {
+        this.shopCartService = shopCartService;
+    }
 
     @PostMapping(value = "getShopCartList")
     @ResponseBody

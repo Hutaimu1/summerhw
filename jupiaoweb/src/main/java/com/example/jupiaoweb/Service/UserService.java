@@ -1,9 +1,7 @@
 package com.example.jupiaoweb.Service;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.mail.MessagingException;
-import java.io.File;
 import java.security.GeneralSecurityException;
 
 public interface UserService {
@@ -21,6 +19,6 @@ public interface UserService {
     String forgetPassword(String userName, String password);
     String getUserMessage(String userName);
     String editUserMessage(String username,String password, String email, String phone, String qq);
-    String uploadImage(String userName,String base64Str);
+    String uploadImage(String userName,MultipartFile file);
     String deleteImage(String username);
 }

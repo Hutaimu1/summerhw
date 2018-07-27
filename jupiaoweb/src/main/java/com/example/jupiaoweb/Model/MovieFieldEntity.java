@@ -7,7 +7,8 @@ import java.util.List;
 
 @Document(collection = "movieField")
 public class MovieFieldEntity {
-
+    @Id
+    private String _id;
     private String movie;
     private String place;
     private String date;
@@ -61,6 +62,14 @@ public class MovieFieldEntity {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 }
 

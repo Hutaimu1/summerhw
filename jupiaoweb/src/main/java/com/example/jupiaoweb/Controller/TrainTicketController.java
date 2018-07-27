@@ -1,5 +1,6 @@
 package com.example.jupiaoweb.Controller;
 
+import com.example.jupiaoweb.Service.TrainTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,8 +10,12 @@ import java.util.Date;
 @RestController
 @RequestMapping("/bookstoreApp")
 public class TrainTicketController {
+    private final com.example.jupiaoweb.Service.TrainTicketService trainTicketService;
+
     @Autowired
-    private com.example.jupiaoweb.Service.TrainTicketService trainTicketService;
+    public TrainTicketController(TrainTicketService trainTicketService) {
+        this.trainTicketService = trainTicketService;
+    }
 
     @PostMapping(value = "searchTrain")
     @ResponseBody

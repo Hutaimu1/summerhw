@@ -1,5 +1,6 @@
 package com.example.jupiaoweb.Controller;
 
+import com.example.jupiaoweb.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/bookstoreApp")
 public class UserController {
+    private final com.example.jupiaoweb.Service.UserService userService;
+
     @Autowired
-    private com.example.jupiaoweb.Service.UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(value = "login")
     @ResponseBody
@@ -110,9 +115,10 @@ public class UserController {
 
     @PostMapping(value = "uploadImage")
     @ResponseBody
-    public String uploadImage(@RequestParam("userName") String username,@RequestParam("base64Str") String base64Str) {
-        return userService.uploadImage(username,base64Str);
+    public String uploadImage(@RequestParam("userName") String userName,@RequestParam("file") MultipartFile file) {
+        return userService.uploadImage(userName,file);
     }
+
 
     @PostMapping(value = "deleteImage")
     @ResponseBody
