@@ -1,24 +1,13 @@
 package com.example.jupiaoweb.Controller;
 
-import com.example.jupiaoweb.Service.MovieTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bookstoreApp")
 public class MovieTicketController {
-    private final com.example.jupiaoweb.Service.MovieTicketService movieTicketService;
-
     @Autowired
-    public MovieTicketController(MovieTicketService movieTicketService) {
-        this.movieTicketService = movieTicketService;
-    }
-
-    @PostMapping(value = "getAllMovie")
-    @ResponseBody
-    public String getAllMovie() {
-        return movieTicketService.getAllMovie();
-    }
+    private com.example.jupiaoweb.Service.MovieTicketService movieTicketService;
 
     @PostMapping(value = "getMovieTicket")
     @ResponseBody
@@ -79,13 +68,10 @@ public class MovieTicketController {
         return movieTicketService.movieTicketQuickBuy(ticketId,userName,ticketName,price,leftTicket,date,description);
     }
 
-    @PostMapping(value = "addMovieTicket")
+    @PostMapping(value = "movieTicketAddToCollection")
     @ResponseBody
-    public String addMovieTicket(@RequestParam("movie") String movie,
-                                      @RequestParam("place") String place,
-                                      @RequestParam("date") String date,
-                                      @RequestParam("brand") String brand,
-                                      @RequestParam("time") String time){
-        return movieTicketService.addMovieTicket(movie,place,date,brand,time);
+    public String movieTicketAddToCollection(@RequestParam("ticketId") int ticketId,
+                                      @RequestParam("userName") String userName){
+        return movieTicketService.movieTicketAddToCollection(ticketId,userName);
     }
 }

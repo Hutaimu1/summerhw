@@ -226,7 +226,6 @@ body {
 
 .tags-line {
   padding: 10px 0!important;
-  display: block;
 }
 
 .tags-title {
@@ -278,15 +277,6 @@ body {
   float:right;
   margin: 13px 0 0 0;
   display: inline-block;
-}
-
-.tags .border-box{
-  border-radius: 14px;
-  box-sizing: border-box;
-  border: 1px dashed;
-  padding: 2px 9px;
-  display: inline-block;
-  margin-left: 12px;
 }
 
 .movie-info span{
@@ -428,8 +418,6 @@ body {
   margin-top: 24px;
 }
 
-
-
 .add-form{
   width: 505px;
   padding-right: 10%;
@@ -510,16 +498,16 @@ body {
 }
 
 .message-header{
-  position: relative;
+   position: relative;
 }
 
 .message-left{
-  float: left;
-  width: 154px;
-  height: 154px;
-  border-right: 1px solid #BDBDBD;
-  border-bottom: 1px solid #BDBDBD;
-}
+   float: left;
+   width: 154px;
+   height: 154px;
+   border-right: 1px solid #BDBDBD;
+   border-bottom: 1px solid #BDBDBD;
+ }
 
 .message-right{
   height: 154px;
@@ -581,4 +569,19 @@ body {
   margin-left: 13px;
   margin-top: 20px;
   width: 600px;
+}
+
+.demo-infinite-container {
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: auto;
+  width:1585px;
+  padding: 8px 24px;
+  height: 300px;
+}
+.demo-loading-container {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  text-align: center;
 }

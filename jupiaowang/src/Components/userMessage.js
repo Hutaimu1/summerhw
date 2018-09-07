@@ -39,7 +39,7 @@ class user extends React.Component{
                         thumbUrl:result.image
                     });
                     this.setState({
-                        fileList:list,
+                       fileList:list,
                         previewImage:result.image
                     });
                 }
@@ -112,8 +112,8 @@ class user extends React.Component{
     };
 
     isPasswordModify(){
-        let password = this.props.form.getFieldValue('password');
-        return (password !== this.state.userMessage.password);
+      let password = this.props.form.getFieldValue('password');
+      return (password !== this.state.userMessage.password);
     };
 
     resetEdit = () =>{
@@ -287,7 +287,7 @@ class user extends React.Component{
             return true;
         }
         else if((password !== this.state.userMessage.password || phone !== content[1] || email !== content[0] || QQ !== content[2])
-            && !this.haveValue(captcha)){
+             && !this.haveValue(captcha)){
             return true;
         }
         return false;
@@ -355,9 +355,9 @@ class user extends React.Component{
             }
             else if(fileList[0].status === "error"){
                 message.error("上传头像失败,请选择其他图片!");
-                /* this.setState({
-                     fileList:[]
-                 })*/
+               /* this.setState({
+                    fileList:[]
+                })*/
             }
         }
         else if(fileList.length === 0){

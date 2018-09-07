@@ -8,6 +8,7 @@ import OrderToBeResolved from "../Components/orderToBeResolved"
 import HistoryOrder from '../Components/historyOrder'
 import ViewMovie from '../Components/viewMovie'
 import userMessage from '../Components/userMessage'
+import Collection from '../Components/collection'
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -41,7 +42,7 @@ class homepage extends React.Component {
                     <Menu theme="dark" mode="inline" selectedKeys={[this.props.location.pathname]} defaultOpenKeys={["sub1","sub2","sub3"]}>
                         <SubMenu key="sub1" title={<span><Icon type="user"/><span>用户中心</span></span>}>
                             <Menu.Item key={`/home/${userName}/userMessage`}><NavLink to={{pathname:`/home/${userName}/userMessage`}}>用户信息</NavLink></Menu.Item>
-                            <Menu.Item key={`/home/${userName}/collection`}>我的收藏</Menu.Item>
+                            <Menu.Item key={`/home/${userName}/collection`}><NavLink to={{pathname:`/home/${userName}/collection`}}>我的收藏</NavLink></Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub2" title={<span><Icon type="video-camera"/><span>票品</span></span>}>
                             <Menu.Item key={`/home/${userName}/trainTicket`}><NavLink to={{ pathname:`/home/${userName}/trainTicket`}}>火车票</NavLink></Menu.Item>
@@ -83,6 +84,7 @@ class homepage extends React.Component {
                                 <Route path= "/home/:userName/orderToBeResolved" component={OrderToBeResolved} />
                                 <Route path= "/home/:userName/historyOrder" component={HistoryOrder} />
                                 <Route path= "/home/:userName/viewMovie/:movieId" component={ViewMovie} />
+                                <Route path="/home/:userName/collection" component={Collection}/>
                             </Switch>
                         </div>
                     </Content>

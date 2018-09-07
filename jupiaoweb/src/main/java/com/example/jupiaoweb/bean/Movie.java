@@ -16,7 +16,6 @@ public class Movie {
     private List<String> language;
     private List<String> date;
     private List<String> others;
-    private List<String> place;
 
     public int getId() {
         return id;
@@ -120,13 +119,5 @@ public class Movie {
 
     public void setOthers(List<String> others) {
         this.others = others;
-    }
-
-    public List<String> getPlace() {
-        return place;
-    }
-
-    public void setPlace(List<String> place) {
-        this.place = place;
     }
 }

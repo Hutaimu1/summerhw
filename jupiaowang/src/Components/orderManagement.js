@@ -15,7 +15,14 @@ import {
 import $ from "jquery";
 import moment from "moment/moment";
 
-let allOrder = [];
+let allOrder1 = [{orderId:1,userName:'hutaimu',totalPrice:1000,paid:1,date:"2018-07-05 10:00:00"},
+    {orderId:2,userName:'hutaimu1',totalPrice:900,paid:0,date:"2018-07-06 10:00:00"},
+    {orderId:3,userName:'hutaimu2',totalPrice:1000,paid:3,date:"2018-07-07 10:00:00"},
+    {orderId:0,userName:'hutaimu',totalPrice:800,paid:0,date:"2018-07-08 10:00:00"},
+    {orderId:4,userName:'hutaimu',totalPrice:800,paid:3,date:"2018-07-09 10:00:00"},
+    {orderId:5,userName:'hutaimu',totalPrice:800,paid:0,date:"2018-07-06 10:00:00"},
+    {orderId:6,userName:'hutaimu',totalPrice:800,paid:2,date:"2018-07-08 10:00:00"}];
+
 
 let detailOrder = [];
 
@@ -25,13 +32,13 @@ class orderManagement extends React.Component{
         super();
         this.state = {
             selectedRowKeys:[],
-            historyOrder: allOrder,
+            historyOrder: allOrder1,
             showDetail:false,
             queryType:0,
             detailOrder:detailOrder,
-            differentTypeOrder:allOrder,
+            differentTypeOrder:allOrder1,
             current: '全部',
-            differentTypeOrder_copy:allOrder
+            differentTypeOrder_copy:allOrder1
 
         };
     }
@@ -183,7 +190,7 @@ class orderManagement extends React.Component{
     showAll(){
         let order = this.state.differentTypeOrder;
         this.setState({
-            differentTypeOrder_copy:order
+                differentTypeOrder_copy:order
         });
     }
 
@@ -240,7 +247,7 @@ class orderManagement extends React.Component{
         let endPrice = this.props.form.getFieldValue('endPrice');
         let userName = this.props.form.getFieldValue('userName');
         let result = [];
-        let differentTypeOrder = this.state.historyOrder;
+        let differentTypeOrder = this.state.differentTypeOrder;
         let valueResult = "";
         if(this.hasValue(userName)){valueResult += "1";}
         else if(!this.hasValue(userName)){valueResult += "0";}
@@ -322,10 +329,24 @@ class orderManagement extends React.Component{
                 break;
         }
         this.setState({
-            differentTypeOrder:result,
-            differentTypeOrder_copy:result,
-            current:'全部'
-        })
+            differentTypeOrder_copy:result
+        });
+        switch (this.state.current){
+            case "全部":
+                this.showAll();
+                break;
+            case "待付款":
+                this.showToBePaid();
+                break;
+            case "未完成":
+                this.showNotFinished();
+                break;
+            case "已完成":
+                this.showPaid();
+                break;
+            default:
+                break;
+        }
     };
 
     handleOrderId = () =>{
@@ -352,16 +373,16 @@ class orderManagement extends React.Component{
     };
 
     handleQueryType = (value) =>{
-        let type = 0;
-        if(value === "按用户日期价格查询"){
-            type = 0;
-        }
-        else if(value === "按订单号查询"){
-            type = 1;
-        }
-        this.setState({
-            queryType:type
-        })
+      let type = 0;
+      if(value === "按用户日期价格查询"){
+          type = 0;
+      }
+      else if(value === "按订单号查询"){
+          type = 1;
+      }
+      this.setState({
+          queryType:type
+      })
     };
 
     showTotal = (total) => {
@@ -377,8 +398,8 @@ class orderManagement extends React.Component{
         let newHistoryArray = preState.historyOrder;
         orderIdArray.forEach((orderId) =>{
             newHistoryArray = newHistoryArray.filter(function (obj) {
-                return orderId !== obj.orderId;
-            })
+               return orderId !== obj.orderId;
+           })
         });
         let newDifferentTypeOrder = preState.differentTypeOrder;
         orderIdArray.forEach((orderId) =>{
@@ -495,10 +516,10 @@ class orderManagement extends React.Component{
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('date1', {
-                    })(
-                        <DatePicker allowClear={true}/>
+                        })(
+                            <DatePicker allowClear={true}/>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <span className="ant-calendar-range-picker-separator"> ~ </span>
                 </Form.Item>
@@ -508,7 +529,7 @@ class orderManagement extends React.Component{
                     })(
                         <DatePicker disabledDate={this.disabledDate} allowClear={true}/>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item label="订单价格区间">
                 </Form.Item>
                 <Form.Item>
@@ -516,7 +537,7 @@ class orderManagement extends React.Component{
                     })(
                         <InputNumber min={0}>&nbsp;</InputNumber>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <span className="ant-calendar-range-picker-separator"> ~ </span>
                 </Form.Item>
@@ -526,7 +547,7 @@ class orderManagement extends React.Component{
                     })(
                         <InputNumber min={this.props.form.getFieldValue('startPrice')} disabled={this.props.form.getFieldValue('startPrice') === undefined}>&nbsp;</InputNumber>
                     )}
-                </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <Button
                         type="primary"
@@ -574,7 +595,7 @@ class orderManagement extends React.Component{
             selectedRowKeys:this.state.selectedRowKeys,
             onChange:(rowKeys) =>{
                 this.setState({
-                    selectedRowKeys:rowKeys
+                   selectedRowKeys:rowKeys
                 });
             }
         };

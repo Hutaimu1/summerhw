@@ -1,6 +1,7 @@
 import React from 'react';
 import {Row, Col, Rate} from 'antd';
 import $ from "jquery";
+import Comment from "./comment"
 
 class viewMovie extends React.Component {
     state = {
@@ -122,6 +123,10 @@ class viewMovie extends React.Component {
                         </div>
                     </Col>
                 </Row>
+                <br/>
+                <div>
+                    <Comment userName={this.props.match.params.userName} ticketId={this.props.match.params.movieId} type={1}/>
+                </div>
             </div>
         );
     }
