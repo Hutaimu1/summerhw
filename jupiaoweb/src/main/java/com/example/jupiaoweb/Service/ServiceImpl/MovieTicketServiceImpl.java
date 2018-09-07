@@ -31,6 +31,9 @@ public class MovieTicketServiceImpl implements MovieTicketService {
     @Resource
     private OrderItemRepository orderItemRepository;
 
+    @Resource
+    private CollectionRepository collectionRepository;
+
     @Override
     public String getAllMovie(){
         Gson gson = new Gson();
@@ -226,4 +229,19 @@ public class MovieTicketServiceImpl implements MovieTicketService {
         }
         return gson.toJson(true);
     }
-}
+
+    @Override
+    public String movieTicketAddToCollection(int ticketId,String userName){
+        Gson gson = new Gson();
+        List<CollectionEntity> myCollection = collectionRepository.findByUserNameAndTicketIdAndType(userName,ticketId,(byte)1);
+        if(myCollection.size() != 0){
+            return gson.toJson(false);
+        }
+        CollectionEntity newCollection = new CollectionEntity();
+        newCollection.setTicketId(ticketId);
+        newCollection.setUserName(userName);
+        newCollection.setType((byte)1);
+        collectionRepository.save(newCollection);
+        return gson.toJson(true);
+        }
+    }

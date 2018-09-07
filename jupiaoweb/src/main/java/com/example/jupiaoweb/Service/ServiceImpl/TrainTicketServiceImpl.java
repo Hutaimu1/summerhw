@@ -5,6 +5,7 @@ import com.example.jupiaoweb.Model.ShopCartEntity;
 import com.example.jupiaoweb.Model.TicketOrderEntity;
 import com.example.jupiaoweb.Model.TrainTicketEntity;
 import com.example.jupiaoweb.Service.TrainTicketService;
+import com.example.jupiaoweb.bean.MonthReport;
 import com.example.jupiaoweb.bean.TrainTicket;
 import com.example.jupiaoweb.dao.OrderItemRepository;
 import com.example.jupiaoweb.dao.ShopCartRepository;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

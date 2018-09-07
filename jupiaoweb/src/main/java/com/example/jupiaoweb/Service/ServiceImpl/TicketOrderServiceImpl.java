@@ -5,6 +5,7 @@ import com.example.jupiaoweb.Model.ShopCartEntity;
 import com.example.jupiaoweb.Model.TicketOrderEntity;
 import com.example.jupiaoweb.Model.TrainTicketEntity;
 import com.example.jupiaoweb.Service.TicketOrderService;
+import com.example.jupiaoweb.bean.MonthReport;
 import com.example.jupiaoweb.bean.TicketOrder;
 import com.example.jupiaoweb.bean.detailOrder;
 import com.example.jupiaoweb.dao.OrderItemRepository;
@@ -14,9 +15,12 @@ import com.example.jupiaoweb.dao.TrainTicketRepository;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 
@@ -180,4 +184,43 @@ public class TicketOrderServiceImpl implements TicketOrderService {
         }
         return gson.toJson(res);
     }
+
+    @Override
+    public String saleReporting(int startingYear, int startingMonth, int endYear, int endMonth){
+        Gson gson = new Gson();
+        List<TicketOrderEntity> all = ticketOrderRepository.findAll();
+        List<MonthReport> l = new ArrayList<MonthReport>();;
+        int count = 0;
+        for (int i = startingYear*12 + startingMonth; i<= endYear*12 + endMonth; i++){
+            MonthReport m = new MonthReport();
+            m.setId(count);
+            count++;
+            m.setTime(String.valueOf(i/12) + "年" +  String.valueOf(i%12) + "月");
+            m.setSales(0);
+            m.setLastSales(0);
+            l.add(m);
+        }
+        for (TicketOrderEntity aTicketOrderEntity : all) {
+            Timestamp t = aTicketOrderEntity.getDate();
+            Date date = new Date(t.getTime());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int price = aTicketOrderEntity.getTotalPrice();
+            int paid = aTicketOrderEntity.getIsPaid();
+            int index = (year - startingYear)*12 + (month - startingMonth);
+            MonthReport m1 = l.get(index);
+            if(paid == 1){
+                m1.setSales(m1.getSales()+ price);
+                l.set(index,m1);
+                if(index != l.size() - 1){
+                    MonthReport m2 = l.get(index + 1);
+                    m2.setLastSales(m2.getLastSales()+ price);
+                    l.set(index + 1,m2);
+                }
+            }
+        }
+        return gson.toJson(l);
+    };
 }

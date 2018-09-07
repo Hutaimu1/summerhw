@@ -10,4 +10,5 @@ public interface MovieTicketService {
     String movieTicketAddToShopCart(int ticketId,String userName,String ticketName,int price,int leftTicket,String description);
     String movieTicketQuickBuy(int ticketId,String userName,String ticketName,int price,int leftTicket,String date,String description);
     String addMovieTicket(String movie,String place,String date,String brand,String time);
+    String movieTicketAddToCollection(int ticketId,String userName);
 }

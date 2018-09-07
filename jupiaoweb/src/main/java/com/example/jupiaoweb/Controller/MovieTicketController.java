@@ -88,4 +88,12 @@ public class MovieTicketController {
                                       @RequestParam("time") String time){
         return movieTicketService.addMovieTicket(movie,place,date,brand,time);
     }
+
+    @PostMapping(value = "movieTicketAddToCollection")
+    @ResponseBody
+    public String movieTicketAddToCollection(@RequestParam("ticketId") int ticketId,
+                                             @RequestParam("userName") String userName){
+        return movieTicketService.movieTicketAddToCollection(ticketId,userName);
+    }
+
 }

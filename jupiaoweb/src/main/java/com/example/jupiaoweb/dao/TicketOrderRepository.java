@@ -12,6 +12,9 @@ public interface TicketOrderRepository extends JpaRepository<TicketOrderEntity, 
     @Query("select max(o.orderId) from TicketOrderEntity o")
     int getMaxId();
 
+    @Query("select o from TicketOrderEntity o")
+    List<TicketOrderEntity> findAll();
+
     @Query("select o from TicketOrderEntity o where o.userName=:userName")
     List<TicketOrderEntity> findByUserName(@Param("userName") String username);
 

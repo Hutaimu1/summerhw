@@ -8,4 +8,5 @@ public interface TicketOrderService {
     String getHistoryOrderList(String userName);
     String deleteHistoryOrder(int[] orderIdArray);
     String getAllOrderList();
+    String saleReporting(int startingYear, int startingMonth, int endYear, int endMonth);
 }

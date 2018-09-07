@@ -57,4 +57,13 @@ public class TicketOrderController {
     public String getAllOrderList(){
         return ticketOrderService.getAllOrderList();
     }
+
+    @PostMapping(value = "saleReporting")
+    @ResponseBody
+    public String editTrainTicket(@RequestParam("startingYear") int startingYear,
+                                  @RequestParam("startingMonth") int startingMonth,
+                                  @RequestParam("endYear") int endYear,
+                                  @RequestParam("endMonth") int endMonth){
+        return ticketOrderService.saleReporting(startingYear, startingMonth, endYear, endMonth);
+    }
 }

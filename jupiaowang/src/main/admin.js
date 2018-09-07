@@ -5,6 +5,8 @@ import userManagement from "../Components/userManagement";
 import trainTicketManagement from "../Components/trainTicketManagement";
 import orderManagement from "../Components/orderManagement";
 import movieTicketManagement from "../Components/movieTicketManagement";
+import saleStatistics from "../Components/saleStatistics";
+
 
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -51,6 +53,8 @@ class adminPage extends React.Component {
                                 to={{pathname: `/admin/${userName}/movieTicketManagement`}}>电影票</NavLink></Menu.Item>
                         </SubMenu>
                         <SubMenu key="sub3" title={<span><Icon type="area-chart"/><span>报表统计</span></span>}>
+                            <Menu.Item key={ `/admin/${userName}/saleStatistics`}><NavLink
+                                to={{pathname: `/admin/${userName}/saleStatistics`}}>报表统计</NavLink></Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>
@@ -80,6 +84,8 @@ class adminPage extends React.Component {
                                 <Route path="/admin/:userName/orderManagement" component={orderManagement}/>
                                 <Route path="/admin/:userName/trainTicketManagement" component={trainTicketManagement}/>
                                 <Route path="/admin/:userName/movieTicketManagement" component={movieTicketManagement}/>
+                                <Route path="/admin/:userName/saleStatistics" component={saleStatistics}/>
+                                <Route path="/admin/:userName/movieTicketStatistics" component={movieTicketManagement}/>
                             </Switch>
                         </div>
                     </Content>
