@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ea903481-56da-4a19-a16b-8b05786e3c91" name="Default" comment="" />
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="collection.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Components/collection.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2576">
+              <caret line="112" column="82" lean-forward="false" selection-start-line="112" selection-start-column="82" selection-end-line="112" selection-end-column="82" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="movieTicket.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Components/movieTicket.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23">
+              <caret line="61" column="9" lean-forward="false" selection-start-line="61" selection-start-column="9" selection-end-line="61" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="comment.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Components/comment.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="115">
+              <caret line="8" column="2" lean-forward="false" selection-start-line="8" selection-start-column="2" selection-end-line="8" selection-end-column="2" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="login.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/login.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="414">
+              <caret line="20" column="0" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="20" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shoppingCart.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Components/shoppingCart.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="5911">
+              <caret line="260" column="18" lean-forward="false" selection-start-line="260" selection-start-column="18" selection-end-line="260" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="575">
+              <caret line="25" column="22" lean-forward="false" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/App.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="13271">
+              <caret line="577" column="14" lean-forward="false" selection-start-line="577" selection-start-column="14" selection-end-line="577" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>validateInput</find>
+      <find>checkQQ</find>
+      <find>hasErrors</find>
+      <find>updateSelectAllFlag</find>
+      <find>changeGoodsCheckFlag</find>
+      <find>&amp;</find>
+      <find>end</find>
+      <find>indexOf</find>
+      <find>post</find>
+      <find>date</find>
+      <find>consol</find>
+      <find>key</find>
+      <find>switch</find>
+      <find>map</find>
+      <find>userName</find>
+      <find>this.props.match</find>
+      <find>query</find>
+      <find>this.props.name</find>
+      <find>tabContent</find>
+      <find>font</find>
+      <find>”</find>
+      <find>popconfirm</find>
+      <find>tooltip</find>
+      <find>tool</find>
+      <find>Icon</find>
+      <find>s</find>
+    </findStrings>
+    <replaceStrings>
+      <replace />
+      <replace>&quot;</replace>
+    </replaceStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/config-overrides.js" />
+        <option value="$PROJECT_DIR$/config-overrides.js" />
+        <option value="$PROJECT_DIR$/src/login.js" />
+        <option value="$PROJECT_DIR$/src/component/captcha.js" />
+        <option value="$PROJECT_DIR$/src/component/register.js" />
+        <option value="$PROJECT_DIR$/src/main/register.js" />
+        <option value="$PROJECT_DIR$/src/component/captcha_registration.js" />
+        <option value="$PROJECT_DIR$/src/component/captcha_login.js" />
+        <option value="$PROJECT_DIR$/src/css/home.css" />
+        <option value="$PROJECT_DIR$/src/main/shopcart.js" />
+        <option value="$PROJECT_DIR$/src/main/forget.js" />
+        <option value="$PROJECT_DIR$/src/smallComponents/goodsTable.js" />
+        <option value="$PROJECT_DIR$/src/BigComponrnts/shopcart.js" />
+        <option value="$PROJECT_DIR$/src/BigComponrnts/orderToBeResolved.js" />
+        <option value="$PROJECT_DIR$/src/BigComponrnts/shopCart.js" />
+        <option value="$PROJECT_DIR$/src/BigComponrnts/trainTicket.js" />
+        <option value="D:/summerhw/jupiaowang/src/main/home.js" />
+        <option value="$PROJECT_DIR$/src/async.js" />
+        <option value="$PROJECT_DIR$/src/Components/MovieTicket.js" />
+        <option value="$PROJECT_DIR$/src/main/registration.js" />
+        <option value="D:/summerhw/jupiaowang/src/Components/movieTicket.js" />
+        <option value="$PROJECT_DIR$/src/Components/myMessage.js" />
+        <option value="$PROJECT_DIR$/src/Components/user1.js" />
+        <option value="$USER_HOME$/AppData/Local/Temp/tmp2E2E.tmp.css" />
+        <option value="$PROJECT_DIR$/src/App.js" />
+        <option value="$PROJECT_DIR$/src/Components/user.js" />
+        <option value="$PROJECT_DIR$/src/Components/userManagement.js" />
+        <option value="$PROJECT_DIR$/build/index.html" />
+        <option value="$PROJECT_DIR$/build/asset-manifest.json" />
+        <option value="$PROJECT_DIR$/build/service-worker.js" />
+        <option value="$PROJECT_DIR$/src/main/admin.js" />
+        <option value="$PROJECT_DIR$/src/Components/orderToBeResolved.js" />
+        <option value="$PROJECT_DIR$/src/Components/historyOrder.js" />
+        <option value="$PROJECT_DIR$/src/Components/trainTicket.js" />
+        <option value="$PROJECT_DIR$/src/Components/trainTicketManagement.js" />
+        <option value="$PROJECT_DIR$/src/main/login.js" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/Components/shoppingCart.js" />
+        <option value="$PROJECT_DIR$/src/main/home.js" />
+        <option value="$PROJECT_DIR$/src/Components/orderManagement.js" />
+        <option value="$PROJECT_DIR$/src/Components/movieTicket.js" />
+        <option value="$PROJECT_DIR$/src/Components/viewMovie.js" />
+        <option value="$PROJECT_DIR$/src/App.css" />
+        <option value="$PROJECT_DIR$/src/Components/userMessage.js" />
+        <option value="$PROJECT_DIR$/src/Components/comment.js" />
+        <option value="$PROJECT_DIR$/src/Components/collection.js" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER">
+    <package-json value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/node_modules" />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-91" />
+    <option name="y" value="7" />
+    <option name="width" value="1928" />
+    <option name="height" value="866" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="jupiaowang" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jupiaowang" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="jupiaowang" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jupiaowang" type="462c0819:PsiDirectoryNode" />
+              <item name="build" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="jupiaowang" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jupiaowang" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="jupiaowang" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jupiaowang" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Components" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="jupiaowang" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jupiaowang" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="D:/document/web" />
+    <property name="HbShouldOpenHtmlAsHb" value="" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Users\27586\Documents\workspace\jupiaowang\src\Components" />
+      <recent name="D:\Users\27586\Documents\workspace\jupiaowang\src\BigComponrnts" />
+      <recent name="D:\Users\27586\Documents\workspace\jupiaowang\src\component" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Users\27586\Documents\workspace\jupiaowang\src\BigComponrnts" />
+      <recent name="D:\Users\27586\Documents\workspace\jupiaowang\src\main" />
+      <recent name="D:\Users\27586\Documents\workspace\jupiaowang" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ea903481-56da-4a19-a16b-8b05786e3c91" name="Default" comment="" />
+      <created>1530512572306</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1530512572306</updated>
+      <workItem from="1530512573733" duration="8835000" />
+      <workItem from="1530578153967" duration="14719000" />
+      <workItem from="1530603088774" duration="1093000" />
+      <workItem from="1530604728571" duration="4721000" />
+      <workItem from="1530665174796" duration="17964000" />
+      <workItem from="1530754202846" duration="20405000" />
+      <workItem from="1530839122097" duration="21059000" />
+      <workItem from="1530887654675" duration="20379000" />
+      <workItem from="1530955833158" duration="14679000" />
+      <workItem from="1531270929430" duration="33027000" />
+      <workItem from="1531568564440" duration="21374000" />
+      <workItem from="1531634685739" duration="30247000" />
+      <workItem from="1531707209048" duration="13319000" />
+      <workItem from="1531789012015" duration="82252000" />
+      <workItem from="1532047968010" duration="79084000" />
+      <workItem from="1532324443450" duration="10793000" />
+      <workItem from="1532393244221" duration="21521000" />
+      <workItem from="1532431966226" duration="58830000" />
+      <workItem from="1532651988800" duration="5941000" />
+      <workItem from="1536046694829" duration="3052000" />
+      <workItem from="1536125031052" duration="2128000" />
+      <workItem from="1536129299908" duration="47472000" />
+      <workItem from="1536300347521" duration="14022000" />
+      <workItem from="1536318382325" duration="599000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="593968000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-91" y="7" width="1928" height="866" extended-state="0" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19128586" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3275862" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="36" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp7068.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp5602.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp50DE.tmp.js" />
+    <entry file="file://$PROJECT_DIR$/src/Components/user1.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp2E2E.tmp.css" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp2409.tmp.js" />
+    <entry file="file://D:/summerhw/jupiaowang/src/Components/movieTicket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="8" column="16" lean-forward="true" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpE4C9.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp4818.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpF512.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp89C2.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpBE7A.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpD3F4.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp5064.tmp.js" />
+    <entry file="file://D:/summerhw/jupiaowang/src/App.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8511">
+          <caret line="16" column="1" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="415" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/registerServiceWorker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-345">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build/favicon.ico">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build/asset-manifest.json" />
+    <entry file="file://$PROJECT_DIR$/build/service-worker.js" />
+    <entry file="file://$PROJECT_DIR$/build/index.html" />
+    <entry file="file://$PROJECT_DIR$/build/manifest.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/summerhw/jupiaowang/src/Components/historyOrder.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8188">
+          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/summerhw/jupiaowang/src/Components/shoppingCart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6969">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/registration.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6739">
+          <caret line="295" column="18" lean-forward="false" selection-start-line="295" selection-start-column="18" selection-end-line="295" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/admin.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="70" column="30" lean-forward="true" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpA258.tmp.css" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpCC8.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp9FAD.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpA16B.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp5BE6.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp73A.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmp935E.tmp.js" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/tmpEFE2.tmp.js" />
+    <entry file="file://$PROJECT_DIR$/src/Components/orderToBeResolved.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2963">
+          <caret line="164" column="38" lean-forward="true" selection-start-line="164" selection-start-column="38" selection-end-line="164" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/home.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1978">
+          <caret line="86" column="97" lean-forward="false" selection-start-line="86" selection-start-column="97" selection-end-line="86" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/orderManagement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="402" column="11" lean-forward="false" selection-start-line="402" selection-start-column="11" selection-end-line="402" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="575">
+          <caret line="25" column="22" lean-forward="false" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/App.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13271">
+          <caret line="577" column="14" lean-forward="false" selection-start-line="577" selection-start-column="14" selection-end-line="577" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/historyOrder.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="29" column="25" lean-forward="true" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/shoppingCart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5911">
+          <caret line="260" column="18" lean-forward="false" selection-start-line="260" selection-start-column="18" selection-end-line="260" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/trainTicket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-209">
+          <caret line="325" column="30" lean-forward="true" selection-start-line="325" selection-start-column="12" selection-end-line="325" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="20" column="0" lean-forward="false" selection-start-line="17" selection-start-column="4" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/userMessage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5060">
+          <caret line="393" column="0" lean-forward="false" selection-start-line="393" selection-start-column="0" selection-end-line="393" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/trainTicketManagement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="158" column="0" lean-forward="false" selection-start-line="158" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/viewMovie.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="412">
+          <caret line="127" column="124" lean-forward="false" selection-start-line="127" selection-start-column="124" selection-end-line="127" selection-end-column="124" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/userManagement.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="623">
+          <caret line="283" column="52" lean-forward="false" selection-start-line="283" selection-start-column="52" selection-end-line="283" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/comment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="8" column="2" lean-forward="false" selection-start-line="8" selection-start-column="2" selection-end-line="8" selection-end-column="2" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/collection.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2576">
+          <caret line="112" column="82" lean-forward="false" selection-start-line="112" selection-start-column="82" selection-end-line="112" selection-end-column="82" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Components/movieTicket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="61" column="9" lean-forward="false" selection-start-line="61" selection-start-column="9" selection-end-line="61" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
